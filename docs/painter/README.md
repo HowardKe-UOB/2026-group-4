@@ -19,6 +19,12 @@ npx http-server
 # Right-click index.html -> "Open with Live Server"
 ```
 
+## Math Logic
+
+Here is the trigonometry logic behind my spray tool:
+
+![Math Logic Diagram](assets/math-logic.jpg)
+
 ## Resources
 
 - [p5.js 2.0](https://beta.p5js.org/)
