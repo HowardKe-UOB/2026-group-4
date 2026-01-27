@@ -29,9 +29,12 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 
 !\[group picture](./Group4.jpg)
 
+
+
 | Name | Email | Github | Role |
 
 | :--- | :--- | :--- | :--- |
+
 | Weikai Mao | uz25020@bristol.ac.uk | M1yanoShiho | - |
 
 | Zenan Wu | jp25459@bristol.ac.uk | zenanwu479-glitch | - |
@@ -41,8 +44,6 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 | Bingyu Ke | wp25446@bristol.ac.uk | Howard Ke | - |
 
 | Zeyu Guo | rp23254@bristol.ac.uk | bytevostg | - |
-
-
 
 
 
