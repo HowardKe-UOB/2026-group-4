@@ -25,14 +25,7 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 
 ## Your Group
 
-GROUP PHOTO. Add a group photo here.
-
-- Group member 1, name, email, role
-- Group member 2, name, email, role
-- Group member 3, name, email, role
-- Group member 4, name, email, role
-- Group member 5, name, email, role
-- Group member 6, name, email, role
+NameEmailGithubRoleWeikai Maouz25020@bristol.ac.ukM1yanoShihoZenan Wujp25459@bristol.ac.ukzenanwu479-glitchJianxing Liue25937@bristol.ac.ukUoB26GitBingyu KeHoward KeZwyu Guorp23254@bristol.ac.ukbytevostg-
 
 ## Project Report
 
