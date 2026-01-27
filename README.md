@@ -36,9 +36,7 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 | Jianxing Li | ue25937@bristol.ac.uk | UoB26Git | - |
 | Bingyu Ke | wp25446@bristol.ac.uk | Howard Ke | - |
 | Zeyu Guo | rp23254@bristol.ac.uk | bytevostg | - |
-
-
-
+| - | - | - | - | 
 
 
 ## Project Report
