@@ -70,7 +70,7 @@ Nice to haves:
 - Power-ups
 - Endless mode
 
-- ### Idea 3 - Homework Slasher
+### Idea 3 - Homework Slasher
 Inspiration:
 - A twist on the classic "Fruit Ninja" game, replacing the blade with a pen and fruits with homework assignments from various subjects. Players slash through floating homework papers to score points.
 - Casual arcade game
