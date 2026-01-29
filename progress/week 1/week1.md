@@ -98,6 +98,5 @@ Scoring & Progression:
 - The total score determines the number of stars earned at the end of a level or session (e.g., 1-3 stars). Higher scores unlock more stars.
 
 
-
-- ## Challenges
+## Challenges
 Different difficulty levels, high score list, two-player mode, physics engine, map generation, collision detection
