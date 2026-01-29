@@ -1,0 +1,18 @@
+Game Concept A: "Homework Slasher"
+
+Core Concept:
+A twist on the classic "Fruit Ninja" game, replacing the blade with a pen and fruits with homework assignments from various subjects. Players slash through floating homework papers to score points.
+
+Core Mechanics:
+
+Standard Assignment: When the player's pen touches a standard homework sheet, a green checkmark (✓) appears on it. The paper then shatters into pieces (similar to sliced fruit in the original game) after a 0.5-second visual delay, and points are awarded.
+
+Combo Bonus: A consecutive slash of three or more assignments triggers a combo, granting bonus points.
+
+"Hard Subject" (Bomb Equivalent): One particularly difficult subject (e.g., "Advanced Calculus") replaces the role of bombs. If the player's pen touches this paper, a red cross (✗) appears on it. The paper does not shatter. This action results in a score penalty and breaks any ongoing combo.
+
+Power-up: Golden Pen: Upon contact with a special floating "Golden Pen" item, the player enters a powered-up state for a limited time (e.g., 5 seconds). During this time, the pen can slice through any type of assignment (including the "Hard Subject") without penalty, with all assignments displaying the green checkmark and shattering for points.
+
+Scoring & Progression:
+The total score determines the number of stars earned at the end of a level or session (e.g., 1-3 stars). Higher scores unlock more stars.
+
