@@ -1,6 +1,7 @@
 # Project Outlines
 
-- Maximise coding, minimise manual work (design, map making etc)
+- searching the recent legendary and basic version of the game
+- analyze key elements,features  and key technique interm of mapping and classes needed in the game 
 - Game development in ~5 weeks
 - Plan expansions for extra time
 
