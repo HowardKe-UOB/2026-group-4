@@ -4,7 +4,7 @@
 
 ## Group Kanban Board
 
-[Kanban Board](https://github.com/orgs/UoB-COMSM0166/projects/76)
+[Kanban Board](https://github.com/orgs/UoB-COMSM0166/projects/158)
 
 ## Table of Contents
 1. [Development Team](#1-development-team)
