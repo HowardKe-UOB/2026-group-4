@@ -2,6 +2,10 @@
 
 2026 COMSM0166 group 4
 
+## Group Kanban Board
+
+[Kanban Board](https://github.com/orgs/UoB-COMSM0166/projects/76)
+
 ## Table of Contents
 1. [Development Team](#1-development-team)
 2. [Introduction](#2-introduction)
