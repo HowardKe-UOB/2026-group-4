@@ -7,23 +7,87 @@
 
 ## Game Ideas
 
-### Idea 1 - Contra: Reloaded
+### Idea 1 — Contra: Reloaded (More Detailed Concept Draft)
 
-Inspiration:
+## Inspiration
+- Contra and classic arcade run-and-gun pacing: fast, punishing, skill-forward.
+- Side-scrolling shooters with memorable set pieces, enemy “patterns,” and high replay value.
+- Modern action polish: tighter input feel, clearer readability, and deeper build variety.
 
-- Contra
-- Arcade shooters
+## High Concept
+- A modern run-and-gun that preserves the pressure and immediacy of arcade shooters while adding build depth, branching upgrades, and replay-driven progression.
+- Sessions are short and intense (10–20 minutes), but mastery can go deep (S-ranks, no-hit runs, and speedruns).
 
-Fundamentals:
+## Core Gameplay Pillars
 
-- Side-scrolling action
-- Run-and-gun shooting
-- Enemy waves and boss fights
+### 1) Side-scrolling Momentum + Mobility Layer
+- **Movement toolkit:** sprint, crouch, slide/dodge, climb/ledge-grab, and jump (optional double-jump/wall-kick).
+- **Shooting model:** either 8-direction aiming (classic) or move + aim dual-stick controls (modern accessibility toggle).
+- **Emergency action:** short-cooldown dash/roll with minimal invulnerability frames to keep pacing strict and decision-driven.
+- **Environmental interactions:** breakables, explosive barrels, switches, moving platforms, and collapsing terrain to create risk/reward routing.
 
-Nice to haves:
+### 2) Enemy Waves Built as “Compositions,” Not Just Quantity
+- Enemies are designed around battlefield roles:
+  - **Pressure units** (shield/armor) force flanks or armor-piercing solutions.
+  - **Disruptors** (nets, slows, smoke) punish autopilot play and reduce safe options.
+  - **Air threats** (drones/helicopters) demand vertical aiming and strict target priority.
+  - **Rushers/suicides** enforce spacing, timing, and disciplined movement.
+- **Wave logic:** trigger-based spawns plus dynamic reinforcements if the player stalls.
+- **Elite variants:** modifier-driven enemies (e.g., regen shield, split shots, death burst) to increase tactical variance without relying on pure HP inflation.
 
-- Co-op mode
-- Weapon upgrades
+### 3) Boss Fights as Mechanics Exams
+- Each boss has **3+ phases:** learn → adapt → execute under pressure.
+- Arena changes matter (platform shifts, hazards, visibility gimmicks), but must remain readable and fair.
+- Boss depth is created via **breakable parts, interrupt windows, exposed weak points,** and pattern manipulation through player positioning.
+
+## Systems That Add Depth (Without Losing Arcade Clarity)
+
+### Weapon Ecosystem (Roles + Tradeoffs)
+- Weapons aren’t cosmetic—each fills a tactical role and comes with explicit costs:
+  - **Burst rifle:** reliable mid-range consistency.
+  - **Shotgun:** close-range crowd clear with positioning risk.
+  - **Beam/rail:** pierces armor/lines for lane control.
+  - **Homing:** strong anti-air and target tracking.
+  - **Explosives:** area denial and burst damage with spacing constraints.
+- Choose one macro constraint (or allow mode selection):
+  - **Ammo economy** encourages swapping/scavenging and resource planning.
+  - **Heat management** enforces rhythm, burst discipline, and timing.
+
+### Modular Upgrades & Build Paths
+- In-run mods define build identity (e.g., pierce + crit, AoE + burn, homing + chain lightning).
+- Weapons branch into **2–3 upgrade paths** (e.g., shotgun: spread control vs armor shred vs knockback control).
+- Power is balanced by meaningful drawbacks: recoil, overheat rate, movement penalty, reduced accuracy—forcing real choices, not “always upgrade.”
+
+### Characters & Abilities (Especially for Co-op)
+- Support **2–4 characters** with distinct passives and skills:
+  - **Assault:** armor break / dash.
+  - **Engineer:** turret / explosives.
+  - **Scout:** weak-point mark / crit scaling.
+  - **Medic:** shield / faster revive.
+- Co-op becomes coordination and role synergy, not just “more bullets.”
+
+## Nice-to-Haves (Expanded)
+
+### Co-op (Local/Online)
+- 2-player baseline (scalable to 4).
+- Downed state + revive; shared vs personal loot toggles.
+- Synergy actions (mark + volley, crowd-control combos).
+- Difficulty scales via **behavior complexity**, not only HP.
+
+### Level Structure & Replayability
+- 8–12 main missions: push → set piece (holdout/escape/vehicle) → mini-boss → boss.
+- Branching high-risk routes with better rewards (challenge rooms).
+- Scoring loop: time, damage taken, kill ratio, secrets, and S-rank grading.
+
+### Presentation & Theme
+- Retro pixel/16-bit vibe with modern VFX (particles, screen shake, lighting).
+- Music: synth + rock percussion with dynamic boss layering.
+- Light narrative via logs and environmental storytelling (sci-fi military + biotech/mech horror blend).
+
+## Difficulty & Fairness (Non-negotiables)
+- Attacks must be readable: clear telegraphs, audio cues, and consistent projectile logic.
+- Multiple difficulty tiers: approachable baseline with a high skill ceiling for mastery.
+- Checkpoints and resource drops tuned so failure feels earned—never random or unavoidable.
 
 ### Idea 2 - Gold Miner Prospector
 
