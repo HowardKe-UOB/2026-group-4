@@ -60,7 +60,7 @@ You will be developing your game using [P5.js](https://p5js.org) a javascript li
 
 <div style="text-align: center;">
   <video
-    src="https://github.com/user-attachments/assets/cf08ced6-2c5a-4c0f-ab48-d7de62dc5fc1"
+    src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9"
     controls
     width="600">
   </video>
