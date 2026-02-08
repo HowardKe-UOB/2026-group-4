@@ -56,7 +56,15 @@ You will be developing your game using [P5.js](https://p5js.org) a javascript li
 * [Coding Train P5.js](https://thecodingtrain.com/tracks/code-programming-with-p5-js) course - go here for enthusiastic video tutorials from Dan Shiffman (recommended!)
 
 ## 🎬 Paper Prototype Video
-progress/week3/DeepSeaProspector.mp4
+<p align="center"><b>Paper Prototype of Stardew Valley</b></p>
+
+<div style="text-align: center;">
+  <video
+    src="https://github.com/user-attachments/assets/dee0e54f-76a0-405c-8d7f-671405ac872b"
+    controls
+    width="600">
+  </video>
+</div>
 
 ### Your Game (change to title of your game)
 
