@@ -55,6 +55,27 @@ You will be developing your game using [P5.js](https://p5js.org) a javascript li
 * [P5.js tutorials](https://p5js.org/tutorials/)
 * [Coding Train P5.js](https://thecodingtrain.com/tracks/code-programming-with-p5-js) course - go here for enthusiastic video tutorials from Dan Shiffman (recommended!)
 
+## 🎬 Paper Prototype Video
+<p align="center"><b>Paper Prototype of Homework Slasher</b></p>
+
+<div style="text-align: center;">
+  <video
+    src="https://github.com/user-attachments/assets/cd96632b-43c8-413f-afaf-555567294d2f"
+    controls
+    width="600">
+  </video>
+</div
+
+<p align="center"><b>Paper Prototype of Deep Sea Prospector</b></p>
+
+<div style="text-align: center;">
+  <video
+    src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9"
+    controls
+    width="600">
+  </video>
+</div>
+
 ### Your Game (change to title of your game)
 
 STRAPLINE. Add an exciting one sentence description of your game here.
