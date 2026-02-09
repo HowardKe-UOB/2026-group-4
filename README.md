@@ -76,6 +76,10 @@ You will be developing your game using [P5.js](https://p5js.org) a javascript li
   </video>
 </div>
 
+Our initial motivation was to create a game with simple controls and an immediately responsive feedback loop, so the team quickly looked to titles such as "Fruit Ninja" and "Gold Miner" as reference points. Building on these influences, we framed our core experience around intuitive interaction and instant feedback, and used those principles as the foundation for subsequent design decisions and prototype iterations.
+
+Translating both prototypes to paper and stepping through each flow gave us a clearer sense of how the gameplay would feel in practice. While "Homework Slasher" emphasized fast, reactive slicing, "Deep Sea Prospector" offered a more structured risk-reward loop through aiming, timing, and resource collection. Feedback from peer groups reinforced that the latter provided a more coherent progression and a stronger sense of purpose. As a result, we chose to develop "Deep Sea Prospector" further, focusing on a compact control scheme, immediate tactile feedback, and a satisfying collect-and-upgrade loop that builds on the gold-mining inspirations.
+
 ### Your Game (change to title of your game)
 
 STRAPLINE. Add an exciting one sentence description of your game here.
