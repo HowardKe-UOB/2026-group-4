@@ -101,7 +101,7 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 <a id="3-requirements"></a>
 
 ## 3. Requirements
-
+### Stakeholder table
 | Stakeholder                 | Epic                        | User Story                                                                                                                                           | Acceptance Criteria                                                                                                                                                                                                   |
 | :-------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **User: Casual Player**     | Core Fishing Mechanics      | "As a casual player, I want to control the hook using a single key press, so that I can easily catch fish without learning complex controls."        | **Given** the hook is swinging back and forth,<br>**When** I press the 'Down Arrow Key',<br>**Then** the hook should stop swinging and extend in a straight line.                                                     |
@@ -110,6 +110,18 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 | **User: Progression Gamer** | Economy & Progression Loop  | "As a progression-focused gamer, I want to buy upgrades in a shop between levels, so that I can handle increasing difficulty."                       | **Given** I am in the shop screen with 500 gold,<br>**When** I click the 'Buy Laser Sight' button,<br>**Then** 500 gold is deducted and a trajectory line appears in the next level.                                  |
 | **User: Developer**         | Core Fishing Mechanics      | "As a developer, I want a collision detection system, so that the hook recognizes when it hits an object versus empty water."                        | **Given** the hook is extending,<br>**When** the hook collider touches a 'Rock' object,<br>**Then** the hook should stop extending and immediately begin retracting.                                                  |
 | **User: Artist**            | Visual Feedback & Immersion | "As an artist, I want distinct animations for different fish states, so that the player gets visual feedback on their actions."                      | **Given** a fish is idle swimming,<br>**When** the hook grabs the fish,<br>**Then** the fish sprite should switch to a 'struggling' animation.                                                                        |
+
+### Reflection
+1. In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
+2. Determine user acceptance criteria
+a. Is the fish hook used by the player swinging evenly at a constant speed. When the player clicks the mouse, the hook should launch immediately without delay.
+B．When players choose the slightly difficult "deep sea" mode, ocean currents, as the "x factor" in the sea, can change the movement trajectory of various fish. Another 'x factor' shark can damage ordinary fish hooks。
+c. Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
+d.✅ Pass: Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
+❌ Fail：Score not met or time is up → Challenge this level again.
+e. Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
+We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
+
 
 - 15% ~750 words
 - Early stages design. Ideation process. How did you decide as a team what to develop? Use case diagrams, user stories.
