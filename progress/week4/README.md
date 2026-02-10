@@ -49,7 +49,7 @@ These are the individuals directly involved in the creation, testing, and intera
 
 ---
 
-## Reflection
+### Reflection
 **1.**  In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
 
 **2.**  Determine user acceptance criteria  
@@ -61,7 +61,7 @@ c. Before the countdown ends, the total value of all items captured must be equa
 
 d. ✅ Pass: Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
 
-❌ Fail：Score not met or time is up → Challenge this level again.**  
+❌ Fail：Score not met or time is up → Challenge this level again.
 
 e. Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
 
