@@ -61,7 +61,7 @@ These are the individuals directly involved in the creation, testing, and intera
 
 * **d.**  ✅**Pass:** Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
 
-❌**Fail:** Score not met or time is up → Challenge this level again.
+          ❌**Fail:** Score not met or time is up → Challenge this level again.
 
 * **e.**  Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
 
