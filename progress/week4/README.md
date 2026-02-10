@@ -24,19 +24,35 @@ These are the individuals directly involved in the creation, testing, and intera
 ## Epics and User Stories
 
 ### 📌 Epic 1: Player Input, Hook States & Core Loop
-Goal: Ensure the primary interaction loop (aim → drop → attach/miss → retract → resolve) feels responsive and consistent.
+Goal: Ensure the primary interaction loop (aim → drop → attach/miss → retract → resolve) feels responsive and consistent, using two-player controls: Left = `S`, Right = `Down Arrow`.
 
-- **As a** Player, **I want** a single-button drop action, **so that** I can start playing instantly without complex controls.  
-  - _Acceptance Criteria:_ **Given** the hook is in the surface "Aiming" state, **When** I press `Space`, **Then** the hook transitions to "Dropping" and begins moving downward immediately (no visible delay).
+- **As a** Player, **I want** a two-player mode on a single shared screen, **so that** two people can play together without split-screen.  
+  - _Acceptance Criteria:_ **Given** the game is set to "Two-Player" mode, **When** the level starts, **Then** both hooks are visible and active on the same screen.
 
-- **As a** Player, **I want** a manual recall action, **so that** I can cancel a bad attempt and reduce frustration.  
-  - _Acceptance Criteria:_ **Given** the hook is currently "Dropping", **When** I press `R`, **Then** the hook switches to "Retracting" within 1 frame.
+- **As a** Player, **I want** separate launch keys for each player, **so that** both players can control their own hook using one keyboard.  
+  - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode and both hooks are in the surface "Aiming" state, **When** the left player presses `S`, **Then** only the left hook transitions to "Dropping".  
+  - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode and both hooks are in the surface "Aiming" state, **When** the right player presses `Down Arrow`, **Then** only the right hook transitions to "Dropping".
 
-- **As a** Player, **I want** the hook behaviour to be state-driven, **so that** it always behaves predictably.  
-  - _Acceptance Criteria:_ **Given** the hook is "Retracting", **When** I press `Space` repeatedly, **Then** no new drop starts until the hook returns to "Aiming".
+- **As a** Player, **I want** launched hooks to be non-cancellable, **so that** each attempt is committed and outcomes are fair.  
+  - _Acceptance Criteria:_ **Given** a hook is in "Dropping" or "Retracting", **When** the player presses any other input (including repeated launch key presses), **Then** the hook state does not change and the attempt continues normally.
+
+- **As a** Player, **I want** the hook behaviour to be state-driven, **so that** it always behaves predictably even if I spam keys.  
+  - _Acceptance Criteria:_ **Given** a hook is not in the "Aiming" state, **When** its player presses the launch key repeatedly (`S` for left / `Down Arrow` for right), **Then** no new attempt starts until that hook returns to "Aiming".
 
 - **As a** Developer, **I want** the hook to respect boundary rules, **so that** the attempt always terminates cleanly.  
-  - _Acceptance Criteria:_ **Given** the hook is "Dropping", **When** it reaches max depth, **Then** it automatically enters "Retracting" within 1 frame.
+  - _Acceptance Criteria:_ **Given** the hook is in "Dropping", **When** it reaches max depth, **Then** it automatically transitions to "Retracting" within 1 frame.
+
+- **As a** Player, **I want** the hook to attach to a target on contact, **so that** successful hits are clearly rewarded and feel responsive.  
+  - _Acceptance Criteria:_ **Given** the hook is "Dropping" and has not captured anything, **When** it collides with a valid target (e.g., fish/treasure), **Then** the target becomes attached to the hook and the hook transitions to "Retracting" within 1 frame.
+
+- **As a** Player, **I want** only one target to be captured per attempt, **so that** the result of each drop is clear and balanced.  
+  - _Acceptance Criteria:_ **Given** a target is already attached to the hook, **When** the hook collides with additional targets during "Retracting", **Then** no additional targets attach and the original attached target remains the only capture.
+
+- **As a** Player, **I want** the attempt to resolve at the surface, **so that** I clearly see the outcome and can start the next attempt.  
+  - _Acceptance Criteria:_ **Given** the hook is "Retracting", **When** it reaches the surface, **Then** the attempt resolves (reward is granted or $0 if nothing is attached) and the hook returns to the "Aiming" state within 1 frame.
+
+- **As a** Tester, **I want** two-player input isolation, **so that** one player cannot trigger the other player’s hook by mistake.  
+  - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode, **When** the left player presses `S`, **Then** the right hook does not transition due to that input; **And** **When** the right player presses `Down Arrow`, **Then** the left hook does not transition due to that input.
 
 ---
 
