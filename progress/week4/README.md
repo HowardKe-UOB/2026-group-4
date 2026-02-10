@@ -50,18 +50,19 @@ These are the individuals directly involved in the creation, testing, and intera
 ---
 
 ## Reflection
-1.  In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
+**1.**  In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
 
-2.  Determine user acceptance criteria  
-**a.**  Is the fish hook used by the player swinging evenly at a constant speed. When the player clicks the mouse, the hook should launch immediately without delay.
+**2.**  Determine user acceptance criteria  
+a. Is the fish hook used by the player swinging evenly at a constant speed. When the player clicks the mouse, the hook should launch immediately without delay.
 
-**b**  When players choose the slightly difficult "deep sea" mode, ocean currents, as the "x factor" in the sea, can change the movement trajectory of various fish. Another 'x factor' shark can damage ordinary fish hooks.
+b. When players choose the slightly difficult "deep sea" mode, ocean currents, as the "x factor" in the sea, can change the movement trajectory of various fish. Another 'x factor' shark can damage ordinary fish hooks.
 
-**c.** Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
+c. Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
 
-**d.** ✅ Pass: Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
+d. ✅ Pass: Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
+
 ❌ Fail：Score not met or time is up → Challenge this level again.**  
 
-**e.**  Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
+e. Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
 
-3.  We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
+**3.**  We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
