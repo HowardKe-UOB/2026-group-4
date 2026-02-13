@@ -124,6 +124,23 @@ Goal: Deliver a complete session flow: objectives → timed run → evaluation �
 
 ---
 
+### 🎓 Epic 6: Onboarding, Tutorials & Accessibility
+Goal: Help new players learn the controls quickly and reduce confusion with clear guidance and optional assists.
+
+- **As a** New Player, **I want** a short interactive tutorial, **so that** I can learn the basic hook controls before real levels.  
+  - _Acceptance Criteria:_ **Given** the game starts for the first time, **When** I enter the tutorial, **Then** I am guided through aiming, dropping, and retracting with step-by-step prompts.
+
+- **As a** Player, **I want** on-screen control hints, **so that** I always remember which keys to use.  
+  - _Acceptance Criteria:_ **Given** I am in a level, **When** the level begins, **Then** the UI displays the current control keys for each player.
+
+- **As a** Player, **I want** optional accessibility assists, **so that** I can reduce difficulty if needed.  
+  - _Acceptance Criteria:_ **Given** the accessibility menu is open, **When** I enable an assist (e.g., slower hook speed or larger hitbox), **Then** the change applies immediately to gameplay.
+
+- **As a** Tester, **I want** the tutorial to be skippable, **so that** I can quickly reach gameplay during testing.  
+  - _Acceptance Criteria:_ **Given** I am in the tutorial, **When** I press the "Skip Tutorial" button, **Then** I am taken directly to the first level without errors.
+
+---
+
 ### Reflection
 **1.**  In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
 
