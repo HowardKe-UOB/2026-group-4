@@ -79,9 +79,6 @@ Goal: Add deep-sea uncertainty (currents, obstacles, predators) while keeping be
 - **As a** Player, **I want** currents to influence target movement, **so that** aiming requires prediction rather than pure reaction.  
   - _Acceptance Criteria:_ **Given** the current indicator points Right, **When** a target swims Right, **Then** its horizontal speed is increased by a configured multiplier compared to swimming Left.
 
-- **As a** Player, **I want** obstacles to interrupt careless drops, **so that** accuracy matters.  
-  - _Acceptance Criteria:_ **Given** the hook is "Dropping", **When** it collides with an obstacle (e.g., Reef/Rock), **Then** the hook immediately switches to "Retracting" and awards no capture for that attempt.
-
 - **As a** Challenge Seeker, **I want** a predator to be able to cause me to lose a captured item, **so that** high-value retrieval feels tense.  
   - _Acceptance Criteria:_ **Given** an item is attached and the hook is "Retracting", **When** a predator collides with the attached item, **Then** the item detaches (or is destroyed) and awards $0 for that item.
 
