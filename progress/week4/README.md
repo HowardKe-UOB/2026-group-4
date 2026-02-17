@@ -24,134 +24,122 @@ These are the individuals directly involved in the creation, testing, and intera
 ## Epics and User Stories
 
 ### 📌 Epic 1: Player Input, Hook States & Core Loop
+
 Goal: Ensure the primary interaction loop (aim → drop → attach/miss → retract → resolve) feels responsive and consistent, using two-player controls: Left = `S`, Right = `Down Arrow`.
 
-- **As a** Player, **I want** a two-player mode on a single shared screen, **so that** two people can play together without split-screen.  
-  - _Acceptance Criteria:_ **Given** the game is set to "Two-Player" mode, **When** the level starts, **Then** both hooks are visible and active on the same screen.
+- **As a** Player, **I want** a two-player mode on a single shared screen, **so that** two people can play together without split-screen.
+    - _Acceptance Criteria:_ **Given** the game is set to "Two-Player" mode, **When** the level starts, **Then** both hooks are visible and active on the same screen.
 
-- **As a** Player, **I want** separate launch keys for each player, **so that** both players can control their own hook using one keyboard.  
-  - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode and both hooks are in the surface "Aiming" state, **When** the left player presses `S`, **Then** only the left hook transitions to "Dropping".  
-  - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode and both hooks are in the surface "Aiming" state, **When** the right player presses `Down Arrow`, **Then** only the right hook transitions to "Dropping".
+- **As a** Player, **I want** separate launch keys for each player, **so that** both players can control their own hook using one keyboard.
+    - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode and both hooks are in the surface "Aiming" state, **When** the left player presses `S`, **Then** only the left hook transitions to "Dropping".
+    - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode and both hooks are in the surface "Aiming" state, **When** the right player presses `Down Arrow`, **Then** only the right hook transitions to "Dropping".
 
-- **As a** Player, **I want** launched hooks to be non-cancellable, **so that** each attempt is committed and outcomes are fair.  
-  - _Acceptance Criteria:_ **Given** a hook is in "Dropping" or "Retracting", **When** the player presses any other input (including repeated launch key presses), **Then** the hook state does not change and the attempt continues normally.
+- **As a** Player, **I want** launched hooks to be non-cancellable, **so that** each attempt is committed and outcomes are fair.
+    - _Acceptance Criteria:_ **Given** a hook is in "Dropping" or "Retracting", **When** the player presses any other input (including repeated launch key presses), **Then** the hook state does not change and the attempt continues normally.
 
-- **As a** Player, **I want** the hook behaviour to be state-driven, **so that** it always behaves predictably even if I spam keys.  
-  - _Acceptance Criteria:_ **Given** a hook is not in the "Aiming" state, **When** its player presses the launch key repeatedly (`S` for left / `Down Arrow` for right), **Then** no new attempt starts until that hook returns to "Aiming".
+- **As a** Player, **I want** the hook behaviour to be state-driven, **so that** it always behaves predictably even if I spam keys.
+    - _Acceptance Criteria:_ **Given** a hook is not in the "Aiming" state, **When** its player presses the launch key repeatedly (`S` for left / `Down Arrow` for right), **Then** no new attempt starts until that hook returns to "Aiming".
 
-- **As a** Developer, **I want** the hook to respect boundary rules, **so that** the attempt always terminates cleanly.  
-  - _Acceptance Criteria:_ **Given** the hook is in "Dropping", **When** it reaches max depth, **Then** it automatically transitions to "Retracting" within 1 frame.
+- **As a** Developer, **I want** the hook to respect boundary rules, **so that** the attempt always terminates cleanly.
+    - _Acceptance Criteria:_ **Given** the hook is in "Dropping", **When** it reaches max depth, **Then** it automatically transitions to "Retracting" within 1 frame.
 
-- **As a** Player, **I want** the hook to attach to a target on contact, **so that** successful hits are clearly rewarded and feel responsive.  
-  - _Acceptance Criteria:_ **Given** the hook is "Dropping" and has not captured anything, **When** it collides with a valid target (e.g., fish/treasure), **Then** the target becomes attached to the hook and the hook transitions to "Retracting" within 1 frame.
+- **As a** Player, **I want** the hook to attach to a target on contact, **so that** successful hits are clearly rewarded and feel responsive.
+    - _Acceptance Criteria:_ **Given** the hook is "Dropping" and has not captured anything, **When** it collides with a valid target (e.g., fish/treasure), **Then** the target becomes attached to the hook and the hook transitions to "Retracting" within 1 frame.
 
-- **As a** Player, **I want** only one target to be captured per attempt, **so that** the result of each drop is clear and balanced.  
-  - _Acceptance Criteria:_ **Given** a target is already attached to the hook, **When** the hook collides with additional targets during "Retracting", **Then** no additional targets attach and the original attached target remains the only capture.
+- **As a** Player, **I want** only one target to be captured per attempt, **so that** the result of each drop is clear and balanced.
+    - _Acceptance Criteria:_ **Given** a target is already attached to the hook, **When** the hook collides with additional targets during "Retracting", **Then** no additional targets attach and the original attached target remains the only capture.
 
-- **As a** Player, **I want** the attempt to resolve at the surface, **so that** I clearly see the outcome and can start the next attempt.  
-  - _Acceptance Criteria:_ **Given** the hook is "Retracting", **When** it reaches the surface, **Then** the attempt resolves (reward is granted or $0 if nothing is attached) and the hook returns to the "Aiming" state within 1 frame.
+- **As a** Player, **I want** the attempt to resolve at the surface, **so that** I clearly see the outcome and can start the next attempt.
+    - _Acceptance Criteria:_ **Given** the hook is "Retracting", **When** it reaches the surface, **Then** the attempt resolves (reward is granted or $0 if nothing is attached) and the hook returns to the "Aiming" state within 1 frame.
 
-- **As a** Tester, **I want** two-player input isolation, **so that** one player cannot trigger the other player’s hook by mistake.  
-  - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode, **When** the left player presses `S`, **Then** the right hook does not transition due to that input; **And** **When** the right player presses `Down Arrow`, **Then** the left hook does not transition due to that input.
+- **As a** Tester, **I want** two-player input isolation, **so that** one player cannot trigger the other player’s hook by mistake.
+    - _Acceptance Criteria:_ **Given** the game is in "Two-Player" mode, **When** the left player presses `S`, **Then** the right hook does not transition due to that input; **And** **When** the right player presses `Down Arrow`, **Then** the left hook does not transition due to that input.
 
 ---
 
 ### 🐟 Epic 2: Capture Rules, Item Properties & Scoring
+
 Goal: Define what can be captured, how capture works, and how score/gold is calculated and displayed.
 
-- **As a** Player, **I want** items to have distinct value and weight, **so that** I can make meaningful choices between quick grabs and high rewards.  
-  - _Acceptance Criteria:_ **Given** two items with different weights, **When** each item is retrieved successfully in separate attempts, **Then** the heavier item retracts slower and awards the configured higher value.
+- **As a** Player, **I want** items to have distinct value and weight, **so that** I can make meaningful choices between quick grabs and high rewards.
+    - _Acceptance Criteria:_ **Given** two items with different weights, **When** each item is retrieved successfully in separate attempts, **Then** the heavier item retracts slower and awards the configured higher value.
 
-- **As a** Player, **I want** only one item to attach per attempt, **so that** outcomes remain clear and balanced.  
-  - _Acceptance Criteria:_ **Given** an item is already attached to the hook, **When** the hook collides with another item, **Then** the second item does not attach and continues moving normally.
+- **As a** Player, **I want** only one item to attach per attempt, **so that** outcomes remain clear and balanced.
+    - _Acceptance Criteria:_ **Given** an item is already attached to the hook, **When** the hook collides with another item, **Then** the second item does not attach and continues moving normally.
 
-- **As a** Tester, **I want** an end-of-attempt summary, **so that** I can verify scoring correctness quickly.  
-  - _Acceptance Criteria:_ **Given** an attempt ends (successful delivery or loss), **When** the result is resolved, **Then** the UI shows the item name, item value awarded, and updated total gold/score.
+- **As a** Tester, **I want** an end-of-attempt summary, **so that** I can verify scoring correctness quickly.
+    - _Acceptance Criteria:_ **Given** an attempt ends (successful delivery or loss), **When** the result is resolved, **Then** the UI shows the item name, item value awarded, and updated total gold/score.
 
-- **As a** Game Designer, **I want** spawn probabilities to be configurable, **so that** balancing rare items does not require code changes.  
-  - _Acceptance Criteria:_ **Given** spawn rates are defined in a config table, **When** a rare item probability is reduced, **Then** repeated test runs show a lower observed spawn frequency consistent with the new config.
+- **As a** Game Designer, **I want** spawn probabilities to be configurable, **so that** balancing rare items does not require code changes.
+    - _Acceptance Criteria:_ **Given** spawn rates are defined in a config table, **When** a rare item probability is reduced, **Then** repeated test runs show a lower observed spawn frequency consistent with the new config.
 
 ---
 
 ### 🌊 Epic 3: Environment Effects, Obstacles & Threat Interactions
+
 Goal: Add deep-sea uncertainty (currents, obstacles, predators) while keeping behaviour testable and fair.
 
-- **As a** Player, **I want** currents to influence target movement, **so that** aiming requires prediction rather than pure reaction.  
-  - _Acceptance Criteria:_ **Given** the current indicator points Right, **When** a target swims Right, **Then** its horizontal speed is increased by a configured multiplier compared to swimming Left.
+- **As a** Player, **I want** currents to influence target movement, **so that** aiming requires prediction rather than pure reaction.
+    - _Acceptance Criteria:_ **Given** the current indicator points Right, **When** a target swims Right, **Then** its horizontal speed is increased by a configured multiplier compared to swimming Left.
 
-- **As a** Challenge Seeker, **I want** a predator to be able to cause me to lose a captured item, **so that** high-value retrieval feels tense.  
-  - _Acceptance Criteria:_ **Given** an item is attached and the hook is "Retracting", **When** a predator collides with the attached item, **Then** the item detaches (or is destroyed) and awards $0 for that item.
+- **As a** Challenge Seeker, **I want** a predator to be able to cause me to lose a captured item, **so that** high-value retrieval feels tense.
+    - _Acceptance Criteria:_ **Given** an item is attached and the hook is "Retracting", **When** a predator collides with the attached item, **Then** the item detaches (or is destroyed) and awards $0 for that item.
 
-- **As a** Game Designer, **I want** environmental difficulty to scale by mode, **so that** "Deep Sea" is meaningfully harder than "Shallow".  
-  - _Acceptance Criteria:_ **Given** "Deep Sea" mode is selected, **When** the level starts, **Then** configured threat speed and/or spawn rate values are higher than in "Shallow".
+- **As a** Game Designer, **I want** environmental difficulty to scale by mode, **so that** "Deep Sea" is meaningfully harder than "Shallow".
+    - _Acceptance Criteria:_ **Given** "Deep Sea" mode is selected, **When** the level starts, **Then** configured threat speed and/or spawn rate values are higher than in "Shallow".
 
 ---
 
 ### 🛒 Epic 4: Shop, Upgrades & Persistent Progression
+
 Goal: Create a clear earn→buy→improve loop with strict rules (validation, persistence, and readable effects).
 
-- **As a** Player, **I want** a shop screen between levels, **so that** I can spend earnings on upgrades before the next challenge.  
-  - _Acceptance Criteria:_ **Given** a level ends, **When** I continue, **Then** I enter the shop and see my current gold and a list of upgrades.
+- **As a** Player, **I want** a shop screen between levels, **so that** I can spend earnings on upgrades before the next challenge.
+    - _Acceptance Criteria:_ **Given** a level ends, **When** I continue, **Then** I enter the shop and see my current gold and a list of upgrades.
 
-- **As a** Player, **I want** each upgrade to clearly describe its effect, **so that** I can make informed purchase decisions.  
-  - _Acceptance Criteria:_ **Given** an upgrade card is visible, **When** I select it, **Then** the UI displays its cost and a concrete effect description (e.g., "+20% reel speed").
+- **As a** Player, **I want** each upgrade to clearly describe its effect, **so that** I can make informed purchase decisions.
+    - _Acceptance Criteria:_ **Given** an upgrade card is visible, **When** I select it, **Then** the UI displays its cost and a concrete effect description (e.g., "+20% reel speed").
 
-- **As a** Player, **I want** purchase validation, **so that** I cannot buy upgrades I cannot afford.  
-  - _Acceptance Criteria:_ **Given** my gold is below the upgrade cost, **When** I click "Buy", **Then** gold is unchanged, the upgrade is not granted, and a warning is shown.
+- **As a** Player, **I want** purchase validation, **so that** I cannot buy upgrades I cannot afford.
+    - _Acceptance Criteria:_ **Given** my gold is below the upgrade cost, **When** I click "Buy", **Then** gold is unchanged, the upgrade is not granted, and a warning is shown.
 
-- **As a** Developer, **I want** upgrade effects to be data-driven, **so that** balancing and tuning does not require editing gameplay code.  
-  - _Acceptance Criteria:_ **Given** upgrades are defined in a config asset (e.g., ScriptableObject/JSON), **When** an upgrade parameter is changed, **Then** the new value takes effect on the next run without modifying logic code.
+- **As a** Developer, **I want** upgrade effects to be data-driven, **so that** balancing and tuning does not require editing gameplay code.
+    - _Acceptance Criteria:_ **Given** upgrades are defined in a config asset (e.g., ScriptableObject/JSON), **When** an upgrade parameter is changed, **Then** the new value takes effect on the next run without modifying logic code.
 
 ---
 
 ### 🧭 Epic 5: Level Objectives, Pass/Fail Results & Leaderboard
+
 Goal: Deliver a complete session flow: objectives → timed run → evaluation → next/retry → record performance.
 
-- **As a** Player, **I want** a visible quota and countdown timer, **so that** I always know how close I am to success.  
-  - _Acceptance Criteria:_ **Given** a level begins, **When** gameplay starts, **Then** the UI displays remaining time and remaining quota immediately.
+- **As a** Player, **I want** a visible quota and countdown timer, **so that** I always know how close I am to success.
+    - _Acceptance Criteria:_ **Given** a level begins, **When** gameplay starts, **Then** the UI displays remaining time and remaining quota immediately.
 
-- **As a** Player, **I want** clear pass/fail outcomes with next actions, **so that** I know what happens after the timer ends.  
-  - _Acceptance Criteria:_ **Given** time reaches 0, **When** total value ≥ quota, **Then** show a "Pass" screen with a "Next" button; **And** **When** total value < quota, **Then** show a "Fail" screen with a "Retry" button that restarts the level.
+- **As a** Player, **I want** clear pass/fail outcomes with next actions, **so that** I know what happens after the timer ends.
+    - _Acceptance Criteria:_ **Given** time reaches 0, **When** total value ≥ quota, **Then** show a "Pass" screen with a "Next" button; **And** **When** total value < quota, **Then** show a "Fail" screen with a "Retry" button that restarts the level.
 
-- **As a** Player, **I want** optional special objectives, **so that** some levels feel different beyond just hitting a quota.  
-  - _Acceptance Criteria:_ **Given** a special-objective level is active, **When** the level starts, **Then** the objective text is shown; **And** **When** the special item is delivered, **Then** the objective is marked completed.
+- **As a** Player, **I want** optional special objectives, **so that** some levels feel different beyond just hitting a quota.
+    - _Acceptance Criteria:_ **Given** a special-objective level is active, **When** the level starts, **Then** the objective text is shown; **And** **When** the special item is delivered, **Then** the objective is marked completed.
 
-- **As a** Competitive Player, **I want** a local leaderboard, **so that** I can compare my best runs over time.  
-  - _Acceptance Criteria:_ **Given** a run ends, **When** I submit a player name, **Then** the score is saved and displayed in descending order on the leaderboard screen.
-
----
-
-### 🎓 Epic 6: Onboarding, Tutorials & Accessibility
-Goal: Help new players learn the controls quickly and reduce confusion with clear guidance and optional assists.
-
-- **As a** New Player, **I want** a short interactive tutorial, **so that** I can learn the basic hook controls before real levels.  
-  - _Acceptance Criteria:_ **Given** the game starts for the first time, **When** I enter the tutorial, **Then** I am guided through aiming, dropping, and retracting with step-by-step prompts.
-
-- **As a** Player, **I want** on-screen control hints, **so that** I always remember which keys to use.  
-  - _Acceptance Criteria:_ **Given** I am in a level, **When** the level begins, **Then** the UI displays the current control keys for each player.
-
-- **As a** Player, **I want** optional accessibility assists, **so that** I can reduce difficulty if needed.  
-  - _Acceptance Criteria:_ **Given** the accessibility menu is open, **When** I enable an assist (e.g., slower hook speed or larger hitbox), **Then** the change applies immediately to gameplay.
-
-- **As a** Tester, **I want** the tutorial to be skippable, **so that** I can quickly reach gameplay during testing.  
-  - _Acceptance Criteria:_ **Given** I am in the tutorial, **When** I press the "Skip Tutorial" button, **Then** I am taken directly to the first level without errors.
+- **As a** Competitive Player, **I want** a local leaderboard, **so that** I can compare my best runs over time.
+    - _Acceptance Criteria:_ **Given** a run ends, **When** I submit a player name, **Then** the score is saved and displayed in descending order on the leaderboard screen.
 
 ---
 
 ### Reflection
-**1.**  In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
 
-**2.**  Determine user acceptance criteria  
-* **a.**  Is the fish hook used by the player swinging evenly at a constant speed. When the player clicks the mouse, the hook should launch immediately without delay.
+**1.** In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development.
 
-* **b.**  When players choose the slightly difficult "deep sea" mode, ocean currents, as the "x factor" in the sea, can change the movement trajectory of various fish. Another 'x factor' shark can damage ordinary fish hooks.
+**2.** Determine user acceptance criteria
 
-* **c.**  Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
+- **a.** Is the fish hook used by the player swinging evenly at a constant speed. When the player presses the down arrow key, the hook should launch immediately without delay.
 
-* **d.**  ✅**Pass:** Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
+- **b.** Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
 
-   ❌**Fail:** Score not met or time is up → Challenge this level again.
+- **c.** ✅**Pass:** Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
 
-* **e.**  Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
+    ❌**Fail:** Score not met or time is up → Challenge this level again.
 
-**3.**  We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
+- **d.** Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
+
+**3.** We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
