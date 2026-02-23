@@ -132,8 +132,11 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 ## 3.3 Prioritised Feature Breakdown
 
 A risk-managed development roadmap prioritising the core hook mechanic and level progression before advanced systems and multiplayer features.
+
 HIGH: Realize the basic functions of the game
+
 MEDIUM: Enhance the depth of gameplay
+
 LOW: Extra point
 
 | **Priority**            | **Systems / Features**                                                      | **Estimated Implementation Time** |
