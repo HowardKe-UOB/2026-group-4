@@ -101,7 +101,7 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 <a id="3-requirements"></a>
 
 ## 3. Requirements
-### Stakeholder table
+### 3.1 Stakeholder table
 | Stakeholder                 | Epic                        | User Story                                                                                                                                           | Acceptance Criteria                                                                                                                                                                                                   |
 | :-------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **User: Casual Player**     | Core Fishing Mechanics      | "As a casual player, I want to control the hook using a single key press, so that I can easily catch fish without learning complex controls."        | **Given** the hook is swinging back and forth,<br>**When** I press the 'Down Arrow Key',<br>**Then** the hook should stop swinging and extend in a straight line.                                                     |
@@ -111,7 +111,7 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 | **User: Developer**         | Core Fishing Mechanics      | "As a developer, I want a collision detection system, so that the hook recognizes when it hits an object versus empty water."                        | **Given** the hook is extending,<br>**When** the hook collider touches a 'Rock' object,<br>**Then** the hook should stop extending and immediately begin retracting.                                                  |
 | **User: Artist**            | Visual Feedback & Immersion | "As an artist, I want distinct animations for different fish states, so that the player gets visual feedback on their actions."                      | **Given** a fish is idle swimming,<br>**When** the hook grabs the fish,<br>**Then** the fish sprite should switch to a 'struggling' animation.                                                                        |
 
-### Reflection
+### 3.2 Reflection
 **1.**  In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
 
 **2.**  Determine user acceptance criteria  
@@ -129,6 +129,45 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 
 **3.**  We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
 
+## 3.3 Prioritised Feature Breakdown
+
+A risk-managed development roadmap prioritising the core hook mechanic and level progression before advanced systems and multiplayer features.
+HIGH: Realize the basic functions of the game
+MEDIUM: Enhance the depth of gameplay
+LOW: Extra point
+
+| Priority | Systems / Features | Estimated Implementation Time |
+|----------|-------------------|------------------------------|
+
+| **HIGH (MVP – Core Playable Loop)** | | |
+|  | Hook Oscillation & Launch Mechanic (pivot rotation, trigger, reeling logic) | 2–3 days |
+|  | Object Detection & Collision System (fish, treasure, rocks hitboxes) | 2–3 days |
+|  | Weight-Based Reeling Speed (heavier objects reel slower) | 1–2 days |
+|  | Time-Based Level Goal (quota + countdown timer) | 1–2 days |
+|  | Core Level Loop (start → play → results screen → next level) | 1–2 days |
+|  | Basic Fish Types (common, rare, moving patterns) | 1–2 days |
+|  | UI System (timer, money counter, quota display) | 2–3 days |
+|  | Ranking list | 2+ days |
+
+| **MEDIUM (Core Depth & Strategy)** | | |
+|  | Basic Obstacles (volcanic rocks blocking hook) | 1–2 days |
+|  | Shark Interception System (fish eaten while reeling) | 2–3 days |
+|  | Shop System (purchase upgrades & consumables) | 2–3 days |
+|  | Item: Rare Fish Bait (spawns Golden Koi next level) | 2+ days |
+|  | Item: Laser Sight Upgrade (trajectory visualization) | 2+ days |
+|  | Reinforced Claw (retrieve huge objects) | 2+ days |
+|  | Massive Obstacle (Reinforced Claw is need) | 2–4 days |
+|  | Ocean Current System | 2–3 days |
+|  | Shallow water area and deep water area(Affecting the speed of claw retrieval) | 2–3 days |
+|  | Audio Feedback System (hook launch, catch, shark bite, shop) | 2–3 days |
+
+| **LOW (Stretch Goals / Polish)** | | |
+|  | Advanced Fish Behaviours (such as fast dash) | 2+ days |
+|  | Two-Player Mode (dual hook setup) | 4+ days |
+|  | Procedural Level Variations (object distribution randomizer) | 2–4 days |
+|  | Visual Effects Polish (water distortion, glow, particle effects) | 3+ days |
+
+### Report Guidance
 
 - 15% ~750 words
 - Early stages design. Ideation process. How did you decide as a team what to develop? Use case diagrams, user stories.
