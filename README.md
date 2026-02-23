@@ -136,33 +136,30 @@ HIGH: Realize the basic functions of the game
 MEDIUM: Enhance the depth of gameplay
 LOW: Extra point
 
-| Priority | Systems / Features | Estimated Implementation Time |
-|----------|-------------------|------------------------------|
-| **HIGH (MVP)** | | |
-|  | Hook Oscillation & Launch Mechanic (pivot rotation, trigger, reeling logic) | 2–3 days |
-|  | Object Detection & Collision System (fish, treasure, rocks hitboxes) | 2–3 days |
-|  | Weight-Based Reeling Speed (heavier objects reel slower) | 1–2 days |
-|  | Time-Based Level Goal (quota + countdown timer) | 1–2 days |
-|  | Core Level Loop (start → play → results screen → next level) | 1–2 days |
-|  | Basic Fish Types (common, rare, moving patterns) | 1–2 days |
-|  | UI System (timer, money counter, quota display) | 2–3 days |
-|  | Ranking list | 2+ days |
-| **MEDIUM** | | |
-|  | Basic Obstacles (volcanic rocks blocking hook) | 1–2 days |
-|  | Shark Interception System (fish eaten while reeling) | 2–3 days |
-|  | Shop System (purchase upgrades & consumables) | 2–3 days |
-|  | Item: Rare Fish Bait (spawns Golden Koi next level) | 2+ days |
-|  | Item: Laser Sight Upgrade (trajectory visualization) | 2+ days |
-|  | Reinforced Claw (retrieve huge objects) | 2+ days |
-|  | Massive Obstacle (Reinforced Claw is need) | 2–4 days |
-|  | Ocean Current System | 2–3 days |
-|  | Shallow water area and deep water area(Affecting the speed of claw retrieval) | 2–3 days |
-|  | Audio Feedback System (hook launch, catch, shark bite, shop) | 2–3 days |
-| **LOW)** | | |
-|  | Advanced Fish Behaviours (such as fast dash) | 2+ days |
-|  | Two-Player Mode (dual hook setup) | 4+ days |
-|  | Procedural Level Variations (object distribution randomizer) | 2–4 days |
-|  | Visual Effects Polish (water distortion, glow, particle effects) | 3+ days |
+| **Priority**            | **Systems / Features**                                                      | **Estimated Implementation Time** |
+| ----------------------- | --------------------------------------------------------------------------- | --------------------------------- |
+| **HIGH (MVP)**          | Hook Oscillation & Launch Mechanic (pivot rotation, trigger, reeling logic) | 2–3 days                          |
+|                         | Object Detection & Collision System (fish, treasure, rocks hitboxes)        | 2–3 days                          |
+|                         | Weight-Based Reeling Speed (heavier objects reel slower)                    | 1–2 days                          |
+|                         | Time-Based Level Goal (quota + countdown timer)                             | 1–2 days                          |
+|                         | Core Level Loop (start → play → results screen → next level)                | 1–2 days                          |
+|                         | Basic Fish Types (common, rare, moving patterns)                            | 1–2 days                          |
+|                         | UI System (timer, money counter, quota display)                             | 2–3 days                          |
+|                         | Ranking List (local leaderboard system)                                     | 2+ days                           |
+| **MEDIUM (Core Depth)** | Basic Obstacles (volcanic rocks blocking hook)                              | 1–2 days                          |
+|                         | Shark Interception System (fish eaten while reeling)                        | 2–3 days                          |
+|                         | Shop System (purchase upgrades & consumables)                               | 2–3 days                          |
+|                         | Item: Rare Fish Bait (spawns Golden Koi next level)                         | 2+ days                           |
+|                         | Item: Laser Sight Upgrade (trajectory visualization)                        | 2+ days                           |
+|                         | Reinforced Claw (retrieve huge objects)                                     | 2+ days                           |
+|                         | Massive Obstacle (requires Reinforced Claw)                                 | 2–4 days                          |
+|                         | Ocean Current System                                                        | 2–3 days                          |
+|                         | Shallow vs Deep Water Zones (affecting claw retrieval speed)                | 2–3 days                          |
+|                         | Audio Feedback System (hook launch, catch, shark bite, shop)                | 2–3 days                          |
+| **LOW (Stretch)**       | Advanced Fish Behaviours (e.g., fast dash patterns)                         | 2+ days                           |
+|                         | Two-Player Mode (dual hook setup)                                           | 4+ days                           |
+|                         | Procedural Level Variations (object distribution randomizer)                | 2–4 days                          |
+|                         | Visual Effects Polish (water distortion, glow, particle effects)            | 3+ days                           |
 
 ### Report Guidance
 
