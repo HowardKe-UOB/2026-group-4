@@ -2,7 +2,8 @@ class GameManager {
     constructor() {
         this.player = new Player();
         this.currentState = GameState.TITLE_SCREEN;
-        this.currentDifficulty = Difficulty.NORMAL;
+        this.currentDifficulty = Difficulty.EASY;
+        this.currentPlayerMode = PlayerMode.SINGLE;
         this.highScoreManager = new HighScoreManager();
         this.shopManager = new ShopManager();
         this.levelManager = null;
@@ -18,9 +19,10 @@ class GameManager {
     }
 
     startLevel() {
-        // Pass in this.player
+        // 入口已预留：目前始终按 Easy 单人模式运行，Hard/双人暂不生效
+        const effectiveDifficulty = Difficulty.EASY;
         this.levelManager = new LevelManager(
-            this.currentDifficulty,
+            effectiveDifficulty,
             this.levelNum,
             this.player,
         );
@@ -29,6 +31,11 @@ class GameManager {
 
     changeState(newState) {
         this.currentState = newState;
+    }
+
+    // 矩形点击检测（rectMode CENTER）
+    isPointInRect(px, py, cx, cy, w, h) {
+        return px >= cx - w / 2 && px <= cx + w / 2 && py >= cy - h / 2 && py <= cy + h / 2;
     }
 
     update() {
@@ -43,6 +50,9 @@ class GameManager {
                 break;
             case GameState.DIFFICULTY_SELECT:
                 this.drawDifficultySelect();
+                break;
+            case GameState.PLAYER_MODE_SELECT:
+                this.drawPlayerModeSelect();
                 break;
             case GameState.PLAYING:
                 let result = this.levelManager.update();
@@ -106,17 +116,42 @@ class GameManager {
         textSize(30);
         text("Select Difficulty", width / 2, height / 4);
 
-        // Normal Button
+        // Easy Button
         fill(100, 200, 100);
-        rect(width / 2, height / 2 - 40, 200, 50);
+        rectMode(CENTER);
+        rect(width / 2, height / 2 - 50, 200, 50);
         fill(0);
-        text("NORMAL", width / 2, height / 2 - 40);
+        text("EASY", width / 2, height / 2 - 50);
 
         // Hard Button
         fill(200, 100, 100);
-        rect(width / 2, height / 2 + 40, 200, 50);
+        rect(width / 2, height / 2 + 50, 200, 50);
         fill(0);
-        text("HARD", width / 2, height / 2 + 40);
+        text("HARD", width / 2, height / 2 + 50);
+    }
+
+    drawPlayerModeSelect() {
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(30);
+        text("Select Player Mode", width / 2, height / 4);
+
+        // Single Player Button
+        fill(100, 180, 255);
+        rectMode(CENTER);
+        rect(width / 2, height / 2 - 50, 200, 50);
+        fill(0);
+        text("SINGLE", width / 2, height / 2 - 50);
+
+        // Two Player Button
+        fill(255, 180, 100);
+        rect(width / 2, height / 2 + 50, 200, 50);
+        fill(0);
+        text("TWO PLAYER", width / 2, height / 2 + 50);
+
+        textSize(14);
+        fill(200);
+        text("Only Easy + Single available", width / 2, height - 60);
     }
 
     drawShop() {
@@ -167,12 +202,22 @@ class GameManager {
                 this.changeState(GameState.NAME_ENTRY);
                 break;
             case GameState.DIFFICULTY_SELECT:
-                if (mouseY < height / 2) {
-                    this.currentDifficulty = Difficulty.NORMAL;
-                } else {
+                if (this.isPointInRect(mouseX, mouseY, width / 2, height / 2 - 50, 200, 50)) {
+                    this.currentDifficulty = Difficulty.EASY;
+                    this.changeState(GameState.PLAYER_MODE_SELECT);
+                } else if (this.isPointInRect(mouseX, mouseY, width / 2, height / 2 + 50, 200, 50)) {
                     this.currentDifficulty = Difficulty.HARD;
+                    this.changeState(GameState.PLAYER_MODE_SELECT);
                 }
-                this.startGame();
+                break;
+            case GameState.PLAYER_MODE_SELECT:
+                if (this.isPointInRect(mouseX, mouseY, width / 2, height / 2 - 50, 200, 50)) {
+                    this.currentPlayerMode = PlayerMode.SINGLE;
+                    if (this.currentDifficulty === Difficulty.EASY) this.startGame();
+                } else if (this.isPointInRect(mouseX, mouseY, width / 2, height / 2 + 50, 200, 50)) {
+                    this.currentPlayerMode = PlayerMode.TWO_PLAYER;
+                    // 仅 Easy + Single 可进入游戏
+                }
                 break;
             case GameState.PLAYING:
                 this.levelManager.hook.deployDown();
