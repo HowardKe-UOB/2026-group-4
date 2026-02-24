@@ -23,3 +23,16 @@ function mousePressed() {
 function keyPressed() {
     if (gameManager) gameManager.handleKeyPress(key, keyCode);
 }
+
+function mouseWheel(event) {
+    if (gameManager) gameManager.handleMouseWheel(event);
+    return false;
+}
+
+function mouseDragged() {
+    if (gameManager) gameManager.handleMouseDragged();
+}
+
+function mouseReleased() {
+    if (gameManager) gameManager.handleMouseReleased();
+}
