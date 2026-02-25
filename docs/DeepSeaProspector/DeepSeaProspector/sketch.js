@@ -1,9 +1,12 @@
 let gameManager;
-let bgImageLevel1; // 声明全局变量，供 LevelManager 使用
+let bgImageLevel1;
+let potionImg;
+let titleBgm;
 
 function preload() {
-    // 加上 js/ 路径，告诉它去 js 文件夹里找图片
-    bgImageLevel1 = loadImage('js/ocean_bg.jpg'); 
+    bgImageLevel1 = loadImage('js/ocean_bg.jpg');
+    potionImg = loadImage('assets/PowerPotion.png');
+    titleBgm = loadSound('assets/Ocean.mp3');
 }
 
 function setup() {
@@ -17,10 +20,12 @@ function draw() {
 }
 
 function mousePressed() {
+    userStartAudio();
     if (gameManager) gameManager.handleMousePress();
 }
 
 function keyPressed() {
+    userStartAudio();
     if (gameManager) gameManager.handleKeyPress(key, keyCode);
 }
 

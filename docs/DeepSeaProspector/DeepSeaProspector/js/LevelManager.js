@@ -3,10 +3,10 @@ class LevelManager {
         this.player = player;
         this.levelNum = levelNum; // 【修复了这里的变量保存】
 
-        // 目标分数随关卡数增加
-        this.targetScore = levelNum * 500 + (levelNum - 1) * 200;
+        // 目标分数：第一关200，随关卡增加
+        this.targetScore = levelNum === 1 ? 200 : 200 + (levelNum - 1) * 400;
 
-        this.timeLimit = difficulty === Difficulty.HARD ? 45 : 60;
+        this.timeLimit = 20;
         this.timeRemaining = this.timeLimit;
 
         // 船的坐标保持在海面上

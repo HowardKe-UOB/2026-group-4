@@ -3,9 +3,12 @@ class ShopItem {
         this.name = name;
         this.costPrice = costPrice;
         this.description = description;
+        this.purchased = false;
     }
 
     applyEffect(levelManager) {
-        // Specific effects, such as increasing time or score multiplier, etc.
+        if (this.name === "Strength Potion") {
+            levelManager.hook.moveSpeed *= 2;
+        }
     }
 }

@@ -40,6 +40,23 @@ class GameManager {
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
         }
+
+        const menuStates = [
+            GameState.TITLE_SCREEN,
+            GameState.NAME_ENTRY,
+            GameState.DIFFICULTY_SELECT,
+            GameState.PLAYER_MODE_SELECT,
+            GameState.SHOP,
+        ];
+        if (menuStates.includes(this.currentState)) {
+            if (typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
+                titleBgm.loop();
+            }
+        } else if (this.currentState === GameState.PLAYING) {
+            if (typeof titleBgm !== "undefined" && titleBgm && titleBgm.isPlaying()) {
+                titleBgm.stop();
+            }
+        }
     }
 
     // 海洋主题菜单背景：渐变 + 气泡 + 波浪底
@@ -361,14 +378,7 @@ class GameManager {
     }
 
     drawShop() {
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(30);
-        text("SHOP", width / 2, 50);
-        textSize(20);
-        text(`Your Money: ${this.player.totalScore}`, width / 2, 90);
-
-        text("Click here to Next Level", width / 2, height - 50);
+        this.shopManager.draw(this.player);
     }
 
     drawLevelResult() {
@@ -546,11 +556,16 @@ class GameManager {
             case GameState.PLAYING:
                 this.levelManager.hook.deployDown();
                 break;
-            case GameState.SHOP:
-                // Tap anywhere to go to the next level
-                this.levelNum++;
-                this.startLevel();
+            case GameState.SHOP: {
+                let shopResult = this.shopManager.handleMousePress(this.player);
+                if (shopResult === "NEXT_LEVEL") {
+                    this.levelNum++;
+                    this.startLevel();
+                    this.player.consumeItems(this.levelManager);
+                    this.shopManager.resetShop();
+                }
                 break;
+            }
             case GameState.LEVEL_RESULT:
                 this.changeState(GameState.HIGH_SCORE);
                 break;
