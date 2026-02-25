@@ -7,6 +7,7 @@ function preload() {
     bgImageLevel1 = loadImage('js/ocean_bg.jpg');
     potionImg = loadImage('assets/PowerPotion.png');
     titleBgm = loadSound('assets/Ocean.mp3');
+    shopBgm = loadSound('assets/ShopGen3.mp3');
 }
 
 function setup() {

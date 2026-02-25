@@ -53,12 +53,12 @@ class GameManager {
             this.highScoreScrollY = 0;
         }
 
+        //首页背景音乐
         const menuStates = [
             GameState.TITLE_SCREEN,
             GameState.NAME_ENTRY,
             GameState.DIFFICULTY_SELECT,
             GameState.PLAYER_MODE_SELECT,
-            GameState.SHOP,
         ];
         if (menuStates.includes(this.currentState)) {
             if (!this.musicMuted && typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
@@ -67,6 +67,16 @@ class GameManager {
         } else if (this.currentState === GameState.PLAYING) {
             if (typeof titleBgm !== "undefined" && titleBgm && titleBgm.isPlaying()) {
                 titleBgm.stop();
+            }
+        }
+        //商店音乐
+        if(this.currentState === GameState.SHOP){
+            if (!this.musicMuted && typeof shopBgm !== "undefined" && shopBgm && !shopBgm.isPlaying()) {
+                shopBgm.loop();
+            }
+        } else if (this.currentState === GameState.PLAYING) {
+            if (typeof shopBgm !== "undefined" && shopBgm && shopBgm.isPlaying()) {
+                shopBgm.stop();
             }
         }
     }
