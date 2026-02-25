@@ -13,6 +13,18 @@ class GameManager {
 
         this.highScoreScrollY = 0;
         this.highScoreScrollDragging = false;
+
+        this.showSettingsPopup = false;
+        this.musicMuted = false;
+    }
+
+    isPreGameMenu() {
+        return [
+            GameState.TITLE_SCREEN,
+            GameState.NAME_ENTRY,
+            GameState.DIFFICULTY_SELECT,
+            GameState.PLAYER_MODE_SELECT,
+        ].includes(this.currentState);
     }
 
     startGame() {
@@ -49,7 +61,7 @@ class GameManager {
             GameState.SHOP,
         ];
         if (menuStates.includes(this.currentState)) {
-            if (typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
+            if (!this.musicMuted && typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
                 titleBgm.loop();
             }
         } else if (this.currentState === GameState.PLAYING) {
@@ -271,6 +283,90 @@ class GameManager {
                 this.drawHighScore();
                 break;
         }
+
+        if (this.isPreGameMenu()) {
+            this.drawSettingsButton();
+        }
+        if (this.showSettingsPopup) {
+            this.drawSettingsPopup();
+        }
+    }
+
+    drawSettingsButton() {
+        const btnX = 50;
+        const btnY = height - 40;
+        const btnW = 90;
+        const btnH = 32;
+        push();
+        rectMode(CENTER);
+        noStroke();
+        fill(60, 100, 150, 200);
+        rect(btnX, btnY, btnW, btnH, 8);
+        stroke(255, 255, 255, 150);
+        strokeWeight(1);
+        noFill();
+        rect(btnX, btnY, btnW, btnH, 8);
+        noStroke();
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(14);
+        text("Settings", btnX, btnY);
+        pop();
+        this._settingsBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
+    }
+
+    drawSettingsPopup() {
+        push();
+        fill(0, 0, 0, 150);
+        rect(0, 0, width, height);
+
+        const popupW = 280;
+        const popupH = 180;
+        const popupX = width / 2;
+        const popupY = height / 2;
+
+        rectMode(CENTER);
+        fill(40, 70, 120);
+        rect(popupX, popupY, popupW, popupH, 12);
+        stroke(80, 130, 180);
+        strokeWeight(2);
+        noFill();
+        rect(popupX, popupY, popupW, popupH, 12);
+        noStroke();
+
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(20);
+        text("Settings", popupX, popupY - 55);
+
+        fill(100, 160, 220);
+        rect(popupX, popupY - 15, 220, 36, 8);
+        fill(255);
+        textSize(16);
+        text("回到上一级", popupX, popupY - 15);
+
+        const musicY = popupY + 25;
+        fill(this.musicMuted ? 150 : 100, 160, 220);
+        rect(popupX, musicY, 220, 36, 8);
+        fill(255);
+        text(this.musicMuted ? "开启音乐" : "关闭音乐", popupX, musicY);
+
+        fill(180);
+        rect(popupX + popupW / 2 - 25, popupY - popupH / 2 + 20, 30, 22, 4);
+        fill(255);
+        textSize(14);
+        text("×", popupX + popupW / 2 - 25, popupY - popupH / 2 + 20);
+
+        pop();
+
+        this._popupBackBounds = { x: popupX, y: popupY - 15, w: 220, h: 36 };
+        this._popupMusicBounds = { x: popupX, y: musicY, w: 220, h: 36 };
+        this._popupCloseBounds = {
+            x: popupX + popupW / 2 - 25,
+            y: popupY - popupH / 2 + 20,
+            w: 30,
+            h: 22,
+        };
     }
 
     drawTitleScreen() {
@@ -341,6 +437,9 @@ class GameManager {
             color(180, 80, 80),
             color(220, 120, 120)
         );
+        textSize(12);
+        fill(255, 200, 200);
+        text("currently unavailable", width / 2, height / 2 + 88);
         pop();
     }
 
@@ -361,6 +460,11 @@ class GameManager {
             color(60, 130, 200),
             color(100, 170, 240)
         );
+        if (this.currentDifficulty === Difficulty.HARD) {
+            textSize(12);
+            fill(255, 200, 200);
+            text("currently unavailable", width / 2, height / 2 - 12);
+        }
         this.drawOceanButton(
             width / 2,
             height / 2 + 50,
@@ -370,10 +474,9 @@ class GameManager {
             color(200, 140, 60),
             color(240, 180, 100)
         );
-
-        textSize(14);
-        fill(180, 210, 255);
-        text("Only Easy + Single available for now", width / 2, height - 55);
+        textSize(12);
+        fill(255, 220, 180);
+        text("currently unavailable", width / 2, height / 2 + 88);
         pop();
     }
 
@@ -531,6 +634,49 @@ class GameManager {
 
     // Interaction Handling
     handleMousePress() {
+        if (this.showSettingsPopup) {
+            if (this._popupBackBounds && this.isPointInRect(mouseX, mouseY, this._popupBackBounds.x, this._popupBackBounds.y, this._popupBackBounds.w, this._popupBackBounds.h)) {
+                this.showSettingsPopup = false;
+                if (this.currentState === GameState.PLAYER_MODE_SELECT) {
+                    this.changeState(GameState.DIFFICULTY_SELECT);
+                } else if (this.currentState === GameState.DIFFICULTY_SELECT) {
+                    this.changeState(GameState.NAME_ENTRY);
+                } else if (this.currentState === GameState.NAME_ENTRY) {
+                    this.changeState(GameState.TITLE_SCREEN);
+                }
+                return;
+            }
+            if (this._popupMusicBounds && this.isPointInRect(mouseX, mouseY, this._popupMusicBounds.x, this._popupMusicBounds.y, this._popupMusicBounds.w, this._popupMusicBounds.h)) {
+                this.musicMuted = !this.musicMuted;
+                if (this.musicMuted) {
+                    if (typeof titleBgm !== "undefined" && titleBgm && titleBgm.isPlaying()) {
+                        titleBgm.stop();
+                    }
+                } else {
+                    if (typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
+                        titleBgm.loop();
+                    }
+                }
+                return;
+            }
+            if (this._popupCloseBounds && this.isPointInRect(mouseX, mouseY, this._popupCloseBounds.x, this._popupCloseBounds.y, this._popupCloseBounds.w, this._popupCloseBounds.h)) {
+                this.showSettingsPopup = false;
+                return;
+            }
+            const popupX = width / 2;
+            const popupW = 280;
+            const popupH = 180;
+            if (abs(mouseX - popupX) > popupW / 2 + 10 || abs(mouseY - height / 2) > popupH / 2 + 10) {
+                this.showSettingsPopup = false;
+            }
+            return;
+        }
+
+        if (this.isPreGameMenu() && this._settingsBtnBounds && this.isPointInRect(mouseX, mouseY, this._settingsBtnBounds.x, this._settingsBtnBounds.y, this._settingsBtnBounds.w, this._settingsBtnBounds.h)) {
+            this.showSettingsPopup = true;
+            return;
+        }
+
         switch (this.currentState) {
             case GameState.TITLE_SCREEN:
                 this.changeState(GameState.NAME_ENTRY);
