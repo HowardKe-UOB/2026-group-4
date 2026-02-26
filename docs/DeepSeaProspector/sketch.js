@@ -4,10 +4,10 @@ let potionImg;
 let titleBgm;
 
 function preload() {
-    bgImageLevel1 = loadImage('js/ocean_bg.jpg');
-    potionImg = loadImage('assets/PowerPotion.png');
-    titleBgm = loadSound('assets/Ocean.mp3');
-    shopBgm = loadSound('assets/ShopGen3.mp3');
+    bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
+    potionImg = loadImage("assets/PowerPotion.png");
+    titleBgm = loadSound("assets/Ocean.mp3");
+    shopBgm = loadSound("assets/ShopGen3.mp3");
 }
 
 function setup() {
@@ -17,7 +17,7 @@ function setup() {
 
 function draw() {
     // 你的 GameManager 将 update 和 draw 写在了一起，这样调用非常完美
-    gameManager.update(); 
+    gameManager.update();
 }
 
 function mousePressed() {

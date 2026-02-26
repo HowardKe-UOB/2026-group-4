@@ -5,11 +5,16 @@ class ShopManager {
 
     resetShop() {
         this.availableItems = [
-            new ShopItem("Strength Potion", 200, "Pulls items 2x faster, period: 1 level"),
+            new ShopItem(
+                "Strength Potion",
+                200,
+                "Pulls items 2x faster, period: 1 level",
+            ),
         ];
     }
 
     draw(player) {
+        push();
         background(40, 40, 60);
 
         fill(255);
@@ -29,7 +34,11 @@ class ShopManager {
             rectMode(CENTER);
             rect(width / 2, startY + i * 80, 400, 60, 10);
 
-            if (item.name === "Strength Potion" && typeof potionImg !== "undefined" && potionImg) {
+            if (
+                item.name === "Strength Potion" &&
+                typeof potionImg !== "undefined" &&
+                potionImg
+            ) {
                 imageMode(CENTER);
                 image(potionImg, width / 2 - 160, startY + i * 80, 40, 40);
             }
@@ -37,7 +46,11 @@ class ShopManager {
             fill(0);
             textAlign(LEFT, CENTER);
             textSize(18);
-            text(`${item.name} - $${item.costPrice}`, width / 2 - 130, startY + i * 80 - 10);
+            text(
+                `${item.name} - $${item.costPrice}`,
+                width / 2 - 130,
+                startY + i * 80 - 10,
+            );
             textSize(14);
             fill(80);
             text(item.description, width / 2 - 130, startY + i * 80 + 15);
@@ -65,6 +78,7 @@ class ShopManager {
         textAlign(CENTER, CENTER);
         textSize(20);
         text("Next Level", width / 2, height - 60);
+        pop();
     }
 
     handleMousePress(player) {
@@ -75,7 +89,11 @@ class ShopManager {
             let btnX = width / 2 + 140;
             let btnY = startY + i * 80;
 
-            if (!item.purchased && abs(mouseX - btnX) < 40 && abs(mouseY - btnY) < 15) {
+            if (
+                !item.purchased &&
+                abs(mouseX - btnX) < 40 &&
+                abs(mouseY - btnY) < 15
+            ) {
                 if (player.purchaseItem(item)) {
                     item.purchased = true;
                 }
