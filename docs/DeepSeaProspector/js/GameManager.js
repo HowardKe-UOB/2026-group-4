@@ -491,7 +491,9 @@ class GameManager {
     }
 
     drawShop() {
+        push();
         this.shopManager.draw(this.player);
+        pop();
     }
 
     drawLevelResult() {
