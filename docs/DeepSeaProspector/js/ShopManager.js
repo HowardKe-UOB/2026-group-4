@@ -10,6 +10,11 @@ class ShopManager {
                 200,
                 "Pulls items 2x faster, period: 1 level",
             ),
+            new ShopItem(
+                "Laser Sight",
+                200, 
+                "Often miss? Buy Laser Sight now! period: 1 level",
+        )
         ];
     }
 
@@ -42,6 +47,14 @@ class ShopManager {
                 imageMode(CENTER);
                 image(potionImg, width / 2 - 160, startY + i * 80, 40, 40);
             }
+            else if (
+                item.name === "Laser Sight" &&
+                typeof laserImg !== "undefined" &&
+                laserImg
+            ) {
+                imageMode(CENTER);
+                image(laserImg, width / 2 - 160, startY + i * 80, 40, 40);
+            }
 
             fill(0);
             textAlign(LEFT, CENTER);
@@ -56,18 +69,19 @@ class ShopManager {
             text(item.description, width / 2 - 130, startY + i * 80 + 15);
 
             rectMode(CENTER);
+            let yPos = startY + i * 80 - 10;
             if (item.purchased) {
                 fill(150);
-                rect(width / 2 + 140, startY + i * 80, 80, 30, 5);
+                rect(width / 2 + 140, yPos, 80, 30, 5);
                 fill(255);
                 textAlign(CENTER, CENTER);
-                text("SOLD", width / 2 + 140, startY + i * 80);
+                text("SOLD", width / 2 + 140, yPos);
             } else {
                 fill(100, 200, 100);
-                rect(width / 2 + 140, startY + i * 80, 80, 30, 5);
+                rect(width / 2 + 140, yPos, 80, 30, 5);
                 fill(0);
                 textAlign(CENTER, CENTER);
-                text("BUY", width / 2 + 140, startY + i * 80);
+                text("BUY", width / 2 + 140, yPos);
             }
         }
 

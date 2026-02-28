@@ -6,8 +6,13 @@ class Hook extends GameObject {
         this.moveSpeed = 5;
         this.attachedItem = null;
 
+        // 收钩速度倍率，默认为 1
+        this.retractMultiplier = 1;
+        // 激光辅助瞄准，默认关闭
+        this.hasLaser = false;
+        
         this.angle = 0;
-        this.angleVel = 0.05;
+        this.angleVel = 0.035;   //这个值控制钩子左右摆动的速度
         this.length = 50;
         this.maxLength = 500;
     }
@@ -32,9 +37,11 @@ class Hook extends GameObject {
             }
         } else if (this.state === HookState.MOVING_UP) {
             // If an object is caught, slow down according to its weight.
-            let currentSpeed = this.attachedItem
+            let originalSpeed = this.attachedItem
                 ? max(1, this.moveSpeed - this.attachedItem.weight)
                 : this.moveSpeed;
+            // 如果有力量药水
+            let currentSpeed = originalSpeed * (this.retractMultiplier || 1);
             this.length -= currentSpeed;
             this.position.x = this.origin.x + sin(this.angle) * this.length;
             this.position.y = this.origin.y + cos(this.angle) * this.length;
@@ -69,6 +76,21 @@ class Hook extends GameObject {
     }
 
     draw() {
+        // 绘制激光瞄准线
+        if (this.hasLaser && this.state === HookState.IDLE_SWINGING) {
+        push();
+        // 绿色激光，透明度值125，宽度3
+        stroke(0, 255, 0, 125); 
+        strokeWeight(3);
+        
+        // 计算激光终点：从起点出发，沿着当前角度延伸到最大长度
+        let laserEndX = this.origin.x + sin(this.angle) * this.maxLength;
+        let laserEndY = this.origin.y + cos(this.angle) * this.maxLength;
+        
+        line(this.origin.x, this.origin.y, laserEndX, laserEndY);
+        pop();
+        }
+
         stroke(200);
         strokeWeight(2);
         line(this.origin.x, this.origin.y, this.position.x, this.position.y);

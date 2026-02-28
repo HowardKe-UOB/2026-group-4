@@ -8,7 +8,11 @@ class ShopItem {
 
     applyEffect(levelManager) {
         if (this.name === "Strength Potion") {
-            levelManager.hook.moveSpeed *= 2;
+            levelManager.hook.retractMultiplier = 2; 
+            //console.log("Strength Potion applied: Retract speed increased!");
+        }
+        if (this.name === "Laser Sight") {
+        levelManager.hook.hasLaser = true; 
         }
     }
 }

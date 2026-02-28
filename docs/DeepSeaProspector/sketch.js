@@ -6,6 +6,7 @@ let titleBgm;
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     potionImg = loadImage("assets/PowerPotion.png");
+    laserImg = loadImage('assets/Laser.png');
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
 }
