@@ -2,13 +2,26 @@ let gameManager;
 let bgImageLevel1;
 let potionImg;
 let titleBgm;
-
+let imgSmallFishes = [];
+let imgSkeletons = [];
+let treasureChest;
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     potionImg = loadImage("assets/PowerPotion.png");
-    laserImg = loadImage('assets/Laser.png');
+    laserImg = loadImage("assets/Laser.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
+    let colors = ["blue", "cyan", "green", "purple", "red", "yellow"];
+    for (let c of colors) {
+        for (let i = 1; i <= 3; i++) {
+            imgSmallFishes.push(loadImage(`assets/fish_${c}${i}.png`));
+        }
+    }
+    let skeletonColors = ["blue", "green", "orange"];
+    for (let c of skeletonColors) {
+        imgSkeletons.push(loadImage(`assets/fish_${c}_skeleton.png`));
+    }
+    treasureChest = loadImage("assets/Treasure_Chest .png");
 }
 
 function setup() {
@@ -17,7 +30,6 @@ function setup() {
 }
 
 function draw() {
-    // 你的 GameManager 将 update 和 draw 写在了一起，这样调用非常完美
     gameManager.update();
 }
 

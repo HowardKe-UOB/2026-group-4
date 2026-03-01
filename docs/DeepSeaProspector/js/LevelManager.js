@@ -1,15 +1,13 @@
 class LevelManager {
     constructor(difficulty, levelNum, player) {
         this.player = player;
-        this.levelNum = levelNum; // 【修复了这里的变量保存】
+        this.levelNum = levelNum;
 
-        // 目标分数：第一关200，随关卡增加
         this.targetScore = levelNum === 1 ? 200 : 200 + (levelNum - 1) * 400;
 
         this.timeLimit = 20;
         this.timeRemaining = this.timeLimit;
 
-        // 船的坐标保持在海面上
         this.playerBoat = createVector(width / 2, 120);
         this.hook = new Hook(this.playerBoat.x, this.playerBoat.y);
 
@@ -20,40 +18,56 @@ class LevelManager {
     spawnItems() {
         this.activeItems = [];
         let totalMapValue = 0;
-        let guaranteedValue = this.targetScore * 1.3;
-        let minItemsCount = 15;
+        let targetItemsCount = 15 + this.levelNum * 2;
 
-        // 只要物品不够15个，或者总金币不够保底，就继续生成
-        while (
-            this.activeItems.length < minItemsCount ||
-            totalMapValue < guaranteedValue
-        ) {
-            let x = random(50, width - 50);
-            let y = random(220, height - 80);
-            let rand = random();
-            let newItem;
+        while (this.activeItems.length < targetItemsCount) {
+            let newItem = null;
+            let attempts = 0;
+            let maxAttempts = 50;
+            let isOverlapping = true;
 
-            if (rand < 0.25) {
-                newItem = new SmallFish(x, y);
-            } else if (rand < 0.4) {
-                newItem = new ClownFish(x, y);
-            } else if (rand < 0.65) {
-                newItem = new Starfish(x, y);
-            } else if (rand < 0.75) {
-                newItem = new Crab(x, y);
-            } else if (rand < 0.9) {
-                newItem = new FishBone(x, y);
-            } else {
-                newItem = new Treasure(x, y);
+            while (isOverlapping && attempts < maxAttempts) {
+                let x = random(50, width - 50);
+                let y = random(220, height - 80);
+                let rand = random();
+
+                if (rand < 0.5) {
+                    newItem = new SmallFish(x, y);
+                } else if (rand < 0.85) {
+                    newItem = new FishBone(x, y);
+                } else {
+                    newItem = new Treasure(x, y);
+                }
+
+                isOverlapping = false;
+
+                for (let existingItem of this.activeItems) {
+                    let d = dist(
+                        newItem.position.x,
+                        newItem.position.y,
+                        existingItem.position.x,
+                        existingItem.position.y,
+                    );
+
+                    let safeDistance =
+                        (newItem.width + existingItem.width) / 2 + 10;
+
+                    if (d < safeDistance) {
+                        isOverlapping = true;
+                        break;
+                    }
+                }
+                attempts++;
             }
 
-            this.activeItems.push(newItem);
-            totalMapValue += newItem.scoreValue;
+            if (newItem) {
+                this.activeItems.push(newItem);
+                totalMapValue += newItem.scoreValue;
+            }
         }
 
-        // 【已修复】现在可以正确在控制台打印发了多少金币了
         console.log(
-            `第 ${this.levelNum} 关生成完毕：目标分 ${this.targetScore}，全图总金币 ${totalMapValue}，共 ${this.activeItems.length} 个物品`,
+            `Level ${this.levelNum} generated: Target Score ${this.targetScore}, Total Map Value ${totalMapValue}, Total Items ${this.activeItems.length}`,
         );
     }
 
@@ -85,7 +99,7 @@ class LevelManager {
                 if (d < item.width / 2 + 10) {
                     if (item.canBeCaught) {
                         this.hook.grabItem(item);
-                        // 抓到一个少一个
+
                         this.activeItems.splice(i, 1);
                         break;
                     }
