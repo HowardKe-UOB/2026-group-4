@@ -413,9 +413,14 @@ class GameManager {
         rect(width / 2, height / 2 - 20, 260, 50, 8);
         fill(255, 255, 255, 80);
         rect(width / 2, height / 2 - 22, 256, 46, 6);
-        fill(240, 248, 255);
         textSize(20);
-        text(this.inputText + (frameCount % 60 < 30 ? "|" : ""), width / 2, height / 2 - 20);
+        if (this.inputText) {
+            fill(240, 248, 255);
+            text(this.inputText + (frameCount % 60 < 30 ? "|" : ""), width / 2, height / 2 - 20);
+        } else {
+            fill(180, 180, 200, 180);
+            text("cannot be blank", width / 2, height / 2 - 20);
+        }
 
         fill(200, 230, 255);
         textSize(16);
