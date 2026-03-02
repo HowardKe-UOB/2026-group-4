@@ -802,8 +802,11 @@ class GameManager {
                     this.inputText.length - 1,
                 );
             } else if (keyCode === ENTER) {
-                this.player.name = this.inputText;
-                this.changeState(GameState.DIFFICULTY_SELECT);
+                const name = this.inputText.trim();
+                if (name) {
+                    this.player.name = name;
+                    this.changeState(GameState.DIFFICULTY_SELECT);
+                }
             } else if (key.length === 1) {
                 // Limited to ordinary character input.
                 this.inputText += key;
