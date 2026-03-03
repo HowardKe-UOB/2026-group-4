@@ -8,12 +8,12 @@ class LevelManager {
         this.timeLimit = 20;
         this.timeRemaining = this.timeLimit;
 
-        this.playerBoat = createVector(width / 2, 170);
+        this.playerBoat = createVector(width / 2, 155);
         this.hook = new Hook(this.playerBoat.x, this.playerBoat.y);
 
         this.activeItems = [];
         this.spawnItems();
-        
+
         // 存放屏幕上漂浮分数的数组
         this.floatingScores = [];
     }
@@ -92,10 +92,10 @@ class LevelManager {
         let returnedItem = this.hook.update();
         if (returnedItem) {
             this.player.addScore(returnedItem.scoreValue);
-            
+
             // 【触发特效】：加分的同时，在船上方生成飘字
             this.showCatchScore(returnedItem.scoreValue);
-            
+
             this.hook.attachedItem = null;
         }
 
@@ -135,10 +135,10 @@ class LevelManager {
         imageMode(CORNER);
         image(bgImageLevel1, 0, 0, width, height);
 
-        fill(139, 69, 19);
-        rectMode(CENTER);
-        rect(this.playerBoat.x, this.playerBoat.y - 10, 40, 20);
-        rect(this.playerBoat.x, this.playerBoat.y, 100, 30, 5);
+        imageMode(CENTER);
+        if (typeof boatImg !== "undefined") {
+            image(boatImg, this.playerBoat.x, this.playerBoat.y, 220, 220);
+        }
 
         for (let item of this.activeItems) {
             item.draw();
@@ -151,35 +151,51 @@ class LevelManager {
         // ==========================================
         push();
         let timeLeft = Math.ceil(this.timeRemaining || 0);
-        
+
         // 像素风排版配置
-        textSize(18);             
-        textFont('Courier New');  
+        textSize(18);
+        textFont("Courier New");
         textStyle(BOLD);
 
         let leftX = 25;
         let rightX = width - 25;
-        let line1Y = 20;          
-        let line2Y = 45;          
+        let line1Y = 20;
+        let line2Y = 45;
 
         // --- 颜色定义 ---
-        let primaryColor = color(0, 200, 150);     // 亮青绿色 (Money & Time)
+        let primaryColor = color(0, 200, 150); // 亮青绿色 (Money & Time)
         let secondaryColor = color(120, 160, 170); // 灰蓝色 (Goal)
 
         // --- 绘制左边 (MONEY 和 GOAL) ---
         textAlign(LEFT, TOP);
-        this.drawPixelText(`MONEY: ${this.player.totalScore}`, leftX, line1Y, primaryColor);
-        this.drawPixelText(`GOAL:  ${this.targetScore}`, leftX, line2Y, secondaryColor);
+        this.drawPixelText(
+            `MONEY: ${this.player.totalScore}`,
+            leftX,
+            line1Y,
+            primaryColor,
+        );
+        this.drawPixelText(
+            `GOAL:  ${this.targetScore}`,
+            leftX,
+            line2Y,
+            secondaryColor,
+        );
 
         // --- 绘制右边 (TIME) ---
         textAlign(RIGHT, TOP);
-        
+
         // 闪烁逻辑 (最后5秒平缓闪烁)
         let tAlpha = 255;
         if (timeLeft <= 5 && timeLeft > 0) {
             tAlpha = 150 + 105 * sin(frameCount * 0.15);
         }
-        this.drawPixelText(`TIME: ${timeLeft}`, rightX, line1Y, primaryColor, tAlpha);
+        this.drawPixelText(
+            `TIME: ${timeLeft}`,
+            rightX,
+            line1Y,
+            primaryColor,
+            tAlpha,
+        );
         pop();
 
         // ==========================================
@@ -188,25 +204,25 @@ class LevelManager {
         push();
         textAlign(CENTER, CENTER);
         textSize(22);
-        textFont('Courier New');
+        textFont("Courier New");
         textStyle(BOLD);
 
         // 倒序遍历数组，方便在动画结束时删除元素
         for (let i = this.floatingScores.length - 1; i >= 0; i--) {
             let fs = this.floatingScores[i];
-            
+
             // 绘制像素阴影
             fill(0, 0, 0, fs.alpha);
             text(fs.text, fs.x + 2, fs.y + 2);
             // 绘制主颜色：亮绿色表示加分
-            fill(50, 255, 50, fs.alpha); 
+            fill(50, 255, 50, fs.alpha);
             text(fs.text, fs.x, fs.y);
-            
+
             // 动画更新：向上飘，并逐渐变透明
-            fs.y -= 1.5;        
-            fs.alpha -= 4;      
-            fs.life -= 1;       
-            
+            fs.y -= 1.5;
+            fs.alpha -= 4;
+            fs.life -= 1;
+
             // 如果动画结束或完全透明，从数组中移除
             if (fs.life <= 0 || fs.alpha <= 0) {
                 this.floatingScores.splice(i, 1);
@@ -221,7 +237,7 @@ class LevelManager {
         // 1. 绘制纯黑硬投影 (右下角偏移 2px)
         fill(0, 0, 0, alpha);
         text(txt, x + 2, y + 2);
-        
+
         // 2. 绘制彩色主文字
         let finalCol = color(red(col), green(col), blue(col), alpha);
         fill(finalCol);
@@ -233,10 +249,10 @@ class LevelManager {
     showCatchScore(points) {
         this.floatingScores.push({
             x: this.playerBoat.x,
-            y: this.playerBoat.y - 40, 
-            text: "+" + points,        
-            alpha: 255,                
-            life: 60                   
+            y: this.playerBoat.y - 40,
+            text: "+" + points,
+            alpha: 255,
+            life: 60,
         });
     }
 }

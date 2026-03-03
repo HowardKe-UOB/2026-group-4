@@ -6,12 +6,16 @@ let imgSmallFishes = [];
 let imgBigFishes = [];
 let imgSkeleton;
 let treasureChest;
+let boatImg;
+let hookImg;
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
+    boatImg = loadImage("assets/boat.png");
+    hookImg = loadImage("assets/hook.png");
 
     for (let i = 1; i <= 43; i++) {
         let frame1 = loadImage(`assets/fish${i}_1.png`);
