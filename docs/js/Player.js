@@ -18,7 +18,10 @@ class Player {
         return false;
     }
 
-    consumeItem(shopItem) {
-        //Logic for using items
+    consumeItems(levelManager) {
+        for (let item of this.inventory) {
+            item.applyEffect(levelManager);
+        }
+        this.inventory = [];
     }
 }

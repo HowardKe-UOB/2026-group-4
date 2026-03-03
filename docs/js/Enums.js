@@ -2,6 +2,7 @@ const GameState = {
     TITLE_SCREEN: "TITLE_SCREEN",
     NAME_ENTRY: "NAME_ENTRY",
     DIFFICULTY_SELECT: "DIFFICULTY_SELECT",
+    PLAYER_MODE_SELECT: "PLAYER_MODE_SELECT",
     PLAYING: "PLAYING",
     SHOP: "SHOP",
     LEVEL_RESULT: "LEVEL_RESULT",
@@ -15,6 +16,11 @@ const HookState = {
 };
 
 const Difficulty = {
-    NORMAL: "NORMAL",
+    EASY: "EASY",
     HARD: "HARD",
+};
+
+const PlayerMode = {
+    SINGLE: "SINGLE",
+    TWO_PLAYER: "TWO_PLAYER",
 };
