@@ -186,7 +186,14 @@ LOW: Extra point
 
 ## 5. Implementation
 
-### 5.1 Qualitative Evaluation
+- 15% ~750 words
+- Describe implementation of your game, in particular highlighting the TWO areas of _technical challenge_ in developing your game.
+
+<a id="6-evaluation"></a>
+
+## 6. Evaluation
+
+### 6.1 Qualitative Evaluation
 
 ## Table - Heuristic Evaluation
 
@@ -202,13 +209,6 @@ LOW: Extra point
 | Feedback System | Audio feedback is subtle, reducing perceived reward when catching rare fish. | Aesthetic and minimalist design | 2 | 2 | 2 | (2 + 2 + 2) / 3 = 2.00 |
 | End Game Feedback | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached). | Visibility of system status | 2 | 3 | 3 | (2 + 3 + 3) / 3 = 2.67 |
 | Multiplayer | In two-player mode, it is unclear which hook belongs to which player. | Consistency and standards | 2 | 3 | 3 | (2 + 3 + 3) / 3 = 2.67 |
-
-- 15% ~750 words
-- Describe implementation of your game, in particular highlighting the TWO areas of _technical challenge_ in developing your game.
-
-<a id="6-evaluation"></a>
-
-## 6. Evaluation
 
 - 15% ~750 words
 - One qualitative evaluation (of your choice)
