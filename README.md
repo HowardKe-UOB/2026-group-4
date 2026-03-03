@@ -2,6 +2,8 @@
 
 2026 COMSM0166 group 4
 
+[🎮 Click this link to play our game!](https://uob-comsm0166.github.io/2026-group-4/)
+
 ## Group Kanban Board
 
 [Kanban Board](https://github.com/orgs/UoB-COMSM0166/projects/158)
@@ -101,7 +103,9 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 <a id="3-requirements"></a>
 
 ## 3. Requirements
+
 ### 3.1 Stakeholder table
+
 | Stakeholder                 | Epic                        | User Story                                                                                                                                           | Acceptance Criteria                                                                                                                                                                                                   |
 | :-------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **User: Casual Player**     | Core Fishing Mechanics      | "As a casual player, I want to control the hook using a single key press, so that I can easily catch fish without learning complex controls."        | **Given** the hook is swinging back and forth,<br>**When** I press the 'Down Arrow Key',<br>**Then** the hook should stop swinging and extend in a straight line.                                                     |
@@ -112,22 +116,24 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 | **User: Artist**            | Visual Feedback & Immersion | "As an artist, I want distinct animations for different fish states, so that the player gets visual feedback on their actions."                      | **Given** a fish is idle swimming,<br>**When** the hook grabs the fish,<br>**Then** the fish sprite should switch to a 'struggling' animation.                                                                        |
 
 ### 3.2 Reflection
-**1.**  In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly  investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development. 
 
-**2.**  Determine user acceptance criteria  
-* **a.**  Is the fish hook used by the player swinging evenly at a constant speed. When the player clicks the mouse, the hook should launch immediately without delay.
+**1.** In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development.
 
-* **b.**  When players choose the slightly difficult "deep sea" mode, ocean currents, as the "x factor" in the sea, can change the movement trajectory of various fish. Another 'x factor' shark can damage ordinary fish hooks.
+**2.** Determine user acceptance criteria
 
-* **c.**  Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
+- **a.** Is the fish hook used by the player swinging evenly at a constant speed. When the player clicks the mouse, the hook should launch immediately without delay.
 
-* **d.**  ✅**Pass:** Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
+- **b.** When players choose the slightly difficult "deep sea" mode, ocean currents, as the "x factor" in the sea, can change the movement trajectory of various fish. Another 'x factor' shark can damage ordinary fish hooks.
 
-   ❌**Fail:** Score not met or time is up → Challenge this level again.
+- **c.** Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
 
-* **e.**  Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
+- **d.** ✅**Pass:** Score up to standard → Proceed to the next level/enter the mall to purchase equipment.
 
-**3.**  We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
+    ❌**Fail:** Score not met or time is up → Challenge this level again.
+
+- **e.** Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
+
+**3.** We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
 
 ## 3.3 Prioritised Feature Breakdown
 
