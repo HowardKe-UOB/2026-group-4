@@ -719,7 +719,7 @@ class GameManager {
                 }
                 break;
             case GameState.PLAYING:
-                this.levelManager.hook.deployDown();
+                //this.levelManager.hook.deployDown();//
                 break;
             case GameState.SHOP: {
                 let shopResult = this.shopManager.handleMousePress(this.player);
@@ -800,12 +800,21 @@ class GameManager {
     }
 
     handleKeyPress(key, keyCode) {
+        // 1. 游戏进行中的键盘控制
+        if (this.currentState === GameState.PLAYING) {
+            // 按下方向键“下”或者字母“S”键抓鱼
+            if (keyCode === DOWN_ARROW || key === 's' || key === 'S') {
+                if (this.levelManager && this.levelManager.hook) {
+                    this.levelManager.hook.deployDown();
+                }
+                return; // 触发后直接返回，避免执行后续逻辑
+            }
+        }
+
+        // 2. 姓名输入界面的键盘控制
         if (this.currentState === GameState.NAME_ENTRY) {
             if (keyCode === BACKSPACE) {
-                this.inputText = this.inputText.substring(
-                    0,
-                    this.inputText.length - 1,
-                );
+                this.inputText = this.inputText.substring(0, this.inputText.length - 1);
             } else if (keyCode === ENTER) {
                 const name = this.inputText.trim();
                 if (name) {
@@ -813,8 +822,10 @@ class GameManager {
                     this.changeState(GameState.DIFFICULTY_SELECT);
                 }
             } else if (key.length === 1) {
-                // Limited to ordinary character input.
-                this.inputText += key;
+                // 限制输入长度，防止名字过长溢出 UI（建议增加，例如 12 个字符）
+                if (this.inputText.length < 12) {
+                    this.inputText += key;
+                }
             }
         }
     }
