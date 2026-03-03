@@ -199,16 +199,16 @@ LOW: Extra point
 
 | Interface | Issue | Heuristic(s) | Frequency (0–4) | Impact (0–4) | Persistence (0–4) | Severity = (F + I + P) / 3 |
 |------------|--------|---------------|------------------|--------------|--------------------|-----------------------------|
-| Game Introduction | There is no game introduction or tutorial screen, making it unclear how the game mechanics and items work. | Help and documentation | 4 | 4 | 4 | (4 + 4 + 4) / 3 = 4.00 |
-| Game UI | The font color of the current score and remaining time is too similar to the background, reducing readability. | Aesthetic and minimalist design | 4 | 3 | 4 | (4 + 3 + 4) / 3 = 3.67 |
-| Feedback System | After catching a fish, the value of the fish is not displayed, so players cannot immediately understand the reward gained. | Visibility of system status | 4 | 3 | 4 | (4 + 3 + 4) / 3 = 3.67 |
-| Level Progression | The interface does not show which level the player is currently in, causing confusion about progression. | Visibility of system status | 3 | 3 | 4 | (3 + 3 + 4) / 3 = 3.33 |
-| Controls | There is no pause function, so players cannot temporarily stop the game when needed. | User control and freedom | 3 | 3 | 4 | (3 + 3 + 4) / 3 = 3.33 |
-| Game Objects | Some sea creatures look similar in color and shape, making it difficult to distinguish their value or function. | Consistency and standards | 3 | 2 | 3 | (3 + 2 + 3) / 3 = 2.67 |
-| Rules Clarity | The special items (e.g., bombs or bonus items) lack clear visual explanation, leading to misunderstanding of their effects. | Recognition rather than recall | 3 | 3 | 3 | (3 + 3 + 3) / 3 = 3.00 |
-| Feedback System | Audio feedback is subtle, reducing perceived reward when catching rare fish. | Aesthetic and minimalist design | 2 | 2 | 2 | (2 + 2 + 2) / 3 = 2.00 |
-| End Game Feedback | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached). | Visibility of system status | 2 | 3 | 3 | (2 + 3 + 3) / 3 = 2.67 |
-| Multiplayer | In two-player mode, it is unclear which hook belongs to which player. | Consistency and standards | 2 | 3 | 3 | (2 + 3 + 3) / 3 = 2.67 |
+| Game Introduction | There is no game introduction or tutorial screen, making it unclear how the game mechanics and items work. | Help and documentation | 3 | 3 | 3 | (3 + 3 + 3) / 3 = 3.00 |
+| Game UI | The font color of the current score and remaining time is too similar to the background, reducing readability. | Aesthetic and minimalist design | 3 | 2 | 3 | (3 + 2 + 3) / 3 = 2.67 |
+| Feedback System | After catching a fish, the value of the fish is not displayed, so players cannot immediately understand the reward gained. | Visibility of system status | 3 | 2 | 3 | (3 + 2 + 3) / 3 = 2.67 |
+| Level Progression | The interface does not show which level the player is currently in, causing confusion about progression. | Visibility of system status | 2 | 2 | 3 | (2 + 2 + 3) / 3 = 2.33 |
+| Controls | There is no pause function, so players cannot temporarily stop the game when needed. | User control and freedom | 2 | 2 | 3 | (2 + 2 + 3) / 3 = 2.33 |
+| Game Objects | Some sea creatures look similar in color and shape, making it difficult to distinguish their value or function. | Consistency and standards | 2 | 2 | 2 | (2 + 2 + 2) / 3 = 2.00 |
+| Rules Clarity | The special items (e.g., bombs or bonus items) lack clear visual explanation, leading to misunderstanding of their effects. | Recognition rather than recall | 2 | 2 | 2 | (2 + 2 + 2) / 3 = 2.00 |
+| Feedback System | Audio feedback is subtle, reducing perceived reward when catching rare fish. | Aesthetic and minimalist design | 1 | 2 | 2 | (1 + 2 + 2) / 3 = 1.67 |
+| End Game Feedback | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached). | Visibility of system status | 2 | 2 | 2 | (2 + 2 + 2) / 3 = 2.00 |
+| Multiplayer | In two-player mode, it is unclear which hook belongs to which player. | Consistency and standards | 2 | 2 | 2 | (2 + 2 + 2) / 3 = 2.00 |
 
 - 15% ~750 words
 - One qualitative evaluation (of your choice)
