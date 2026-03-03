@@ -12,6 +12,7 @@ function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
+    clockImg = loadImage("assets/SandClock.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
     boatImg = loadImage("assets/boat.png");

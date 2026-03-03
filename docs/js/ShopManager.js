@@ -14,7 +14,12 @@ class ShopManager {
                 "Laser Sight",
                 200, 
                 "Often miss? Buy Laser Sight now! period: 1 level",
-        )
+            ),
+            new ShopItem(
+                "Sand Clock",
+                250,
+                "Get extra 10 seconds, period: 1 level",
+            )
         ];
     }
 
@@ -54,6 +59,14 @@ class ShopManager {
             ) {
                 imageMode(CENTER);
                 image(laserImg, width / 2 - 160, startY + i * 80, 40, 40);
+            }
+            else if (
+                item.name === "Sand Clock" &&
+                typeof clockImg !== "undefined" &&
+                clockImg
+            ) {
+                imageMode(CENTER);
+                image(clockImg, width / 2 - 160, startY + i * 80, 40, 40);
             }
 
             fill(0);
