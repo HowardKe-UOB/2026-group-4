@@ -32,11 +32,14 @@ class BaseFish extends SeaItem {
 
     swim() {
         this.position.x += this.speed * this.direction;
-        if (
-            this.position.x < this.width ||
-            this.position.x > width - this.width
+
+        if (this.position.x < this.width / 2 && this.direction === -1) {
+            this.direction = 1;
+        } else if (
+            this.position.x > width - this.width / 2 &&
+            this.direction === 1
         ) {
-            this.direction *= -1;
+            this.direction = -1;
         }
     }
 
@@ -48,54 +51,75 @@ class BaseFish extends SeaItem {
 class SmallFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(30, 70);
-
         let calculatedScore = floor(map(randomSize, 30, 70, 30, 150));
-
         let calculatedWeight = map(randomSize, 30, 70, 1, 3);
 
         super(
             x,
             y,
-            "Ocean Fish",
+            "Small Fish",
             calculatedScore,
             calculatedWeight,
             randomSize,
         );
 
-        this.speed = random(0.2, 1.2);
-
-        this.sprite = random(imgSmallFishes);
+        this.speed = random(1.2, 1.6);
+        this.frames = random(imgSmallFishes);
     }
 
     draw() {
         push();
         translate(this.position.x, this.position.y);
-
         scale(-this.direction, 1);
-
         imageMode(CENTER);
 
-        if (this.sprite) {
-            image(this.sprite, 0, 0, this.width, this.height);
+        if (this.frames && this.frames.length === 2) {
+            let frameIndex = floor(frameCount / 15) % 2;
+            image(this.frames[frameIndex], 0, 0, this.width, this.height);
         }
         pop();
-
         this.drawScoreText();
     }
 }
 
-// 鱼骨头：0金币，大小40
+class BigFish extends BaseFish {
+    constructor(x, y) {
+        let randomSize = random(90, 160);
+        let calculatedScore = floor(map(randomSize, 90, 160, 250, 600));
+        let calculatedWeight = map(randomSize, 90, 160, 5, 9);
+
+        super(x, y, "Big Fish", calculatedScore, calculatedWeight, randomSize);
+
+        this.speed = random(0.3, 0.8);
+        this.frames = random(imgBigFishes);
+    }
+
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+        scale(-this.direction, 1);
+        imageMode(CENTER);
+
+        if (this.frames && this.frames.length === 2) {
+            let frameIndex = floor(frameCount / 20) % 2;
+            image(this.frames[frameIndex], 0, 0, this.width, this.height);
+        }
+        pop();
+        this.drawScoreText();
+    }
+}
+
 class FishBone extends SeaItem {
     constructor(x, y) {
         super(x, y, "FishBone", 0, 1.5);
         this.width = 70;
         this.height = 40;
-        this.sprite = random(imgSkeletons);
+        this.sprite = imgSkeleton;
     }
     draw() {
         push();
-        imageMode(CENTER);
         translate(this.position.x, this.position.y);
+        imageMode(CENTER);
         image(this.sprite, 0, 0, this.width, this.height);
         pop();
     }
@@ -107,8 +131,6 @@ class Treasure extends SeaItem {
         super(x, y, "Treasure", val, 4);
         this.width = 60;
         this.height = 50;
-
-        this.position.y = height - random(30, 50);
 
         this.sprite = treasureChest;
     }

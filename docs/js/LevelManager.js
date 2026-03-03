@@ -8,7 +8,7 @@ class LevelManager {
         this.timeLimit = 20;
         this.timeRemaining = this.timeLimit;
 
-        this.playerBoat = createVector(width / 2, 120);
+        this.playerBoat = createVector(width / 2, 170);
         this.hook = new Hook(this.playerBoat.x, this.playerBoat.y);
 
         this.activeItems = [];
@@ -31,14 +31,20 @@ class LevelManager {
 
             while (isOverlapping && attempts < maxAttempts) {
                 let x = random(50, width - 50);
-                let y = random(220, height - 80);
+                let y;
                 let rand = random();
 
-                if (rand < 0.5) {
+                if (rand < 0.2) {
+                    y = random(370, height - 80);
+                    newItem = new BigFish(x, y);
+                } else if (rand < 0.6) {
+                    y = random(220, height - 80);
                     newItem = new SmallFish(x, y);
-                } else if (rand < 0.85) {
+                } else if (rand < 0.8) {
+                    y = random(220, height - 80);
                     newItem = new FishBone(x, y);
                 } else {
+                    y = random(height - 60, height - 25);
                     newItem = new Treasure(x, y);
                 }
 
@@ -53,7 +59,7 @@ class LevelManager {
                     );
 
                     let safeDistance =
-                        (newItem.width + existingItem.width) / 2 + 10;
+                        (newItem.width + existingItem.width) / 2 + 20;
 
                     if (d < safeDistance) {
                         isOverlapping = true;
@@ -70,7 +76,7 @@ class LevelManager {
         }
 
         console.log(
-            `Level ${this.levelNum} generated: Target Score ${this.targetScore}, Total Map Value ${totalMapValue}, Total Items ${this.activeItems.length}`,
+            `Level ${this.levelNum} generated. Total Items: ${this.activeItems.length}`,
         );
     }
 

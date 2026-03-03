@@ -3,7 +3,8 @@ let bgImageLevel1;
 let potionImg;
 let titleBgm;
 let imgSmallFishes = [];
-let imgSkeletons = [];
+let imgBigFishes = [];
+let imgSkeleton;
 let treasureChest;
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
@@ -11,16 +12,20 @@ function preload() {
     laserImg = loadImage("assets/Laser.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
-    let colors = ["blue", "cyan", "green", "purple", "red", "yellow"];
-    for (let c of colors) {
-        for (let i = 1; i <= 3; i++) {
-            imgSmallFishes.push(loadImage(`assets/fish_${c}${i}.png`));
-        }
+
+    for (let i = 1; i <= 43; i++) {
+        let frame1 = loadImage(`assets/fish${i}_1.png`);
+        let frame2 = loadImage(`assets/fish${i}_2.png`);
+
+        imgSmallFishes.push([frame1, frame2]);
     }
-    let skeletonColors = ["blue", "green", "orange"];
-    for (let c of skeletonColors) {
-        imgSkeletons.push(loadImage(`assets/fish_${c}_skeleton.png`));
+
+    for (let i = 44; i <= 64; i++) {
+        let frame1 = loadImage(`assets/fish${i}_1.png`);
+        let frame2 = loadImage(`assets/fish${i}_2.png`);
+        imgBigFishes.push([frame1, frame2]);
     }
+    imgSkeleton = loadImage("assets/Skeleton.png");
     treasureChest = loadImage("assets/Treasure_Chest .png");
 }
 
