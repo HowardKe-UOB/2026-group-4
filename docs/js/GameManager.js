@@ -13,6 +13,8 @@ class GameManager {
 
         this.highScoreScrollY = 0;
         this.highScoreScrollDragging = false;
+
+        this.gamePaused = false;
     }
 
     isPreGameMenu() {
@@ -37,6 +39,8 @@ class GameManager {
             this.levelNum,
             this.player,
         );
+        this.levelManager.gameManager = this;
+        this.gamePaused = false;
         // 每次开启关卡时，应用已购买的道具
         this.player.consumeItems(this.levelManager);
         this.changeState(GameState.PLAYING);
@@ -272,19 +276,19 @@ class GameManager {
                 this.drawPlayerModeSelect();
                 break;
             case GameState.PLAYING:
-                let result = this.levelManager.update();
-                this.levelManager.draw();
-
-                if (result === "PASS") {
-                    this.changeState(GameState.SHOP);
-                } else if (result === "FAIL") {
-                    // Record the final score to the leaderboard
-                    this.highScoreManager.checkNewHighScore(
-                        this.player.totalScore,
-                        this.player.name || "Anon",
-                    );
-                    this.changeState(GameState.LEVEL_RESULT);
+                if (!this.gamePaused) {
+                    let result = this.levelManager.update();
+                    if (result === "PASS") {
+                        this.changeState(GameState.SHOP);
+                    } else if (result === "FAIL") {
+                        this.highScoreManager.checkNewHighScore(
+                            this.player.totalScore,
+                            this.player.name || "Anon",
+                        );
+                        this.changeState(GameState.LEVEL_RESULT);
+                    }
                 }
+                this.levelManager.draw();
                 break;
             case GameState.SHOP:
                 this.drawShop();
@@ -532,9 +536,13 @@ class GameManager {
                     // 仅 Easy + Single 可进入游戏
                 }
                 break;
-            case GameState.PLAYING:
-                //this.levelManager.hook.deployDown();//
+            case GameState.PLAYING: {
+                const pb = this.levelManager._pauseBtnBounds;
+                if (pb && this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)) {
+                    this.gamePaused = !this.gamePaused;
+                }
                 break;
+            }
             case GameState.SHOP: {
                 let shopResult = this.shopManager.handleMousePress(this.player);
                 if (shopResult === "NEXT_LEVEL") {

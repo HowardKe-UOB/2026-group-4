@@ -181,8 +181,33 @@ class LevelManager {
             secondaryColor,
         );
 
-        // --- 绘制右边 (TIME) ---
+        // --- 绘制右边 (暂停按钮 + TIME) ---
         textAlign(RIGHT, TOP);
+
+        // 暂停/播放按钮 (TIME 左侧，留出间隔)
+        const btnSize = 24;
+        const btnX = rightX - 125;
+        const btnY = line1Y + 12;
+        this._pauseBtnBounds = { cx: btnX, cy: btnY, w: btnSize, h: btnSize };
+        const isPaused = this.gameManager && this.gameManager.gamePaused;
+        noStroke();
+        fill(0, 0, 0, 150);
+        rect(btnX - btnSize / 2 + 2, btnY - btnSize / 2 + 2, btnSize, btnSize, 4);
+        fill(0, 200, 150);
+        rect(btnX - btnSize / 2, btnY - btnSize / 2, btnSize, btnSize, 4);
+        fill(255);
+        if (isPaused) {
+            // 播放图标 (三角形)
+            triangle(
+                btnX - 5, btnY - 6,
+                btnX - 5, btnY + 6,
+                btnX + 4, btnY
+            );
+        } else {
+            // 暂停图标 (两竖条)
+            rect(btnX - 6, btnY - 6, 4, 12);
+            rect(btnX + 2, btnY - 6, 4, 12);
+        }
 
         // 闪烁逻辑 (最后5秒平缓闪烁)
         let tAlpha = 255;
