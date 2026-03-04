@@ -353,12 +353,23 @@ class GameManager {
     }
 
     drawLevelResult() {
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(40);
-        text("LEVEL FAILED!", width / 2, height / 2 - 50);
-        textSize(20);
-        text("Click to view High Scores", width / 2, height / 2 + 50);
+        if (typeof levelFailedImg !== "undefined" && levelFailedImg && levelFailedImg.width) {
+            this.drawCoverBackground(levelFailedImg);
+            push();
+            textFont("Press Start 2P");
+            textSize(10);
+            fill(255, 200, 200, 230);
+            textAlign(CENTER, CENTER);
+            text("click to view the leaderboard", width / 2, height / 2 + 200);
+            pop();
+        } else {
+            fill(255);
+            textAlign(CENTER, CENTER);
+            textSize(40);
+            text("LEVEL FAILED!", width / 2, height / 2 - 50);
+            textSize(20);
+            text("Click to view High Scores", width / 2, height / 2 + 50);
+        }
     }
 
     drawHighScore() {
