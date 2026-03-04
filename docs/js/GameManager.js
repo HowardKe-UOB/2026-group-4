@@ -1,7 +1,7 @@
 class GameManager {
     constructor() {
         this.player = new Player();
-        this.currentState = GameState.TITLE_SCREEN;
+        this.currentState = GameState.NAME_ENTRY;
         this.currentDifficulty = Difficulty.EASY;
         this.currentPlayerMode = PlayerMode.SINGLE;
         this.highScoreManager = new HighScoreManager();
@@ -13,14 +13,10 @@ class GameManager {
 
         this.highScoreScrollY = 0;
         this.highScoreScrollDragging = false;
-
-        this.showSettingsPopup = false;
-        this.musicMuted = false;
     }
 
     isPreGameMenu() {
         return [
-            GameState.TITLE_SCREEN,
             GameState.NAME_ENTRY,
             GameState.DIFFICULTY_SELECT,
             GameState.PLAYER_MODE_SELECT,
@@ -57,13 +53,12 @@ class GameManager {
 
         //首页背景音乐
         const menuStates = [
-            GameState.TITLE_SCREEN,
             GameState.NAME_ENTRY,
             GameState.DIFFICULTY_SELECT,
             GameState.PLAYER_MODE_SELECT,
         ];
         if (menuStates.includes(this.currentState)) {
-            if (!this.musicMuted && typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
+            if (typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
                 titleBgm.loop();
             }
         } else if (this.currentState === GameState.PLAYING) {
@@ -73,7 +68,7 @@ class GameManager {
         }
         //商店音乐
         if(this.currentState === GameState.SHOP){
-            if (!this.musicMuted && typeof shopBgm !== "undefined" && shopBgm && !shopBgm.isPlaying()) {
+            if (typeof shopBgm !== "undefined" && shopBgm && !shopBgm.isPlaying()) {
                 shopBgm.loop();
             }
         } else if (this.currentState === GameState.PLAYING) {
@@ -81,6 +76,16 @@ class GameManager {
                 shopBgm.stop();
             }
         }
+    }
+
+    // 图片背景：按比例缩放填满画布（cover）
+    drawCoverBackground(img) {
+        if (!img || !img.width) return;
+        let scale = max(width / img.width, height / img.height);
+        let dw = img.width * scale;
+        let dh = img.height * scale;
+        imageMode(CENTER);
+        image(img, width / 2, height / 2, dw, dh);
     }
 
     // 海洋主题菜单背景：渐变 + 气泡 + 波浪底
@@ -247,7 +252,6 @@ class GameManager {
         if (this.currentState === GameState.PLAYING) {
             background(30, 144, 255);
         } else if ([
-            GameState.TITLE_SCREEN,
             GameState.NAME_ENTRY,
             GameState.DIFFICULTY_SELECT,
             GameState.PLAYER_MODE_SELECT,
@@ -258,9 +262,6 @@ class GameManager {
         }
 
         switch (this.currentState) {
-            case GameState.TITLE_SCREEN:
-                this.drawTitleScreen();
-                break;
             case GameState.NAME_ENTRY:
                 this.drawNameEntry();
                 break;
@@ -296,117 +297,18 @@ class GameManager {
                 break;
         }
 
-        if (this.isPreGameMenu()) {
-            this.drawSettingsButton();
-        }
-        if (this.showSettingsPopup) {
-            this.drawSettingsPopup();
-        }
-    }
-
-    drawSettingsButton() {
-        const btnX = 50;
-        const btnY = height - 40;
-        const btnW = 90;
-        const btnH = 32;
-        push();
-        rectMode(CENTER);
-        noStroke();
-        fill(60, 100, 150, 200);
-        rect(btnX, btnY, btnW, btnH, 8);
-        stroke(255, 255, 255, 150);
-        strokeWeight(1);
-        noFill();
-        rect(btnX, btnY, btnW, btnH, 8);
-        noStroke();
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(14);
-        text("Settings", btnX, btnY);
-        pop();
-        this._settingsBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
-    }
-
-    drawSettingsPopup() {
-        push();
-        fill(0, 0, 0, 150);
-        rect(0, 0, width, height);
-
-        const popupW = 280;
-        const popupH = 180;
-        const popupX = width / 2;
-        const popupY = height / 2;
-
-        rectMode(CENTER);
-        fill(40, 70, 120);
-        rect(popupX, popupY, popupW, popupH, 12);
-        stroke(80, 130, 180);
-        strokeWeight(2);
-        noFill();
-        rect(popupX, popupY, popupW, popupH, 12);
-        noStroke();
-
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(20);
-        text("Settings", popupX, popupY - 55);
-
-        fill(100, 160, 220);
-        rect(popupX, popupY - 15, 220, 36, 8);
-        fill(255);
-        textSize(16);
-        text("回到上一级", popupX, popupY - 15);
-
-        const musicY = popupY + 25;
-        fill(this.musicMuted ? 150 : 100, 160, 220);
-        rect(popupX, musicY, 220, 36, 8);
-        fill(255);
-        text(this.musicMuted ? "开启音乐" : "关闭音乐", popupX, musicY);
-
-        fill(180);
-        rect(popupX + popupW / 2 - 25, popupY - popupH / 2 + 20, 30, 22, 4);
-        fill(255);
-        textSize(14);
-        text("×", popupX + popupW / 2 - 25, popupY - popupH / 2 + 20);
-
-        pop();
-
-        this._popupBackBounds = { x: popupX, y: popupY - 15, w: 220, h: 36 };
-        this._popupMusicBounds = { x: popupX, y: musicY, w: 220, h: 36 };
-        this._popupCloseBounds = {
-            x: popupX + popupW / 2 - 25,
-            y: popupY - popupH / 2 + 20,
-            w: 30,
-            h: 22,
-        };
-    }
-
-    drawTitleScreen() {
-        this.drawOceanMenuBackground();
-        push();
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(42);
-        textStyle(BOLD);
-        text("DEEP SEA PROSPECTOR", width / 2, height / 2 - 80);
-        textStyle(NORMAL);
-        textSize(18);
-        fill(180, 220, 255);
-        text("Click anywhere to cast your line", width / 2, height / 2 - 30);
-        fill(255, 220, 150);
-        textSize(14);
-        text("🎣 ✦ 🐟 ✦ ⛵", width / 2, height / 2 + 20);
-        pop();
     }
 
     drawNameEntry() {
-        this.drawOceanMenuBackground();
+        if (typeof nameEntryBgImg !== "undefined" && nameEntryBgImg) {
+            imageMode(CORNER);
+            image(nameEntryBgImg, 0, 0, width, height);
+        } else {
+            this.drawOceanMenuBackground();
+        }
         push();
         fill(255);
         textAlign(CENTER, CENTER);
-        textSize(26);
-        text("Fisher, what is your name?", width / 2, height / 2 - 80);
-
         rectMode(CENTER);
         noStroke();
         fill(30, 60, 90, 200);
@@ -419,7 +321,7 @@ class GameManager {
             text(this.inputText + (frameCount % 60 < 30 ? "|" : ""), width / 2, height / 2 - 20);
         } else {
             fill(180, 180, 200, 180);
-            text("cannot be blank", width / 2, height / 2 - 20);
+            text("enter your name", width / 2, height / 2 - 20);
         }
 
         fill(200, 230, 255);
@@ -429,72 +331,19 @@ class GameManager {
     }
 
     drawDifficultySelect() {
-        this.drawOceanMenuBackground();
-        push();
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(28);
-        text("Choose your fishing challenge", width / 2, height / 4);
-
-        this.drawOceanButton(
-            width / 2,
-            height / 2 - 50,
-            220,
-            52,
-            "EASY  🌊",
-            color(50, 150, 120),
-            color(80, 200, 160)
-        );
-        this.drawOceanButton(
-            width / 2,
-            height / 2 + 50,
-            220,
-            52,
-            "HARD  🌊",
-            color(180, 80, 80),
-            color(220, 120, 120)
-        );
-        textSize(12);
-        fill(255, 200, 200);
-        text("currently unavailable", width / 2, height / 2 + 88);
-        pop();
+        if (typeof modeSelectBgImg !== "undefined" && modeSelectBgImg) {
+            this.drawCoverBackground(modeSelectBgImg);
+        } else {
+            this.drawOceanMenuBackground();
+        }
     }
 
     drawPlayerModeSelect() {
-        this.drawOceanMenuBackground();
-        push();
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(28);
-        text("Fishing alone or with a mate?", width / 2, height / 4);
-
-        this.drawOceanButton(
-            width / 2,
-            height / 2 - 50,
-            220,
-            52,
-            "SINGLE  🎣",
-            color(60, 130, 200),
-            color(100, 170, 240)
-        );
-        if (this.currentDifficulty === Difficulty.HARD) {
-            textSize(12);
-            fill(255, 200, 200);
-            text("currently unavailable", width / 2, height / 2 - 12);
+        if (typeof modeSelectBgImg !== "undefined" && modeSelectBgImg) {
+            this.drawCoverBackground(modeSelectBgImg);
+        } else {
+            this.drawOceanMenuBackground();
         }
-        this.drawOceanButton(
-            width / 2,
-            height / 2 + 50,
-            220,
-            52,
-            "TWO PLAYER  ⛵",
-            color(200, 140, 60),
-            color(240, 180, 100)
-        );
-        textSize(12);
-        fill(255, 220, 180);
-        text("currently unavailable", width / 2, height / 2 + 88);
-        pop();
     }
 
     drawShop() {
@@ -653,53 +502,7 @@ class GameManager {
 
     // Interaction Handling
     handleMousePress() {
-        if (this.showSettingsPopup) {
-            if (this._popupBackBounds && this.isPointInRect(mouseX, mouseY, this._popupBackBounds.x, this._popupBackBounds.y, this._popupBackBounds.w, this._popupBackBounds.h)) {
-                this.showSettingsPopup = false;
-                if (this.currentState === GameState.PLAYER_MODE_SELECT) {
-                    this.changeState(GameState.DIFFICULTY_SELECT);
-                } else if (this.currentState === GameState.DIFFICULTY_SELECT) {
-                    this.changeState(GameState.NAME_ENTRY);
-                } else if (this.currentState === GameState.NAME_ENTRY) {
-                    this.changeState(GameState.TITLE_SCREEN);
-                }
-                return;
-            }
-            if (this._popupMusicBounds && this.isPointInRect(mouseX, mouseY, this._popupMusicBounds.x, this._popupMusicBounds.y, this._popupMusicBounds.w, this._popupMusicBounds.h)) {
-                this.musicMuted = !this.musicMuted;
-                if (this.musicMuted) {
-                    if (typeof titleBgm !== "undefined" && titleBgm && titleBgm.isPlaying()) {
-                        titleBgm.stop();
-                    }
-                } else {
-                    if (typeof titleBgm !== "undefined" && titleBgm && !titleBgm.isPlaying()) {
-                        titleBgm.loop();
-                    }
-                }
-                return;
-            }
-            if (this._popupCloseBounds && this.isPointInRect(mouseX, mouseY, this._popupCloseBounds.x, this._popupCloseBounds.y, this._popupCloseBounds.w, this._popupCloseBounds.h)) {
-                this.showSettingsPopup = false;
-                return;
-            }
-            const popupX = width / 2;
-            const popupW = 280;
-            const popupH = 180;
-            if (abs(mouseX - popupX) > popupW / 2 + 10 || abs(mouseY - height / 2) > popupH / 2 + 10) {
-                this.showSettingsPopup = false;
-            }
-            return;
-        }
-
-        if (this.isPreGameMenu() && this._settingsBtnBounds && this.isPointInRect(mouseX, mouseY, this._settingsBtnBounds.x, this._settingsBtnBounds.y, this._settingsBtnBounds.w, this._settingsBtnBounds.h)) {
-            this.showSettingsPopup = true;
-            return;
-        }
-
         switch (this.currentState) {
-            case GameState.TITLE_SCREEN:
-                this.changeState(GameState.NAME_ENTRY);
-                break;
             case GameState.DIFFICULTY_SELECT:
                 if (this.isPointInRect(mouseX, mouseY, width / 2, height / 2 - 50, 220, 52)) {
                     this.currentDifficulty = Difficulty.EASY;
@@ -745,7 +548,7 @@ class GameManager {
                     mouseY >= panelY &&
                     mouseY <= panelY + panelH;
                 if (!inPanel) {
-                    this.changeState(GameState.TITLE_SCREEN);
+                    this.changeState(GameState.NAME_ENTRY);
                 } else if (this._scrollbarBounds) {
                     const sb = this._scrollbarBounds;
                     const thumbRange = sb.h - sb.thumbH;
