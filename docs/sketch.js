@@ -13,6 +13,7 @@ let boatImg;
 let hookImg;
 let nameEntryBgImg;
 let modeSelectBgImg;
+let levelFailedImg;
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     potionImg = loadImage("assets/PowerPotion.png");
@@ -41,6 +42,7 @@ function preload() {
     treasureChest = loadImage("assets/Treasure_Chest.png");
     nameEntryBgImg = loadImage("assets/deepsea_prospector.png");
     modeSelectBgImg = loadImage("assets/choose_fishing_challenge.png");
+    levelFailedImg = loadImage("assets/levelfailed.png");
 }
 
 function setup() {
