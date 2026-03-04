@@ -1,6 +1,9 @@
 let gameManager;
 let bgImageLevel1;
 let potionImg;
+let laserImg;
+let clockImg;
+let shopBgImg;
 let titleBgm;
 let imgSmallFishes = [];
 let imgBigFishes = [];
@@ -13,10 +16,12 @@ function preload() {
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     clockImg = loadImage("assets/SandClock.png");
+    shopBgImg = loadImage("assets/Shop.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
     boatImg = loadImage("assets/boat.png");
     hookImg = loadImage("assets/hook.png");
+    
 
     for (let i = 1; i <= 43; i++) {
         let frame1 = loadImage(`assets/fish${i}_1.png`);
@@ -31,7 +36,7 @@ function preload() {
         imgBigFishes.push([frame1, frame2]);
     }
     imgSkeleton = loadImage("assets/Skeleton.png");
-    treasureChest = loadImage("assets/Treasure_Chest .png");
+    treasureChest = loadImage("assets/Treasure_Chest.png");
 }
 
 function setup() {

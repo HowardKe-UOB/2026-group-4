@@ -41,8 +41,8 @@ class GameManager {
             this.levelNum,
             this.player,
         );
-        //【未启用】每次开启关卡时，应用已购买的道具
-        //this.player.consumeItems(this.levelManager);
+        // 每次开启关卡时，应用已购买的道具
+        this.player.consumeItems(this.levelManager);
         this.changeState(GameState.PLAYING);
     }
 

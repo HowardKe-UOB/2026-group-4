@@ -1,137 +1,174 @@
 class ShopManager {
     constructor() {
         this.resetShop();
+        
+        this.itemPositions = [
+            { x: width / 2 - 125, y: height / 2 + 65 }, // Strength Potion
+            { x: width / 2,       y: height / 2 + 65 }, // Laser Sight
+            { x: width / 2 + 125, y: height / 2 + 65 }  // Sand Clock
+        ];
+
+        this.hitRadius = 60; 
     }
 
     resetShop() {
         this.availableItems = [
-            new ShopItem(
-                "Strength Potion",
-                200,
-                "Pulls items 2x faster, period: 1 level",
-            ),
-            new ShopItem(
-                "Laser Sight",
-                200, 
-                "Often miss? Buy Laser Sight now! period: 1 level",
-            ),
-            new ShopItem(
-                "Sand Clock",
-                250,
-                "Get extra 10 seconds, period: 1 level",
-            )
+            // \n 换行
+            new ShopItem("Strength Potion", 200, "Pulls items 2x faster. \nperiod: 1 level"),
+            new ShopItem("Laser Sight", 200, "Often miss? Buy Laser Sight now! \nperiod: 1 level"),
+            new ShopItem("Sand Clock", 250, "Get extra 10 seconds. \nperiod: 1 level")
         ];
     }
 
     draw(player) {
         push();
-        background(40, 40, 60);
+        
+        // --- 1. 绘制背景 (Cover 模式防止拉伸) ---
+        if (typeof shopBgImg !== "undefined" && shopBgImg) {
+            let imgRatio = shopBgImg.width / shopBgImg.height;
+            let canvasRatio = width / height;
+            let drawW, drawH, drawX, drawY;
 
-        fill(255);
+            if (imgRatio > canvasRatio) {
+                drawH = height;
+                drawW = height * imgRatio;
+            } else {
+                drawW = width;
+                drawH = width / imgRatio;
+            }
+            drawX = (width - drawW) / 2;
+            drawY = (height - drawH) / 2;
+
+            imageMode(CORNER);
+            image(shopBgImg, drawX, drawY, drawW, drawH);
+        } else {
+            background(40, 40, 60); 
+        }
+
+        // 金币显示
         textAlign(CENTER, CENTER);
-        textSize(40);
-        text("SHOP", width / 2, 60);
-
         textSize(20);
-        fill(255, 215, 0);
-        text(`Your Money: ${player.totalScore}`, width / 2, 110);
+        textStyle(BOLD);
+        fill(150, 80, 0); 
+        text(`Gold: ${player.totalScore}`, 90, 60); 
 
-        let startY = 200;
+        // “下一关”按钮
+        let nextBtnX = width - 90;
+        let nextBtnY = 60;
+        
+        // 判定鼠标是否在“下一关”文字区域
+        let isNextHovered = (abs(mouseX - nextBtnX) < 70 && abs(mouseY - nextBtnY) < 30);
+        
+        if (isNextHovered) {
+            noStroke();
+            fill(255, 255, 255, 120); // 白色亮底
+            rectMode(CENTER);
+            rect(nextBtnX, nextBtnY, 140, 50, 10);
+        }
+        fill(0); // 文字设为黑色或深色，配合白底更显眼
+        if (!isNextHovered) fill(255); // 非悬停时保持白色或根据你背景图调整
+        
+        textAlign(CENTER, CENTER);
+        textSize(20);
+        textStyle(BOLD);
+        text("Next Level", nextBtnX, nextBtnY);
+        textStyle(NORMAL);
+
+        // 商品绘制与悬停逻辑
+        let hoveredItem = null;
+
         for (let i = 0; i < this.availableItems.length; i++) {
             let item = this.availableItems[i];
+            let pos = this.itemPositions[i];
+            
+            let d = dist(mouseX, mouseY, pos.x, pos.y);
+            let isHovered = (d < this.hitRadius);
 
-            fill(200);
-            rectMode(CENTER);
-            rect(width / 2, startY + i * 80, 400, 60, 10);
-
-            if (
-                item.name === "Strength Potion" &&
-                typeof potionImg !== "undefined" &&
-                potionImg
-            ) {
-                imageMode(CENTER);
-                image(potionImg, width / 2 - 160, startY + i * 80, 40, 40);
-            }
-            else if (
-                item.name === "Laser Sight" &&
-                typeof laserImg !== "undefined" &&
-                laserImg
-            ) {
-                imageMode(CENTER);
-                image(laserImg, width / 2 - 160, startY + i * 80, 40, 40);
-            }
-            else if (
-                item.name === "Sand Clock" &&
-                typeof clockImg !== "undefined" &&
-                clockImg
-            ) {
-                imageMode(CENTER);
-                image(clockImg, width / 2 - 160, startY + i * 80, 40, 40);
+            if (isHovered) {
+                hoveredItem = item;
+                noStroke();
+                fill(255, 255, 255, 100);
+                circle(pos.x, pos.y, this.hitRadius * 2);
             }
 
-            fill(0);
-            textAlign(LEFT, CENTER);
-            textSize(18);
-            text(
-                `${item.name} - $${item.costPrice}`,
-                width / 2 - 130,
-                startY + i * 80 - 10,
-            );
-            textSize(14);
-            fill(80);
-            text(item.description, width / 2 - 130, startY + i * 80 + 15);
+            imageMode(CENTER);
+            let imgSize = 80; 
+            
+            if (item.name === "Strength Potion" && typeof potionImg !== "undefined" && potionImg) {
+                image(potionImg, pos.x, pos.y, imgSize, imgSize);
+            }
+            else if (item.name === "Laser Sight" && typeof laserImg !== "undefined" && laserImg) {
+                image(laserImg, pos.x, pos.y, imgSize, imgSize);
+            }
+            else if (item.name === "Sand Clock" && typeof clockImg !== "undefined" && clockImg) {
+                image(clockImg, pos.x, pos.y, imgSize, imgSize);
+            }
 
-            rectMode(CENTER);
-            let yPos = startY + i * 80 - 10;
             if (item.purchased) {
-                fill(150);
-                rect(width / 2 + 140, yPos, 80, 30, 5);
-                fill(255);
-                textAlign(CENTER, CENTER);
-                text("SOLD", width / 2 + 140, yPos);
-            } else {
-                fill(100, 200, 100);
-                rect(width / 2 + 140, yPos, 80, 30, 5);
-                fill(0);
-                textAlign(CENTER, CENTER);
-                text("BUY", width / 2 + 140, yPos);
+                fill(0, 0, 0, 180);
+                circle(pos.x, pos.y, imgSize + 5);
+                fill(255, 50, 50);
+                textSize(20);
+                textStyle(BOLD);
+                text("SOLD", pos.x, pos.y);
+                textStyle(NORMAL);
             }
         }
 
-        fill(100, 150, 255);
-        rectMode(CENTER);
-        rect(width / 2, height - 60, 200, 50, 10);
-        fill(255);
-        textAlign(CENTER, CENTER);
-        textSize(20);
-        text("Next Level", width / 2, height - 60);
+        // 底部柜台文本
+        if (hoveredItem) {
+            fill(60, 40, 20); 
+            textAlign(CENTER, CENTER);
+            let infoY = height - 105; 
+
+            textSize(24);
+            textStyle(BOLD);
+            text(`${hoveredItem.name}  -  $${hoveredItem.costPrice}`, width / 2, infoY - 20);
+            textStyle(NORMAL);
+
+            textSize(18);
+            fill(80, 60, 40);
+            text(hoveredItem.description, width / 2, infoY + 15);
+
+            textSize(16);
+            if (hoveredItem.purchased) {
+                fill(150, 0, 0);
+                text("Already Purchased", width / 2, infoY + 50); // Y越大越靠下
+            } else if (player.totalScore < hoveredItem.costPrice) {
+                fill(150, 0, 0);
+                text("Not enough Gold!", width / 2, infoY + 50);
+            } else {
+                fill(0, 120, 0);
+                text("Click to buy", width / 2, infoY + 50);
+            }
+        }
+
         pop();
     }
 
     handleMousePress(player) {
-        let startY = 200;
+        // 同步修改“下一关”按钮的点击判定中心和范围
+        let nextBtnX = width - 90; // 与 draw 保持一致
+        let nextBtnY = 60;        // 与 draw 保持一致
+        
+        if (abs(mouseX - nextBtnX) < 70 && abs(mouseY - nextBtnY) < 30) {
+            return "NEXT_LEVEL"; 
+        }
 
         for (let i = 0; i < this.availableItems.length; i++) {
             let item = this.availableItems[i];
-            let btnX = width / 2 + 140;
-            let btnY = startY + i * 80;
+            let pos = this.itemPositions[i];
 
-            if (
-                !item.purchased &&
-                abs(mouseX - btnX) < 40 &&
-                abs(mouseY - btnY) < 15
-            ) {
-                if (player.purchaseItem(item)) {
-                    item.purchased = true;
+            let d = dist(mouseX, mouseY, pos.x, pos.y);
+            if (d < this.hitRadius) {
+                if (!item.purchased && player.totalScore >= item.costPrice) {
+                    if (player.purchaseItem(item)) {
+                        item.purchased = true;
+                    }
                 }
                 return "BOUGHT";
             }
         }
-
-        if (abs(mouseX - width / 2) < 100 && abs(mouseY - (height - 60)) < 25) {
-            return "NEXT_LEVEL";
-        }
-
         return "NONE";
     }
 }

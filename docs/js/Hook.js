@@ -10,7 +10,7 @@ class Hook extends GameObject {
         this.hasLaser = false;
 
         this.angle = 0;
-        this.angleVel = 0.035;
+        this.angleVel = 0.028;
         this.length = 50;
         this.maxLength = 500;
 
