@@ -76,6 +76,15 @@ function wireModeButtons() {
         gameManager.currentPlayerMode = PlayerMode.TWO_PLAYER;
     });
 
+    document.getElementById("back-btn").addEventListener("click", () => {
+        userStartAudio();
+        if (gameManager.currentState === GameState.DIFFICULTY_SELECT) {
+            gameManager.changeState(GameState.NAME_ENTRY);
+        } else if (gameManager.currentState === GameState.PLAYER_MODE_SELECT) {
+            gameManager.changeState(GameState.DIFFICULTY_SELECT);
+        }
+    });
+
     function syncOverlay() {
         const s = gameManager.currentState;
         if (s === GameState.DIFFICULTY_SELECT) {
