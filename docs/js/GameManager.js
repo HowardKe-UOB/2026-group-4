@@ -61,6 +61,7 @@ changeState(newState) {
     }
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
+            this.highScoreManager.fetchFromSupabase();
         }
 
         //首页背景音乐
@@ -366,9 +367,11 @@ changeState(newState) {
                     if (result === 'PASS') {
                         this.changeState(GameState.SHOP);
                     } else if (result === 'FAIL') {
+                        const levelsCompleted = Math.max(0, this.levelNum - 1);
                         this.highScoreManager.checkNewHighScore(
                             this.player.totalScore,
                             this.player.name || 'Anon',
+                            levelsCompleted,
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                     }
@@ -539,6 +542,8 @@ changeState(newState) {
             let isCurrent =
                 entry.playerName === (this.player.name || 'Anon') &&
                 entry.score === this.player.totalScore;
+            const levelsCompleted =
+                entry.levelsCompleted != null ? entry.levelsCompleted : 0;
 
             if (isCurrent) {
                 fill(50, 180, 80, 220);
@@ -560,7 +565,11 @@ changeState(newState) {
             textAlign(RIGHT, CENTER);
             fill(255, 215, 0);
             textSize(16);
-            text('🏆 ' + entry.score, rowX + rowW - 20, ry);
+            const scoreText =
+                levelsCompleted > 0
+                    ? `🏆 ${entry.score}  Lv.${levelsCompleted}`
+                    : `🏆 ${entry.score}`;
+            text(scoreText, rowX + rowW - 20, ry);
         }
         listUnclip();
         pop();
