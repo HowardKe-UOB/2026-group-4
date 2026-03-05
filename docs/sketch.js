@@ -18,6 +18,7 @@ let hookImg2;
 let nameEntryBgImg;
 let modeSelectBgImg;
 let levelFailedImg;
+let stones = [];
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
@@ -43,6 +44,11 @@ function preload() {
         let frame1 = loadImage(`assets/fish${i}_1.png`);
         let frame2 = loadImage(`assets/fish${i}_2.png`);
         imgBigFishes.push([frame1, frame2]);
+    }
+
+    for (let i = 6; i <= 12; i++) {
+        let stone = loadImage(`assets/stone${i}.png`);
+        stones.push(stone);
     }
     imgSkeleton = loadImage("assets/Skeleton.png");
     treasureChest = loadImage("assets/Treasure_Chest.png");
@@ -74,17 +80,17 @@ function wireModeButtons() {
         gameManager.currentDifficulty = Difficulty.HARD;
         gameManager.changeState(GameState.PLAYER_MODE_SELECT);
     });
-    
+
     document.getElementById("btn-single").addEventListener("click", () => {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.SINGLE;
         gameManager.startGame(); // 【修复】去掉了 Easy 限制，现在任何难度点单人都能玩了！
     });
-    
+
     document.getElementById("btn-two").addEventListener("click", () => {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.TWO_PLAYER;
-        gameManager.startGame(); 
+        gameManager.startGame();
     });
 
     document.getElementById("back-btn").addEventListener("click", () => {
@@ -108,10 +114,11 @@ function wireModeButtons() {
             overlay.classList.add("active");
             diffGroup.classList.add("hidden");
             playerGroup.classList.remove("hidden");
-            
+
             // 【UI 优化】：如果你依然想在困难模式下隐藏单人按钮，这里保留没问题。
             // 如果你想让单人按钮一直可见，把下面这行改成 singleUnavail.style.display = "none";
-            singleUnavail.style.display = gameManager.currentDifficulty === Difficulty.HARD ? "" : "none";
+            singleUnavail.style.display =
+                gameManager.currentDifficulty === Difficulty.HARD ? "" : "none";
         } else {
             overlay.classList.add("hidden");
             overlay.classList.remove("active");
@@ -125,10 +132,13 @@ let lastGameState = null;
 
 function draw() {
     gameManager.update();
-    
-    if (gameManager._syncOverlay && gameManager.currentState !== lastGameState) {
+
+    if (
+        gameManager._syncOverlay &&
+        gameManager.currentState !== lastGameState
+    ) {
         gameManager._syncOverlay();
-        lastGameState = gameManager.currentState; 
+        lastGameState = gameManager.currentState;
     }
 }
 
