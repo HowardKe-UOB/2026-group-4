@@ -732,7 +732,7 @@ changeState(newState) {
         const panelX = (width - 520) / 2;
         const panelW = 520;
         if (mouseX >= panelX && mouseX <= panelX + panelW) {
-            this.highScoreScrollY -= event.delta;
+            this.highScoreScrollY += event.delta;
             const rowH = 68;
             const listAreaH = 420 - 75 - 15;
             const totalH = this.highScoreManager.topScores.length * rowH;
