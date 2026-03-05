@@ -15,6 +15,8 @@ class GameManager {
         this.highScoreScrollDragging = false;
 
         this.gamePaused = false;
+
+        this.menuSelectionIndex = 0;
     }
 
     isPreGameMenu() {
@@ -61,6 +63,12 @@ changeState(newState) {
     }
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
+        }
+        if (
+            newState === GameState.DIFFICULTY_SELECT ||
+            newState === GameState.PLAYER_MODE_SELECT
+        ) {
+            this.menuSelectionIndex = 0;
         }
 
         //首页背景音乐
@@ -764,6 +772,48 @@ changeState(newState) {
     }
 
     handleKeyPress(key, keyCode) {
+        if (this.currentState === GameState.DIFFICULTY_SELECT) {
+            if (keyCode === UP_ARROW) {
+                this.menuSelectionIndex = 0;
+                return;
+            }
+            if (keyCode === DOWN_ARROW) {
+                this.menuSelectionIndex = 1;
+                return;
+            }
+            if (keyCode === ENTER) {
+                userStartAudio();
+                if (this.menuSelectionIndex === 0) {
+                    this.currentDifficulty = Difficulty.EASY;
+                } else {
+                    this.currentDifficulty = Difficulty.HARD;
+                }
+                this.changeState(GameState.PLAYER_MODE_SELECT);
+                return;
+            }
+        }
+        if (this.currentState === GameState.PLAYER_MODE_SELECT) {
+            if (keyCode === UP_ARROW) {
+                this.menuSelectionIndex = 0;
+                return;
+            }
+            if (keyCode === DOWN_ARROW) {
+                this.menuSelectionIndex = 1;
+                return;
+            }
+            if (keyCode === ENTER) {
+                userStartAudio();
+                if (this.menuSelectionIndex === 0) {
+                    this.currentPlayerMode = PlayerMode.SINGLE;
+                    this.startGame();
+                } else {
+                    this.currentPlayerMode = PlayerMode.TWO_PLAYER;
+                    this.startGame();
+                }
+                return;
+            }
+        }
+
         if (this.currentState === GameState.PLAYING) {
             // --- 1. 双人模式逻辑 (不分难度) ---
             if (this.currentPlayerMode === PlayerMode.TWO_PLAYER) {

@@ -119,7 +119,17 @@ function wireModeButtons() {
         }
     }
 
+    function syncSelectionHighlight() {
+        const s = gameManager.currentState;
+        const idx = gameManager.menuSelectionIndex;
+        const diffBtns = [document.getElementById("btn-easy"), document.getElementById("btn-hard")];
+        const playerBtns = [document.getElementById("btn-single"), document.getElementById("btn-two")];
+        diffBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.DIFFICULTY_SELECT && i === idx));
+        playerBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.PLAYER_MODE_SELECT && i === idx));
+    }
+
     gameManager._syncOverlay = syncOverlay;
+    gameManager._syncSelectionHighlight = syncSelectionHighlight;
 }
 
 let lastGameState = null;
@@ -133,6 +143,9 @@ function draw() {
     ) {
         gameManager._syncOverlay();
         lastGameState = gameManager.currentState;
+    }
+    if (gameManager._syncSelectionHighlight) {
+        gameManager._syncSelectionHighlight();
     }
 }
 
