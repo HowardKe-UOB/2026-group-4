@@ -7,18 +7,22 @@ class ShopItem {
     }
 
     applyEffect(levelManager) {
-        if (this.name === "Strength Potion") {
-            levelManager.hook.retractMultiplier = 2; 
-            //console.log("Strength Potion applied: Retract speed increased!");
+        // 【核心修复】：遍历所有钩子，确保单/双人模式都能生效
+        if (levelManager.hooks && levelManager.hooks.length > 0) {
+            levelManager.hooks.forEach(h => {
+                if (this.name === "Strength Potion") {
+                    h.retractMultiplier = 2; // 提升所有玩家的回拉速度
+                }
+                if (this.name === "Laser Sight") {
+                    h.hasLaser = true; // 所有玩家获得激光
+                }
+            });
         }
-        if (this.name === "Laser Sight") {
-        levelManager.hook.hasLaser = true; 
-        }
+
+        // 沙漏增加时间逻辑（不依赖钩子，保持原样即可）
         if (this.name === "Sand Clock") {
-        // 增加总限时
-        levelManager.timeLimit += 10; 
-        // 同时要把当前剩余时间也补上这10秒，否则倒计时会立刻少掉10秒
-        levelManager.timeRemaining = levelManager.timeLimit; 
+            levelManager.timeLimit += 10; 
+            levelManager.timeRemaining = levelManager.timeLimit; 
         }
     }
 }

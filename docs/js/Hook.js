@@ -1,5 +1,5 @@
 class Hook extends GameObject {
-    constructor(x, y) {
+    constructor(x, y, customSprite) {
         super(x, y);
         this.origin = createVector(x, y);
         this.state = HookState.IDLE_SWINGING;
@@ -14,7 +14,8 @@ class Hook extends GameObject {
         this.length = 50;
         this.maxLength = 500;
 
-        this.sprite = hookImg;
+        // 【新功能】：如果有专属图片就用专属的，没有就默认用原来的
+        this.sprite = customSprite || (typeof hookImg !== "undefined" ? hookImg : null);
     }
 
     update() {
@@ -27,7 +28,6 @@ class Hook extends GameObject {
             this.position.x = this.origin.x + sin(this.angle) * this.length;
             this.position.y = this.origin.y + cos(this.angle) * this.length;
 
-            // Bounce back after hitting the bottom
             if (
                 this.position.y > height ||
                 this.position.x < 0 ||
@@ -42,16 +42,11 @@ class Hook extends GameObject {
             let currentSpeed = originalSpeed * (this.retractMultiplier || 1);
             this.length -= currentSpeed;
 
-            // 更新鱼叉中心的位置
             this.position.x = this.origin.x + sin(this.angle) * this.length;
             this.position.y = this.origin.y + cos(this.angle) * this.length;
 
-            // 【核心修改：挂载位移】
             if (this.attachedItem) {
-                // 设置尖端偏移量 (鱼叉图片宽高设的是 60，中心到尖端大约是 25~30 像素)
                 let tipOffset = 28;
-
-                // 顺着鱼叉当前的角度，把鱼往下/往外推 tipOffset 个像素
                 this.attachedItem.position.x =
                     this.position.x + sin(this.angle) * tipOffset;
                 this.attachedItem.position.y =
@@ -82,7 +77,6 @@ class Hook extends GameObject {
     }
 
     draw() {
-        // 1. 绘制激光瞄准线 (保持不变)
         if (this.hasLaser && this.state === HookState.IDLE_SWINGING) {
             push();
             stroke(0, 255, 0, 125);
@@ -93,34 +87,25 @@ class Hook extends GameObject {
             pop();
         }
 
-        // 2. 绘制绳子 (保持不变)
         stroke(85, 55, 35);
         strokeWeight(3);
         line(this.origin.x, this.origin.y, this.position.x, this.position.y);
 
-        // 3. 【核心修改】绘制带旋转角度的鱼叉
         push();
-        // 将画布原点移动到绳子末端
         translate(this.position.x, this.position.y);
 
-        // 计算当前绳子的真实角度
         let lineAngle = atan2(
             this.position.y - this.origin.y,
             this.position.x - this.origin.x,
         );
-
-        // 旋转图片：因为你的原图是指向左上角的，我们需要加上 135度 (radians(135)) 的角度补偿
-        // 这样鱼叉的尖端就会永远顺着绳子的方向了
         rotate(lineAngle + radians(135));
 
         imageMode(CENTER);
         if (this.sprite) {
-            // 你可以根据需要调整 60, 60 这两个数字来改变鱼叉的大小
             image(this.sprite, 0, 0, 80, 80);
         }
         pop();
 
-        // 4. 绘制被抓到的物品 (保持不变)
         if (this.attachedItem) {
             this.attachedItem.draw();
         }

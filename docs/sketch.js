@@ -1,21 +1,27 @@
 let gameManager;
 let bgImageLevel1;
+let bgImageLevel2;
 let potionImg;
 let laserImg;
 let clockImg;
 let shopBgImg;
 let titleBgm;
+let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
 let imgSmallFishes = [];
 let imgBigFishes = [];
 let imgSkeleton;
 let treasureChest;
 let boatImg;
+let boatImg2;
 let hookImg;
+let hookImg2;
 let nameEntryBgImg;
 let modeSelectBgImg;
 let levelFailedImg;
+
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
+    bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); // 确保文件名和后缀绝对一致！
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     clockImg = loadImage("assets/SandClock.png");
@@ -23,13 +29,13 @@ function preload() {
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
     boatImg = loadImage("assets/boat.png");
+    boatImg2 = loadImage("assets/boat2.png");
     hookImg = loadImage("assets/hook.png");
-    
+    hookImg2 = loadImage("assets/hook2.png");
 
     for (let i = 1; i <= 43; i++) {
         let frame1 = loadImage(`assets/fish${i}_1.png`);
         let frame2 = loadImage(`assets/fish${i}_2.png`);
-
         imgSmallFishes.push([frame1, frame2]);
     }
 
@@ -68,14 +74,17 @@ function wireModeButtons() {
         gameManager.currentDifficulty = Difficulty.HARD;
         gameManager.changeState(GameState.PLAYER_MODE_SELECT);
     });
+    
     document.getElementById("btn-single").addEventListener("click", () => {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.SINGLE;
-        if (gameManager.currentDifficulty === Difficulty.EASY) gameManager.startGame();
+        gameManager.startGame(); // 【修复】去掉了 Easy 限制，现在任何难度点单人都能玩了！
     });
+    
     document.getElementById("btn-two").addEventListener("click", () => {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.TWO_PLAYER;
+        gameManager.startGame(); 
     });
 
     document.getElementById("back-btn").addEventListener("click", () => {
@@ -99,8 +108,10 @@ function wireModeButtons() {
             overlay.classList.add("active");
             diffGroup.classList.add("hidden");
             playerGroup.classList.remove("hidden");
-            singleUnavail.style.display =
-                gameManager.currentDifficulty === Difficulty.HARD ? "" : "none";
+            
+            // 【UI 优化】：如果你依然想在困难模式下隐藏单人按钮，这里保留没问题。
+            // 如果你想让单人按钮一直可见，把下面这行改成 singleUnavail.style.display = "none";
+            singleUnavail.style.display = gameManager.currentDifficulty === Difficulty.HARD ? "" : "none";
         } else {
             overlay.classList.add("hidden");
             overlay.classList.remove("active");
@@ -110,9 +121,15 @@ function wireModeButtons() {
     gameManager._syncOverlay = syncOverlay;
 }
 
+let lastGameState = null;
+
 function draw() {
     gameManager.update();
-    if (gameManager._syncOverlay) gameManager._syncOverlay();
+    
+    if (gameManager._syncOverlay && gameManager.currentState !== lastGameState) {
+        gameManager._syncOverlay();
+        lastGameState = gameManager.currentState; 
+    }
 }
 
 function mousePressed() {
