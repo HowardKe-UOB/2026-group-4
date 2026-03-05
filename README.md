@@ -4,6 +4,8 @@
 
 [🎮 Click this link to play our game](https://uob-comsm0166.github.io/2026-group-4/)
 
+![Game initial input page background](docs/assets/deepsea_prospector.png)
+
 ## Group Kanban Board
 
 [Kanban Board](https://github.com/orgs/UoB-COMSM0166/projects/158)
