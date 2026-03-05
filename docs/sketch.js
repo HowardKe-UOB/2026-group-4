@@ -68,7 +68,6 @@ function wireModeButtons() {
     const overlay = document.getElementById("button-overlay");
     const diffGroup = document.getElementById("difficulty-buttons");
     const playerGroup = document.getElementById("player-mode-buttons");
-    const singleUnavail = document.getElementById("single-unavailable");
 
     document.getElementById("btn-easy").addEventListener("click", () => {
         userStartAudio();
@@ -114,11 +113,6 @@ function wireModeButtons() {
             overlay.classList.add("active");
             diffGroup.classList.add("hidden");
             playerGroup.classList.remove("hidden");
-
-            // 【UI 优化】：如果你依然想在困难模式下隐藏单人按钮，这里保留没问题。
-            // 如果你想让单人按钮一直可见，把下面这行改成 singleUnavail.style.display = "none";
-            singleUnavail.style.display =
-                gameManager.currentDifficulty === Difficulty.HARD ? "" : "none";
         } else {
             overlay.classList.add("hidden");
             overlay.classList.remove("active");
