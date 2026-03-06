@@ -124,8 +124,19 @@ function wireModeButtons() {
         const idx = gameManager.menuSelectionIndex;
         const diffBtns = [document.getElementById("btn-easy"), document.getElementById("btn-hard")];
         const playerBtns = [document.getElementById("btn-single"), document.getElementById("btn-two")];
-        diffBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.DIFFICULTY_SELECT && i === idx));
-        playerBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.PLAYER_MODE_SELECT && i === idx));
+        diffBtns.forEach((b, i) => {
+            const selected = s === GameState.DIFFICULTY_SELECT && i === idx;
+            b?.classList.toggle("menu-selected", selected);
+            b?.closest(".btn-row")?.classList.toggle("row-selected", selected);
+        });
+        playerBtns.forEach((b, i) => {
+            const selected = s === GameState.PLAYER_MODE_SELECT && i === idx;
+            b?.classList.toggle("menu-selected", selected);
+            b?.closest(".btn-row")?.classList.toggle("row-selected", selected);
+        });
+        if (s !== GameState.DIFFICULTY_SELECT && s !== GameState.PLAYER_MODE_SELECT) {
+            document.querySelectorAll(".btn-row").forEach((r) => r.classList.remove("row-selected"));
+        }
     }
 
     gameManager._syncOverlay = syncOverlay;
