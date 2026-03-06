@@ -149,3 +149,54 @@ class Treasure extends SeaItem {
         this.drawScoreText();
     }
 }
+
+class Stone extends SeaItem {
+    constructor(x, y) {
+        let val = floor(random(10, 30));
+        let w = random(6, 12);
+
+        super(x, y, "Stone", val, w);
+
+        this.width = random(50, 90);
+        this.height = this.width;
+
+        if (typeof stones !== "undefined" && stones.length > 0) {
+            this.sprite = random(stones);
+        } else {
+            this.sprite = null;
+        }
+    }
+
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+
+        if (this.sprite) {
+            imageMode(CENTER);
+
+            image(this.sprite, 0, 0, this.width, this.height);
+        } else {
+            noStroke();
+            fill(90, 90, 95);
+            ellipse(0, 0, this.width, this.height);
+
+            fill(120, 120, 125);
+            ellipse(
+                -this.width * 0.15,
+                -this.height * 0.15,
+                this.width * 0.4,
+                this.height * 0.3,
+            );
+            fill(60, 60, 65);
+            ellipse(
+                this.width * 0.15,
+                this.height * 0.2,
+                this.width * 0.5,
+                this.height * 0.2,
+            );
+        }
+
+        pop();
+        this.drawScoreText();
+    }
+}

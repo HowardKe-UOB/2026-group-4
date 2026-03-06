@@ -18,6 +18,7 @@ let hookImg2;
 let nameEntryBgImg;
 let modeSelectBgImg;
 let levelFailedImg;
+let stones = [];
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
@@ -44,6 +45,11 @@ function preload() {
         let frame2 = loadImage(`assets/fish${i}_2.png`);
         imgBigFishes.push([frame1, frame2]);
     }
+
+    for (let i = 6; i <= 12; i++) {
+        let stone = loadImage(`assets/stone${i}.png`);
+        stones.push(stone);
+    }
     imgSkeleton = loadImage("assets/Skeleton.png");
     treasureChest = loadImage("assets/Treasure_Chest.png");
     nameEntryBgImg = loadImage("assets/deepsea_prospector.png");
@@ -62,7 +68,6 @@ function wireModeButtons() {
     const overlay = document.getElementById("button-overlay");
     const diffGroup = document.getElementById("difficulty-buttons");
     const playerGroup = document.getElementById("player-mode-buttons");
-    const singleUnavail = document.getElementById("single-unavailable");
 
     document.getElementById("btn-easy").addEventListener("click", () => {
         userStartAudio();
@@ -74,17 +79,17 @@ function wireModeButtons() {
         gameManager.currentDifficulty = Difficulty.HARD;
         gameManager.changeState(GameState.PLAYER_MODE_SELECT);
     });
-    
+
     document.getElementById("btn-single").addEventListener("click", () => {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.SINGLE;
         gameManager.startGame(); // 【修复】去掉了 Easy 限制，现在任何难度点单人都能玩了！
     });
-    
+
     document.getElementById("btn-two").addEventListener("click", () => {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.TWO_PLAYER;
-        gameManager.startGame(); 
+        gameManager.startGame();
     });
 
     document.getElementById("back-btn").addEventListener("click", () => {
@@ -108,27 +113,39 @@ function wireModeButtons() {
             overlay.classList.add("active");
             diffGroup.classList.add("hidden");
             playerGroup.classList.remove("hidden");
-            
-            // 【UI 优化】：如果你依然想在困难模式下隐藏单人按钮，这里保留没问题。
-            // 如果你想让单人按钮一直可见，把下面这行改成 singleUnavail.style.display = "none";
-            singleUnavail.style.display = gameManager.currentDifficulty === Difficulty.HARD ? "" : "none";
         } else {
             overlay.classList.add("hidden");
             overlay.classList.remove("active");
         }
     }
 
+    function syncSelectionHighlight() {
+        const s = gameManager.currentState;
+        const idx = gameManager.menuSelectionIndex;
+        const diffBtns = [document.getElementById("btn-easy"), document.getElementById("btn-hard")];
+        const playerBtns = [document.getElementById("btn-single"), document.getElementById("btn-two")];
+        diffBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.DIFFICULTY_SELECT && i === idx));
+        playerBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.PLAYER_MODE_SELECT && i === idx));
+    }
+
     gameManager._syncOverlay = syncOverlay;
+    gameManager._syncSelectionHighlight = syncSelectionHighlight;
 }
 
 let lastGameState = null;
 
 function draw() {
     gameManager.update();
-    
-    if (gameManager._syncOverlay && gameManager.currentState !== lastGameState) {
+
+    if (
+        gameManager._syncOverlay &&
+        gameManager.currentState !== lastGameState
+    ) {
         gameManager._syncOverlay();
-        lastGameState = gameManager.currentState; 
+        lastGameState = gameManager.currentState;
+    }
+    if (gameManager._syncSelectionHighlight) {
+        gameManager._syncSelectionHighlight();
     }
 }
 
