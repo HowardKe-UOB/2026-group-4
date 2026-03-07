@@ -19,6 +19,7 @@ let hookImg2;
 let nameEntryBgImg;
 let modeSelectBgImg;
 let levelFailedImg;
+let leaderboardBgImg;
 let stones = [];
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
 const pixelFont = "Press Start 2P";
@@ -60,6 +61,7 @@ function preload() {
     nameEntryBgImg = loadImage("assets/deepsea_prospector.png");
     modeSelectBgImg = loadImage("assets/choose_fishing_challenge.png");
     levelFailedImg = loadImage("assets/levelfailed.png");
+    leaderboardBgImg = loadImage("assets/leaderboard.png");
 }
 
 function setup() {
