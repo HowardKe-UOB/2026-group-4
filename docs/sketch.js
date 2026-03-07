@@ -71,8 +71,22 @@ function setup() {
 
 function wireModeButtons() {
     const overlay = document.getElementById("button-overlay");
+    const mermaidCursor = document.getElementById("mermaid-cursor");
     const diffGroup = document.getElementById("difficulty-buttons");
     const playerGroup = document.getElementById("player-mode-buttons");
+
+    let hoveredButton = null;
+    const allModeButtons = [
+        document.getElementById("btn-easy"),
+        document.getElementById("btn-hard"),
+        document.getElementById("btn-single"),
+        document.getElementById("btn-two"),
+    ];
+    allModeButtons.forEach((btn) => {
+        if (!btn) return;
+        btn.addEventListener("mouseenter", () => { hoveredButton = btn; });
+        btn.addEventListener("mouseleave", () => { hoveredButton = null; });
+    });
 
     document.getElementById("btn-easy").addEventListener("click", () => {
         userStartAudio();
@@ -149,6 +163,29 @@ function wireModeButtons() {
                 b?.closest(".btn-row")?.classList.add("row-selected");
             }
         });
+
+        // 单一美人鱼：鼠标优先，悬停时跟随鼠标，否则跟随键盘选择
+        const MARGIN = 12;
+        const ICON_SIZE = 48;
+        let activeBtn = null;
+        if (s === GameState.DIFFICULTY_SELECT) {
+            activeBtn = (hoveredButton && diffBtns.includes(hoveredButton))
+                ? hoveredButton
+                : (diffBtns[idx] ?? null);
+        } else if (s === GameState.PLAYER_MODE_SELECT) {
+            activeBtn = (hoveredButton && playerBtns.includes(hoveredButton))
+                ? hoveredButton
+                : (playerBtns[idx] ?? null);
+        }
+        if (mermaidCursor && activeBtn) {
+            const or = overlay.getBoundingClientRect();
+            const br = activeBtn.getBoundingClientRect();
+            mermaidCursor.style.left = `${br.left - or.left - ICON_SIZE - MARGIN}px`;
+            mermaidCursor.style.top = `${br.top - or.top + (br.height - ICON_SIZE) / 2}px`;
+            mermaidCursor.classList.add("visible");
+        } else if (mermaidCursor) {
+            mermaidCursor.classList.remove("visible");
+        }
     }
 
     gameManager._syncOverlay = syncOverlay;

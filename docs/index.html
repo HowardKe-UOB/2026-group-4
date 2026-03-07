@@ -125,17 +125,15 @@
             .pixel-btn.menu-selected {
                 background-color: #6bb082;
             }
-            .btn-row .mermaid-icon {
+            .mermaid-cursor {
                 display: none;
                 position: absolute;
-                right: 100%;
-                margin-right: 12px;
                 width: 48px;
                 height: 48px;
                 object-fit: contain;
+                pointer-events: none;
             }
-            .btn-row:hover .mermaid-icon,
-            .btn-row.row-selected .mermaid-icon {
+            .mermaid-cursor.visible {
                 display: block;
             }
 
@@ -250,24 +248,21 @@
     <body>
         <div id="game-container">
             <div id="button-overlay" class="hidden">
+                <img id="mermaid-cursor" class="mermaid-cursor" src="assets/mermaid.png" alt="">
                 <button id="back-btn" type="button" title="Back">←</button>
                 <div id="difficulty-buttons" class="btn-group hidden">
                     <div class="btn-row">
-                        <img class="mermaid-icon" src="assets/mermaid.png" alt="">
                         <button class="pixel-btn" id="btn-easy">EASY</button>
                     </div>
                     <div class="btn-row">
-                        <img class="mermaid-icon" src="assets/mermaid.png" alt="">
                         <button class="pixel-btn pixel-btn-hard" id="btn-hard">HARD</button>
                     </div>
                 </div>
                 <div id="player-mode-buttons" class="btn-group hidden">
                     <div class="btn-row">
-                        <img class="mermaid-icon" src="assets/mermaid.png" alt="">
                         <button class="pixel-btn pixel-btn-blue" id="btn-single">SINGLE</button>
                     </div>
                     <div class="btn-row">
-                        <img class="mermaid-icon" src="assets/mermaid.png" alt="">
                         <button class="pixel-btn pixel-btn-orange" id="btn-two">TWO PLAYER</button>
                     </div>
                 </div>
