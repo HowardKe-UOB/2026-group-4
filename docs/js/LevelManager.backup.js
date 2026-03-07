@@ -4,7 +4,6 @@ class LevelManager {
         this.levelNum = levelNum;
         this.playerMode = playerMode;
         this.difficulty = difficulty; // 区分困难和简单
-        // 【新增】深海场景判定：Level >= 3 进入深海        this.isDeepSea = this.levelNum >= 3;
 
         // 1. 目标分数计算逻辑
         let baseTarget = levelNum === 1 ? 200 : 200 + (levelNum - 1) * 400;
@@ -37,23 +36,23 @@ class LevelManager {
 
         if (this.playerMode === PlayerMode.SINGLE) {
             let boatX = width / 2;
-            this.boats.push(createVector(boatX, 195));
-            this.hooks.push(new Hook(boatX, 185, p1HookImg));
+            this.boats.push(createVector(boatX, 155));
+            this.hooks.push(new Hook(boatX, 155, p1HookImg));
             this.scores.push(0);
             this.hook = this.hooks[0];
         } else {
             let boat1X = width * 0.3;
             let boat2X = width * 0.7;
 
-            this.boats.push(createVector(boat1X, 195));
-            this.hooks.push(new Hook(boat1X, 185, p1HookImg));
+            this.boats.push(createVector(boat1X, 155));
+            this.hooks.push(new Hook(boat1X, 155, p1HookImg));
             this.scores.push(0);
 
-            this.boats.push(createVector(boat2X, 195));
+            this.boats.push(createVector(boat2X, 155));
             this.hooks.push(
                 new Hook(
                     boat2X,
-                    185,
+                    155,
                     typeof hookImg !== "undefined" ? hookImg : null,
                 ),
             );
@@ -84,13 +83,6 @@ class LevelManager {
         let isHard = this.difficulty === Difficulty.HARD;
         let multiplier = this.playerMode === PlayerMode.TWO_PLAYER ? 1.5 : 1;
 
-        // 环境常量定义
-        const WATER_LEVEL = 160;
-        const SHALLOW_WATER_MIN_Y = 300;
-        const DEEP_WATER_MIN_Y = 350;
-        const MAX_ITEMS = 30;
-        const SAFE_MARGIN = 40;
-
         // 碰撞检测辅助函数
         const checkOverlap = (newItem, list, padding) => {
             for (let item of list) {
@@ -106,29 +98,13 @@ class LevelManager {
             return false;
         };
 
-        let treasureCount;
-        if (this.isDeepSea) {
-            treasureCount = Math.floor(random(4, 6) * multiplier);
-        } else {
-            treasureCount = Math.floor(
-                random(isHard ? 2 : 3, isHard ? 4 : 5) * multiplier,
-            );
-        }
-        let looseStoneCount;
-        if (this.isDeepSea) {
-            looseStoneCount = Math.floor(2 * multiplier);
-        } else {
-            looseStoneCount = Math.floor(
-                (isHard ? 3 + this.levelNum : 2) * multiplier,
-            );
-        }
-        let fishCount;
-        if (this.isDeepSea) {
-            fishCount = 15;
-        } else {
-            fishCount = Math.floor((12 + this.levelNum * 2) * multiplier);
-            fishCount = Math.min(fishCount, MAX_ITEMS);
-        }
+        let treasureCount = Math.floor(
+            random(isHard ? 2 : 3, isHard ? 4 : 5) * multiplier,
+        );
+        let looseStoneCount = Math.floor(
+            (isHard ? 3 + this.levelNum : 2) * multiplier,
+        );
+        let fishCount = Math.floor((12 + this.levelNum * 2) * multiplier);
 
         for (let i = 0; i < treasureCount; i++) {
             let attempts = 0;
@@ -179,8 +155,8 @@ class LevelManager {
         for (let i = 0; i < looseStoneCount; i++) {
             let attempts = 0;
             while (attempts < 20) {
-                let sx = random(SAFE_MARGIN, width - SAFE_MARGIN);
-                let sy = random(DEEP_WATER_MIN_Y, height - 20);
+                let sx = random(50, width - 50);
+                let sy = random(250, height - 20);
 
                 // 随机决定是石头还是鱼骨
                 let obstacle =
@@ -195,36 +171,16 @@ class LevelManager {
             }
         }
 
-        for (
-            let i = 0;
-            i < fishCount && this.activeItems.length < MAX_ITEMS;
-            i++
-        ) {
+        for (let i = 0; i < fishCount; i++) {
             let attempts = 0;
             while (attempts < 30) {
                 let fx = random(50, width - 50);
-                let fy;
+                let fy = random(180, height - 100);
 
-                if (this.isDeepSea) {
-                    fy = random(DEEP_WATER_MIN_Y, height - 100);
-                } else {
-                    fy = random(SHALLOW_WATER_MIN_Y, height - 100);
-                }
-
-                let fish;
-                if (this.isDeepSea) {
-                    // 深海场景：70% BigFish，30% SmallFish
-                    fish =
-                        random() > 0.3
-                            ? new BigFish(fx, fy)
-                            : new SmallFish(fx, fy);
-                } else {
-                    // 浅海场景：70% SmallFish，30% BigFish
-                    fish =
-                        random() > 0.3
-                            ? new SmallFish(fx, fy)
-                            : new BigFish(fx, fy);
-                }
+                let fish =
+                    random() > 0.3
+                        ? new SmallFish(fx, fy)
+                        : new BigFish(fx, fy);
 
                 if (isHard) {
                     fish.speed *= random(1.3, 1.8);
@@ -299,15 +255,7 @@ class LevelManager {
         push();
         imageMode(CORNER);
 
-        if (this.isDeepSea) {
-            if (typeof bgImageDeepSea !== "undefined" && bgImageDeepSea) {
-                image(bgImageDeepSea, 0, 0, width, height);
-            } else if (typeof bgImageLevel2 !== "undefined" && bgImageLevel2) {
-                image(bgImageLevel2, 0, 0, width, height);
-            } else {
-                background(10, 40, 80);
-            }
-        } else if (this.difficulty === Difficulty.HARD) {
+        if (this.difficulty === Difficulty.HARD) {
             if (typeof bgImageLevel2 !== "undefined" && bgImageLevel2) {
                 image(bgImageLevel2, 0, 0, width, height);
             } else {
@@ -354,12 +302,7 @@ class LevelManager {
         push();
         let timeLeft = Math.ceil(this.timeRemaining || 0);
         textSize(18);
-        // 【修改】使用像素街机字体，如果加载失败则使用默认字体
-        if (typeof pixelFont !== 'undefined' && pixelFont) {
-            textFont(pixelFont);
-        } else {
-            textFont("Courier New");
-        }
+        textFont("Courier New");
         textStyle(BOLD);
 
         let leftX = 25;
@@ -373,14 +316,6 @@ class LevelManager {
             tAlpha = 150 + 105 * sin(frameCount * 0.15);
         }
 
-        // 深海标记显示
-        if (this.isDeepSea) {
-            textSize(16);
-            fill(0, 200, 255, 200);
-            textAlign(CENTER, TOP);
-            text("DEEP SEA", width / 2, 70);
-        }
-
         if (this.playerMode === PlayerMode.SINGLE) {
             textAlign(LEFT, TOP);
             this.drawPixelText(
@@ -390,7 +325,7 @@ class LevelManager {
                 this.cMoney,
             );
 
-            let goalX = width - 180;
+            let goalX = width - 160;
             this.drawPixelText(
                 `GOAL: ${this.targetScore}`,
                 goalX,

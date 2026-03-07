@@ -1,6 +1,7 @@
 let gameManager;
 let bgImageLevel1;
 let bgImageLevel2;
+let bgImageDeepSea;  // 【新增】深海背景 - 用于Level >= 3或触发深海模式
 let potionImg;
 let laserImg;
 let clockImg;
@@ -19,10 +20,14 @@ let nameEntryBgImg;
 let modeSelectBgImg;
 let levelFailedImg;
 let stones = [];
+// 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
+const pixelFont = "Press Start 2P";
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); // 确保文件名和后缀绝对一致！
+    // 【新增】预加载深海背景（暗色调海洋场景）
+    // bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 【修复】此文件不存在，使用 ocean_bg2 代替 // 需要新增此资源或使用现有的ocean_bg2作为深海
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     clockImg = loadImage("assets/SandClock.png");
@@ -58,7 +63,7 @@ function preload() {
 }
 
 function setup() {
-    const canvas = createCanvas(800, 600);
+    const canvas = createCanvas(1280, 720);
     canvas.parent("game-container");
     gameManager = new GameManager();
     wireModeButtons();
@@ -124,19 +129,26 @@ function wireModeButtons() {
         const idx = gameManager.menuSelectionIndex;
         const diffBtns = [document.getElementById("btn-easy"), document.getElementById("btn-hard")];
         const playerBtns = [document.getElementById("btn-single"), document.getElementById("btn-two")];
+
+        // 【修复】首先清除所有的 row-selected 类，防止重影
+        document.querySelectorAll(".btn-row").forEach((r) => r.classList.remove("row-selected"));
+        document.querySelectorAll(".pixel-btn").forEach((b) => b.classList.remove("menu-selected"));
+
+        // 然后只添加到正确选中的选项
         diffBtns.forEach((b, i) => {
             const selected = s === GameState.DIFFICULTY_SELECT && i === idx;
-            b?.classList.toggle("menu-selected", selected);
-            b?.closest(".btn-row")?.classList.toggle("row-selected", selected);
+            if (selected) {
+                b?.classList.add("menu-selected");
+                b?.closest(".btn-row")?.classList.add("row-selected");
+            }
         });
         playerBtns.forEach((b, i) => {
             const selected = s === GameState.PLAYER_MODE_SELECT && i === idx;
-            b?.classList.toggle("menu-selected", selected);
-            b?.closest(".btn-row")?.classList.toggle("row-selected", selected);
+            if (selected) {
+                b?.classList.add("menu-selected");
+                b?.closest(".btn-row")?.classList.add("row-selected");
+            }
         });
-        if (s !== GameState.DIFFICULTY_SELECT && s !== GameState.PLAYER_MODE_SELECT) {
-            document.querySelectorAll(".btn-row").forEach((r) => r.classList.remove("row-selected"));
-        }
     }
 
     gameManager._syncOverlay = syncOverlay;
