@@ -33,6 +33,8 @@ class GameManager {
 
     startGame() {
         this.player.totalScore = 0;
+        this.player.p1Score = 0;  // 重置双人各自余额
+        this.player.p2Score = 0;
         this.levelNum = 1;
         const buttonOverlay = document.getElementById('button-overlay');
         if (buttonOverlay) {
@@ -518,7 +520,7 @@ changeState(newState) {
 
     drawShop() {
         push();
-        this.shopManager.draw(this.player);
+        this.shopManager.draw(this.player, this.currentPlayerMode);
         pop();
     }
 
@@ -779,7 +781,7 @@ changeState(newState) {
                 break;
             }
             case GameState.SHOP: {
-                let shopResult = this.shopManager.handleMousePress(this.player);
+                let shopResult = this.shopManager.handleMousePress(this.player, this.currentPlayerMode);
                 if (shopResult === 'NEXT_LEVEL') {
                     this.levelNum++;
                     this.startLevel();
