@@ -3,6 +3,7 @@ class Player {
         this.name = "";
         this.totalScore = 0;
         this.inventory = [];
+        this.hasSubmarine = false;
     }
 
     addScore(amount) {

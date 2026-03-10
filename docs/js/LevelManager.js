@@ -4,22 +4,29 @@ class LevelManager {
         this.levelNum = levelNum;
         this.playerMode = playerMode;
         this.difficulty = difficulty; // 区分困难和简单
-        // 【新增】深海场景判定：Level >= 3 进入深海        this.isDeepSea = this.levelNum >= 3;
+        // 深海场景判定：玩家购买潜水艇后解锁深海
+        this.isDeepSea = this.player.hasSubmarine;
 
         // 1. 目标分数计算逻辑
-        let baseTarget = levelNum === 1 ? 200 : 200 + (levelNum - 1) * 400;
+        // 非线性增长曲线: 75n² + 125n + 50
+        // 单人参考值 (EASY): L1=250, L2=600, L3=1100, L4=1750, L5=2550
+        // 双人参考值 (×1.8): L1=450, L2=1080, L3=1980, L4=3150, L5=4590
+        // 困难参考值 (×1.3): L1=325, L2=780,  L3=1430, L4=2275, L5=3315
+        let n = levelNum;
+        let baseTarget = 75 * n * n + 125 * n + 50;
 
         // 【新增】：困难模式下，目标分数提高，时间减少
         if (this.difficulty === Difficulty.HARD) {
             baseTarget = Math.floor(baseTarget * 1.3); // 分数要求提高 30%
             this.timeLimit = Math.max(15, 25 - levelNum); // 困难模式时间更少，且随关卡递减
         } else {
-            this.timeLimit = 20 + (levelNum > 1 ? 5 : 0); // 简单模式时间相对充裕
+            this.timeLimit = 30 + (levelNum > 1 ? 5 : 0); // 简单模式时间相对充裕
         }
 
+        // 双人模式目标分数 ×1.8：双钩抓取效率翻倍，需提高难度
         this.targetScore =
             this.playerMode === PlayerMode.TWO_PLAYER
-                ? baseTarget * 1.5
+                ? Math.floor(baseTarget * 1.8)
                 : baseTarget;
         this.timeRemaining = this.timeLimit;
 
@@ -74,6 +81,14 @@ class LevelManager {
         this.cSecondary = color(255, 215, 0);
         this.cMoney = color(255, 220, 50);
         this._pauseBtnBounds = { cx: 0, cy: 0, w: 24, h: 24 };
+
+        // 深海系统初始化（darknessLayer 遮罩 + 鲨鱼事件）
+        if (this.isDeepSea) {
+            this.darknessLayer = createGraphics(width, height);
+            this.sharks = [];
+            this.sharkSpawnTimer = 0;
+            this.sharkSpawnInterval = floor(random(600, 800)); // 5–8 秒随机间隔
+        }
     }
 
     spawnItems() {
@@ -116,7 +131,8 @@ class LevelManager {
         }
         let looseStoneCount;
         if (this.isDeepSea) {
-            looseStoneCount = Math.floor(2 * multiplier);
+            // 深海：大量石头和鱼骨作为障碍，营造压迫感
+            looseStoneCount = Math.floor(random(8, 12) * multiplier);
         } else {
             looseStoneCount = Math.floor(
                 (isHard ? 3 + this.levelNum : 2) * multiplier,
@@ -124,7 +140,8 @@ class LevelManager {
         }
         let fishCount;
         if (this.isDeepSea) {
-            fishCount = 15;
+            // 深海鱼数量减少，但质量更高（AnglerFish + BigFish 为主）
+            fishCount = 10;
         } else {
             fishCount = Math.floor((12 + this.levelNum * 2) * multiplier);
             fishCount = Math.min(fishCount, MAX_ITEMS);
@@ -213,11 +230,14 @@ class LevelManager {
 
                 let fish;
                 if (this.isDeepSea) {
-                    // 深海场景：70% BigFish，30% SmallFish
+                    // 深海场景：20% AnglerFish（移动光源+高分），55% BigFish，25% SmallFish
+                    let r = random();
                     fish =
-                        random() > 0.3
-                            ? new BigFish(fx, fy)
-                            : new SmallFish(fx, fy);
+                        r < 0.2
+                            ? new AnglerFish(fx, fy)
+                            : r < 0.75
+                              ? new BigFish(fx, fy)
+                              : new SmallFish(fx, fy);
                 } else {
                     // 浅海场景：70% SmallFish，30% BigFish
                     fish =
@@ -274,7 +294,7 @@ class LevelManager {
                         item.position.y,
                     );
 
-                    if (d < item.width / 2 + 10) {
+                    if (d < (item.catchRadius ?? item.width / 2) + 10) {
                         if (item.canBeCaught) {
                             currentHook.grabItem(item);
                             this.activeItems.splice(j, 1);
@@ -282,6 +302,48 @@ class LevelManager {
                         }
                     }
                 }
+            }
+        }
+
+        // 深海鲨鱼事件系统
+        if (this.isDeepSea) {
+            this.sharkSpawnTimer++;
+            if (this.sharkSpawnTimer >= this.sharkSpawnInterval) {
+                this.sharks.push(new Shark());
+                this.sharkSpawnTimer = 0;
+                this.sharkSpawnInterval = floor(random(300, 480));
+            }
+            for (let i = this.sharks.length - 1; i >= 0; i--) {
+                let shark = this.sharks[i];
+                shark.update();
+                // 检测鲨鱼与正在上升的钩子挂载物品的碰撞
+                for (let hook of this.hooks) {
+                    if (
+                        hook.attachedItem &&
+                        hook.state === HookState.MOVING_UP
+                    ) {
+                        let item = hook.attachedItem;
+                        if (
+                            shark.overlaps(
+                                item.position.x,
+                                item.position.y,
+                                item.catchRadius ?? item.width / 2,
+                            )
+                        ) {
+                            // 鲨鱼吃掉物品，钩子空手回收
+                            this.floatingScores.push({
+                                x: item.position.x,
+                                y: item.position.y - 20,
+                                text: "STOLEN!",
+                                alpha: 255,
+                                life: 90,
+                                isAlert: true,
+                            });
+                            hook.attachedItem = null;
+                        }
+                    }
+                }
+                if (shark.done) this.sharks.splice(i, 1);
             }
         }
 
@@ -299,6 +361,7 @@ class LevelManager {
         push();
         imageMode(CORNER);
 
+        // --- 背景 ---
         if (this.isDeepSea) {
             if (typeof bgImageDeepSea !== "undefined" && bgImageDeepSea) {
                 image(bgImageDeepSea, 0, 0, width, height);
@@ -322,31 +385,67 @@ class LevelManager {
         }
 
         imageMode(CENTER);
-        for (let i = 0; i < this.boats.length; i++) {
-            push();
 
-            let waveSpeed = frameCount * 0.015;
-            let phaseOffset = this.boats[i].x * 0.01;
-            let bobY = sin(waveSpeed + phaseOffset) * 4;
-            let rockAngle = cos(waveSpeed * 0.8 + phaseOffset) * 0.04;
-
-            translate(this.boats[i].x, this.boats[i].y + bobY);
-            rotate(rockAngle);
-
-            if (i === 0 && typeof boatImg2 !== "undefined" && boatImg2) {
-                image(boatImg2, 0, 0, 220, 220);
-            } else if (typeof boatImg !== "undefined" && boatImg) {
-                image(boatImg, 0, 0, 220, 220);
-            } else {
-                fill(100, 50, 0);
-                rect(-50, -20, 100, 40);
+        if (this.isDeepSea) {
+            // 深海渲染顺序：物品 → 黑暗遮罩 → 鲨鱼 → 潜水艇+钩子
+            // 物品先画（被遮罩覆盖，只在光锥内可见）
+            for (let item of this.activeItems) {
+                item.draw();
             }
-            pop();
-            this.hooks[i].draw();
-        }
 
-        for (let item of this.activeItems) {
-            item.draw();
+            // 应用黑暗遮罩（内含探照灯光锥 + 鮟鱇鱼光晕的擦除孔洞）
+            this._updateDarknessLayer();
+            push();
+            imageMode(CORNER); // 遮罩必须从 (0,0) 角落开始铺满全屏
+            image(this.darknessLayer, 0, 0);
+            pop();
+
+            // 鲨鱼绘制在遮罩之上，始终可见（作为威胁提示）
+            for (let shark of this.sharks) {
+                shark.draw();
+            }
+
+            // 潜水艇和钩子绘制在遮罩之上
+            for (let i = 0; i < this.boats.length; i++) {
+                push();
+                let waveSpeed = frameCount * 0.015;
+                let phaseOffset = this.boats[i].x * 0.01;
+                let bobY = sin(waveSpeed + phaseOffset) * 3;
+                let rockAngle = cos(waveSpeed * 0.8 + phaseOffset) * 0.025;
+                translate(this.boats[i].x, this.boats[i].y + bobY);
+                rotate(rockAngle);
+                if (typeof submarineImg !== "undefined" && submarineImg) {
+                    image(submarineImg, 0, -40, 240, 130); // 上移至水面附近
+                } else {
+                    this._drawSubmarine(i);
+                }
+                pop();
+                this.hooks[i].draw();
+            }
+        } else {
+            // 普通渲染顺序（保持原有逻辑：船→钩子→物品）
+            for (let i = 0; i < this.boats.length; i++) {
+                push();
+                let waveSpeed = frameCount * 0.015;
+                let phaseOffset = this.boats[i].x * 0.01;
+                let bobY = sin(waveSpeed + phaseOffset) * 4;
+                let rockAngle = cos(waveSpeed * 0.8 + phaseOffset) * 0.04;
+                translate(this.boats[i].x, this.boats[i].y + bobY);
+                rotate(rockAngle);
+                if (i === 0 && typeof boatImg2 !== "undefined" && boatImg2) {
+                    image(boatImg2, 0, 0, 220, 220);
+                } else if (typeof boatImg !== "undefined" && boatImg) {
+                    image(boatImg, 0, 0, 220, 220);
+                } else {
+                    fill(100, 50, 0);
+                    rect(-50, -20, 100, 40);
+                }
+                pop();
+                this.hooks[i].draw();
+            }
+            for (let item of this.activeItems) {
+                item.draw();
+            }
         }
         pop();
 
@@ -499,7 +598,11 @@ class LevelManager {
             let fs = this.floatingScores[i];
             fill(0, 0, 0, fs.alpha);
             text(fs.text, fs.x + 2, fs.y + 2);
-            fill(50, 255, 50, fs.alpha);
+            if (fs.isAlert) {
+                fill(255, 55, 55, fs.alpha); // 红色警告（STOLEN!）
+            } else {
+                fill(50, 255, 50, fs.alpha);
+            }
             text(fs.text, fs.x, fs.y);
 
             fs.y -= 1.5;
@@ -520,6 +623,79 @@ class LevelManager {
         fill(red(col), green(col), blue(col), alpha);
         text(txt, x, y);
         pop();
+    }
+
+    // 深海黑暗遮罩：填满黑色，然后用 erase() 在光源位置"挖洞"
+    _updateDarknessLayer() {
+        let dl = this.darknessLayer;
+        dl.clear();
+        dl.background(0, 0, 0, 215);
+        dl.erase();
+        dl.noStroke();
+        dl.fill(255);
+
+        for (let i = 0; i < this.hooks.length; i++) {
+            let hook = this.hooks[i];
+            let bx = this.boats[i].x;
+            // 从潜水艇底部发出光锥（与 image offset -40 对齐，底部约在 boats.y + 25）
+            let by = this.boats[i].y + 25;
+            let coneLen = 400;
+            let spread = PI / 6; // ±30° 半角
+            let a1 = hook.angle - spread;
+            let a2 = hook.angle + spread;
+            // 锥形区域（跟随鱼叉摆角）
+            dl.triangle(
+                bx,
+                by,
+                bx + sin(a1) * coneLen,
+                by + cos(a1) * coneLen,
+                bx + sin(a2) * coneLen,
+                by + cos(a2) * coneLen,
+            );
+            // 潜水艇周围的小圆形环境光，防止硬边
+            dl.ellipse(bx, by, 90, 90);
+        }
+
+        // 鮟鱇鱼作为移动光源（随脉冲动态变化）
+        for (let item of this.activeItems) {
+            if (item instanceof AnglerFish) {
+                let pulse = 0.15 * sin(frameCount * 0.05 + item.glowPulse);
+                let r = item.glowRadius * (1 + pulse);
+                dl.ellipse(item.position.x, item.position.y, r * 2, r * 2);
+            }
+        }
+
+        dl.noErase();
+    }
+
+    // 代码绘制潜水艇（无 submarineImg 资源时的 fallback，中心点在 0,0）
+    _drawSubmarine(playerIndex) {
+        noStroke();
+        // 舰体
+        fill(playerIndex === 0 ? color(60, 110, 160) : color(110, 60, 160));
+        ellipse(0, 15, 210, 78);
+        // 艇塔
+        fill(playerIndex === 0 ? color(45, 88, 130) : color(88, 45, 130));
+        rect(-22, -38, 44, 50, 6);
+        // 潜望镜
+        fill(35, 70, 105);
+        rect(-6, -60, 12, 28);
+        // 舷窗
+        fill(190, 235, 255, 200);
+        ellipse(38, 14, 26, 26);
+        stroke(40, 90, 130);
+        strokeWeight(3);
+        noFill();
+        ellipse(38, 14, 26, 26);
+        noStroke();
+        // 螺旋桨
+        fill(80, 140, 175);
+        ellipse(-100, 14, 18, 42);
+        // 探照灯（前端发光点）
+        fill(255, 240, 80, 230);
+        ellipse(104, 14, 18, 18);
+        fill(255, 240, 80, 80);
+        ellipse(104, 14, 32, 32);
     }
 
     showCatchScore(points, x, y) {

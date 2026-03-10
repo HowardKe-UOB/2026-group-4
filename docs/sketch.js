@@ -1,7 +1,10 @@
 let gameManager;
 let bgImageLevel1;
 let bgImageLevel2;
-let bgImageDeepSea;  // 【新增】深海背景 - 用于Level >= 3或触发深海模式
+let bgImageDeepSea; // 【新增】深海背景 - 用于Level >= 3或触发深海模式
+let submarineImg; // 【新增】潜水艇图片 - 深海关卡替换小船
+let sharkImgs = [];  // 【新增】鲨鱼动画帧 - 深海掠食者（4帧）
+let anglerFishImgs = []; // 【新增】鮟鱇鱼动画帧 - 深海发光生物（4帧）
 let potionImg;
 let laserImg;
 let clockImg;
@@ -28,8 +31,8 @@ const pixelFont = "Press Start 2P";
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); // 确保文件名和后缀绝对一致！
-    // 【新增】预加载深海背景（暗色调海洋场景）
-    // bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 【修复】此文件不存在，使用 ocean_bg2 代替 // 需要新增此资源或使用现有的ocean_bg2作为深海
+
+    bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 【修复】此文件不存在，使用 ocean_bg2 代替 // 需要新增此资源或使用现有的ocean_bg2作为深海
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     clockImg = loadImage("assets/SandClock.png");
@@ -38,6 +41,12 @@ function preload() {
     shopBgm = loadSound("assets/ShopGen3.mp3");
     boatImg = loadImage("assets/boat.png");
     boatImg2 = loadImage("assets/boat2.png");
+    // 【新增】潜水艇图片（文件不存在时自动使用代码绘制的 fallback）
+    submarineImg = loadImage("assets/submarineImg.png");
+    for (let i = 1; i <= 4; i++) {
+        sharkImgs.push(loadImage(`assets/shark_${i}.png`));
+        anglerFishImgs.push(loadImage(`assets/AnglerFish_${i}.png`));
+    }
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
     buySfx = loadSound("assets/Buy.mp3");
@@ -88,8 +97,12 @@ function wireModeButtons() {
     ];
     allModeButtons.forEach((btn) => {
         if (!btn) return;
-        btn.addEventListener("mouseenter", () => { hoveredButton = btn; });
-        btn.addEventListener("mouseleave", () => { hoveredButton = null; });
+        btn.addEventListener("mouseenter", () => {
+            hoveredButton = btn;
+        });
+        btn.addEventListener("mouseleave", () => {
+            hoveredButton = null;
+        });
     });
 
     document.getElementById("btn-easy").addEventListener("click", () => {
@@ -145,12 +158,22 @@ function wireModeButtons() {
     function syncSelectionHighlight() {
         const s = gameManager.currentState;
         const idx = gameManager.menuSelectionIndex;
-        const diffBtns = [document.getElementById("btn-easy"), document.getElementById("btn-hard")];
-        const playerBtns = [document.getElementById("btn-single"), document.getElementById("btn-two")];
+        const diffBtns = [
+            document.getElementById("btn-easy"),
+            document.getElementById("btn-hard"),
+        ];
+        const playerBtns = [
+            document.getElementById("btn-single"),
+            document.getElementById("btn-two"),
+        ];
 
         // 【修复】首先清除所有的 row-selected 类，防止重影
-        document.querySelectorAll(".btn-row").forEach((r) => r.classList.remove("row-selected"));
-        document.querySelectorAll(".pixel-btn").forEach((b) => b.classList.remove("menu-selected"));
+        document
+            .querySelectorAll(".btn-row")
+            .forEach((r) => r.classList.remove("row-selected"));
+        document
+            .querySelectorAll(".pixel-btn")
+            .forEach((b) => b.classList.remove("menu-selected"));
 
         // 然后只添加到正确选中的选项
         diffBtns.forEach((b, i) => {
@@ -173,13 +196,15 @@ function wireModeButtons() {
         const ICON_SIZE = 48;
         let activeBtn = null;
         if (s === GameState.DIFFICULTY_SELECT) {
-            activeBtn = (hoveredButton && diffBtns.includes(hoveredButton))
-                ? hoveredButton
-                : (diffBtns[idx] ?? null);
+            activeBtn =
+                hoveredButton && diffBtns.includes(hoveredButton)
+                    ? hoveredButton
+                    : (diffBtns[idx] ?? null);
         } else if (s === GameState.PLAYER_MODE_SELECT) {
-            activeBtn = (hoveredButton && playerBtns.includes(hoveredButton))
-                ? hoveredButton
-                : (playerBtns[idx] ?? null);
+            activeBtn =
+                hoveredButton && playerBtns.includes(hoveredButton)
+                    ? hoveredButton
+                    : (playerBtns[idx] ?? null);
         }
         if (mermaidCursor && activeBtn) {
             const or = overlay.getBoundingClientRect();

@@ -21,8 +21,13 @@ class ShopItem {
 
         // 沙漏增加时间逻辑（不依赖钩子，保持原样即可）
         if (this.name === "Sand Clock") {
-            levelManager.timeLimit += 10; 
-            levelManager.timeRemaining = levelManager.timeLimit; 
+            levelManager.timeLimit += 10;
+            levelManager.timeRemaining = levelManager.timeLimit;
+        }
+
+        // 潜水艇：永久解锁深海模式（持久化在 player 上）
+        if (this.name === "Submarine") {
+            levelManager.player.hasSubmarine = true;
         }
     }
 }

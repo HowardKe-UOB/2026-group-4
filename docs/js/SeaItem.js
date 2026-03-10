@@ -51,7 +51,8 @@ class BaseFish extends SeaItem {
 class SmallFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(30, 70);
-        let calculatedScore = floor(map(randomSize, 30, 70, 30, 150));
+        // Score nerfed: 10–50 (was 30–150), keeps it a "filler" item
+        let calculatedScore = floor(map(randomSize, 30, 70, 10, 50));
         let calculatedWeight = map(randomSize, 30, 70, 1, 3);
 
         super(
@@ -85,13 +86,15 @@ class SmallFish extends BaseFish {
 class BigFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(90, 160);
-        let calculatedScore = floor(map(randomSize, 90, 160, 250, 600));
+        // Score nerfed: 150–350 (was 250–600), high-risk high-reward
+        let calculatedScore = floor(map(randomSize, 90, 160, 150, 350));
         let calculatedWeight = map(randomSize, 90, 160, 5, 9);
 
         super(x, y, "Big Fish", calculatedScore, calculatedWeight, randomSize);
 
         this.speed = random(0.3, 0.8);
         this.frames = random(imgBigFishes);
+        this.catchRadius = this.width * 0.35; // tighter hitbox: ~32–56px vs visual 45–80px
     }
 
     draw() {
@@ -127,7 +130,8 @@ class FishBone extends SeaItem {
 
 class Treasure extends SeaItem {
     constructor(x, y) {
-        let val = floor(random(100, 500));
+        // Score range widened: 50–400 (was 100–500), mystery-box feel
+        let val = floor(random(50, 400));
         super(x, y, "Treasure", val, 4);
         this.width = 60;
         this.height = 50;

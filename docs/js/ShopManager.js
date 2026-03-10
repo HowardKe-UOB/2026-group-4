@@ -1,20 +1,21 @@
 class ShopManager {
     constructor() {
-    this.resetShop();
+        this.resetShop();
 
-    this.goldBoxX = 260; 
-    this.goldBoxY = 70; 
-    this.nextLevelBoxX = 1020; 
-    this.nextLevelBoxY = 70; 
+        this.goldBoxX = 260;
+        this.goldBoxY = 70;
+        this.nextLevelBoxX = 1020;
+        this.nextLevelBoxY = 70;
 
-    // --- 道具在柜台上的位置 ---
-    this.itemPositions = [
-            { x: width / 2 - 125, y: height / 2 + 110 }, // Strength Potion
-            { x: width / 2, y: height / 2 + 110 }, // Laser Sight
-            { x: width / 2 + 125, y: height / 2 + 110 }, // Sand Clock
-    ];
+        // --- 道具在柜台上的位置 ---
+        this.itemPositions = [
+            { x: width / 2 - 187, y: height / 2 + 110 }, // Strength Potion
+            { x: width / 2 - 62, y: height / 2 + 110 }, // Laser Sight
+            { x: width / 2 + 62, y: height / 2 + 110 }, // Sand Clock
+            { x: width / 2 + 187, y: height / 2 + 110 }, // Submarine
+        ];
 
-    this.hitRadius = 60; // 判定范围
+        this.hitRadius = 60; // 判定范围
     }
 
     resetShop() {
@@ -33,6 +34,11 @@ class ShopManager {
                 "Sand Clock",
                 250,
                 "Get extra 10 seconds.\nperiod: 1 level",
+            ),
+            new ShopItem(
+                "Submarine",
+                200,
+                "Dive into deep sea!\nPermanent upgrade.",
             ),
         ];
     }
@@ -131,9 +137,18 @@ class ShopManager {
                 clockImg
             ) {
                 image(clockImg, pos.x, pos.y, imgSize, imgSize);
+            } else if (
+                item.name === "Submarine" &&
+                typeof submarineImg !== "undefined" &&
+                submarineImg
+            ) {
+                image(submarineImg, pos.x, pos.y, imgSize, imgSize);
             }
 
-            if (item.purchased) {
+            let isSold =
+                item.purchased ||
+                (item.name === "Submarine" && player.hasSubmarine);
+            if (isSold) {
                 fill(0, 0, 0, 180);
                 circle(pos.x, pos.y, imgSize + 5);
                 fill(255, 50, 50);
@@ -148,26 +163,33 @@ class ShopManager {
             push();
             textFont(pixelFont);
             textAlign(CENTER, CENTER);
-            let infoY = height - 120; 
+            let infoY = height - 120;
 
             // 商品名称
             fill(60, 40, 20); // 深褐色
-            textSize(28); 
-            textStyle(BOLD); 
-            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 40);
+            textSize(28);
+            textStyle(BOLD);
+            text(
+                hoveredItem.name + "  -  $" + hoveredItem.costPrice,
+                width / 2,
+                infoY - 40,
+            );
 
             // 商品描述
-            textSize(20); 
+            textSize(20);
             textStyle(NORMAL);
             fill(100, 80, 60);
-            text(hoveredItem.description, width / 2, infoY);    // 放在中心位置
+            text(hoveredItem.description, width / 2, infoY); // 放在中心位置
 
             // 购买提示
-            textSize(24); 
+            textSize(24);
             textStyle(BOLD);
             let promptY = infoY + 40;
 
-            if (hoveredItem.purchased) {
+            let alreadyOwned =
+                hoveredItem.purchased ||
+                (hoveredItem.name === "Submarine" && player.hasSubmarine);
+            if (alreadyOwned) {
                 fill(150, 0, 0);
                 text("Already Purchased", width / 2, promptY);
             } else if (player.totalScore < hoveredItem.costPrice) {
@@ -195,14 +217,21 @@ class ShopManager {
 
             let d = dist(mouseX, mouseY, pos.x, pos.y);
             if (d < this.hitRadius) {
-                if (!item.purchased && player.totalScore >= item.costPrice) {
+                let alreadyOwned =
+                    item.purchased ||
+                    (item.name === "Submarine" && player.hasSubmarine);
+                if (!alreadyOwned && player.totalScore >= item.costPrice) {
                     if (player.purchaseItem(item)) {
                         item.purchased = true;
+                        // 潜水艇是永久升级，立即生效（不等 consumeItems）
+                        if (item.name === "Submarine") {
+                            player.hasSubmarine = true;
+                        }
                         // --- 播放购买音效 ---
                         if (buySfx && buySfx.isPlaying()) {
-                        buySfx.stop(); // 如果连续点击，先停止上一次再播放
+                            buySfx.stop(); // 如果连续点击，先停止上一次再播放
                         }
-                        buySfx.play();   
+                        buySfx.play();
                     }
                 }
                 return "BOUGHT";
