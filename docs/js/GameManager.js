@@ -946,7 +946,7 @@ changeState(newState) {
             } else if (keyCode === ENTER) {
                 const name = this.inputText.trim();
                 if (name) {
-                    if (this.nameExistsCheck === true) return;
+                    if (this.nameExistsCheck !== false) return;
                     this.player.name = name;
                     this.changeState(GameState.DIFFICULTY_SELECT);
                 }
