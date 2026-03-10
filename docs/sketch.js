@@ -8,6 +8,7 @@ let clockImg;
 let shopBgImg;
 let titleBgm;
 let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
+let buySfx;
 let imgSmallFishes = [];
 let imgBigFishes = [];
 let imgSkeleton;
@@ -39,6 +40,7 @@ function preload() {
     boatImg2 = loadImage("assets/boat2.png");
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
+    buySfx = loadSound("assets/Buy.mp3");
 
     for (let i = 1; i <= 43; i++) {
         let frame1 = loadImage(`assets/fish${i}_1.png`);
