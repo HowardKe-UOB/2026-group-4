@@ -275,7 +275,16 @@ class LevelManager {
 
             if (returnedItem) {
                 this.scores[i] += returnedItem.scoreValue;
-                this.player.addScore(returnedItem.scoreValue);
+                // 双人模式分别追踪 P1/P2 余额；单人模式走原逻辑
+                if (this.playerMode === PlayerMode.TWO_PLAYER) {
+                    if (i === 0) {
+                        this.player.addP1Score(returnedItem.scoreValue);
+                    } else {
+                        this.player.addP2Score(returnedItem.scoreValue);
+                    }
+                } else {
+                    this.player.addScore(returnedItem.scoreValue);
+                }
                 this.showCatchScore(
                     returnedItem.scoreValue,
                     this.boats[i].x,
@@ -507,6 +516,12 @@ class LevelManager {
             this._pauseBtnBounds.cx = width - 35;
             this._pauseBtnBounds.cy = line1Y + 12;
         } else {
+            // 双人模式 UI 布局：
+            // 行1 (y=20)：P1（左） | TOTAL（中央） | P2（右）
+            // 行2 (y=45)：GOAL（中央）
+            // 行3 (y=70/95)：TIME（中央，深海时让位至 y=95）
+            let timeLabelY = this.isDeepSea ? 95 : 70;
+
             textAlign(LEFT, TOP);
             this.drawPixelText(
                 `P1: ${this.scores[0]}`,
@@ -514,10 +529,17 @@ class LevelManager {
                 line1Y,
                 this.cP1,
             );
+            textAlign(CENTER, TOP);
+            this.drawPixelText(
+                `TOTAL: ${this.player.totalScore}`,
+                centerX,
+                line1Y,
+                this.cSecondary,
+            );
             textAlign(RIGHT, TOP);
             this.drawPixelText(
                 `P2: ${this.scores[1]}`,
-                rightX,
+                rightX - 36, // 为暂停按钮留出空间
                 line1Y,
                 this.cP2,
             );
@@ -525,18 +547,18 @@ class LevelManager {
             this.drawPixelText(
                 `GOAL: ${this.targetScore}`,
                 centerX,
-                line1Y,
-                this.cSecondary,
+                line2Y,
+                this.cPrimary,
             );
             this.drawPixelText(
                 `TIME: ${timeLeft}`,
                 centerX,
-                line2Y,
-                this.cPrimary,
+                timeLabelY,
+                this.cP1,
                 tAlpha,
             );
 
-            this._pauseBtnBounds.cx = centerX + 110;
+            this._pauseBtnBounds.cx = width - 35;
             this._pauseBtnBounds.cy = line1Y + 12;
         }
 
@@ -614,6 +636,9 @@ class LevelManager {
             }
         }
         pop();
+
+        // ── 帮助按钮（右下角固定位置）──────────────────────────────
+        this._drawHelpButton();
     }
 
     drawPixelText(txt, x, y, col, alpha = 255) {
@@ -706,5 +731,141 @@ class LevelManager {
             alpha: 255,
             life: 60,
         });
+    }
+
+    // ── 帮助按钮 & 面板 ──────────────────────────────────────────────
+
+    _drawHelpButton() {
+        push();
+        const btnX = width - 40;
+        const btnY = height - 40;
+        const btnR = 20;
+
+        const isHovered = dist(mouseX, mouseY, btnX, btnY) < btnR;
+
+        // 按钮阴影
+        noStroke();
+        fill(0, 0, 0, 140);
+        circle(btnX + 3, btnY + 3, btnR * 2);
+
+        // 按钮主体
+        fill(isHovered ? color(80, 180, 255) : color(30, 120, 200));
+        circle(btnX, btnY, btnR * 2);
+
+        // 边框高光
+        stroke(255, 255, 255, 150);
+        strokeWeight(2);
+        noFill();
+        circle(btnX, btnY, btnR * 2);
+        noStroke();
+
+        // "?" 文字
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(18);
+        textStyle(BOLD);
+        if (typeof pixelFont !== "undefined" && pixelFont) {
+            textFont(pixelFont);
+        }
+        text("?", btnX, btnY - 1);
+        textStyle(NORMAL);
+
+        // 悬浮时展开帮助面板
+        if (isHovered) {
+            this._drawHelpPanel(btnY);
+        }
+        pop();
+    }
+
+    _drawHelpPanel(btnY) {
+        const panelW = 400;
+        const panelH = 310;
+        const panelX = width - panelW - 15;
+        const panelY = btnY - panelH - 15;
+
+        // 面板背景
+        push();
+        noStroke();
+        fill(0, 0, 0, 140);
+        rect(panelX + 4, panelY + 4, panelW, panelH, 12); // 阴影
+        fill(5, 30, 60, 230);
+        rect(panelX, panelY, panelW, panelH, 12);
+        stroke(0, 160, 220);
+        strokeWeight(2);
+        noFill();
+        rect(panelX, panelY, panelW, panelH, 12);
+        noStroke();
+
+        const lx = panelX + 18;
+        let cy = panelY + 18;
+        const lineH = 22;
+
+        // ── 游戏介绍 ──
+        fill(0, 220, 255);
+        textAlign(LEFT, TOP);
+        textSize(13);
+        textStyle(BOLD);
+        if (typeof pixelFont !== "undefined" && pixelFont) textFont(pixelFont);
+        text("GAME INTRO", lx, cy);
+        cy += lineH + 4;
+
+        fill(190, 230, 255);
+        textSize(11);
+        textStyle(NORMAL);
+        text("Catch fish & treasure to reach the GOAL score.", lx, cy);
+        cy += lineH;
+        text("Avoid stones & fish bones (0 pts).", lx, cy);
+        cy += lineH;
+        text("Shop between levels to buy power-ups!", lx, cy);
+        cy += lineH + 10;
+
+        // 分割线
+        stroke(0, 120, 180, 180);
+        strokeWeight(1);
+        line(lx, cy, panelX + panelW - 18, cy);
+        noStroke();
+        cy += 10;
+
+        // ── 操作说明 ──
+        fill(0, 220, 255);
+        textSize(13);
+        textStyle(BOLD);
+        text("CONTROLS", lx, cy);
+        cy += lineH + 4;
+
+        fill(190, 230, 255);
+        textSize(11);
+        textStyle(NORMAL);
+        if (this.playerMode === PlayerMode.TWO_PLAYER) {
+            text("P1 (Left  boat) : Press  S  to cast hook", lx, cy);
+            cy += lineH;
+            text("P2 (Right boat) : Press DOWN \u2193 to cast hook", lx, cy);
+        } else {
+            text("Press DOWN ARROW \u2193 to cast hook", lx, cy);
+        }
+        cy += lineH + 4;
+        text("Pause : click the \u23F8 button (top-right)", lx, cy);
+        cy += lineH + 10;
+
+        // 分割线
+        stroke(0, 120, 180, 180);
+        strokeWeight(1);
+        line(lx, cy, panelX + panelW - 18, cy);
+        noStroke();
+        cy += 10;
+
+        // ── 道具价值参考 ──
+        fill(255, 210, 50);
+        textSize(11);
+        textStyle(BOLD);
+        text("ITEM VALUES", lx, cy);
+        cy += lineH;
+        fill(190, 230, 255);
+        textStyle(NORMAL);
+        text("Small Fish: 30-150 pts    Big Fish: 250-600 pts", lx, cy);
+        cy += lineH;
+        text("Treasure: 100-500 pts     Bone/Stone: 0 pts", lx, cy);
+
+        pop();
     }
 }

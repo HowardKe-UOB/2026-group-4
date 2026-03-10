@@ -43,7 +43,8 @@ class ShopManager {
         ];
     }
 
-    draw(player) {
+    // playerMode 参数：用于双人模式下显示各自余额及差异化扣款
+    draw(player, playerMode = PlayerMode.SINGLE) {
         // 绘制背景（使用覆盖模式以防止拉伸）
         push();
         if (typeof shopBgImg !== "undefined" && shopBgImg) {
@@ -68,14 +69,28 @@ class ShopManager {
         }
         pop();
 
-        // Gold display
+        // ── 金额显示 ──────────────────────────────────────────────────
         push();
         textAlign(CENTER, CENTER);
-        textSize(28);
         textStyle(BOLD);
         textFont(pixelFont);
-        fill(150, 80, 0);
-        text("Gold: " + player.totalScore, this.goldBoxX, this.goldBoxY);
+
+        if (playerMode === PlayerMode.TWO_PLAYER) {
+            // 双人模式：分别显示 P1 / P2 余额，及合计
+            textSize(22);
+            fill(255, 150, 50); // P1 橙色
+            text("P1: $" + player.p1Score, this.goldBoxX - 90, this.goldBoxY);
+            fill(80, 160, 255); // P2 蓝色
+            text("P2: $" + player.p2Score, this.goldBoxX + 90, this.goldBoxY);
+            textSize(16);
+            fill(255, 215, 0); // 合计金色
+            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 28);
+        } else {
+            // 单人模式：原逻辑
+            textSize(28);
+            fill(150, 80, 0);
+            text("Gold: " + player.totalScore, this.goldBoxX, this.goldBoxY);
+        }
         pop();
 
         // Next Level button 检测区域
@@ -166,44 +181,57 @@ class ShopManager {
             let infoY = height - 120;
 
             // 商品名称
-            fill(60, 40, 20); // 深褐色
+            fill(60, 40, 20);
             textSize(28);
             textStyle(BOLD);
-            text(
-                hoveredItem.name + "  -  $" + hoveredItem.costPrice,
-                width / 2,
-                infoY - 40,
-            );
+            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 40);
 
             // 商品描述
             textSize(20);
             textStyle(NORMAL);
             fill(100, 80, 60);
-            text(hoveredItem.description, width / 2, infoY); // 放在中心位置
+            text(hoveredItem.description, width / 2, infoY);
 
             // 购买提示
             textSize(24);
             textStyle(BOLD);
             let promptY = infoY + 40;
 
+            // 双人模式：用两人合计判断是否够钱
+            let canAfford = playerMode === PlayerMode.TWO_PLAYER
+                ? (player.p1Score + player.p2Score >= hoveredItem.costPrice)
+                : (player.totalScore >= hoveredItem.costPrice);
+
             let alreadyOwned =
                 hoveredItem.purchased ||
                 (hoveredItem.name === "Submarine" && player.hasSubmarine);
+
             if (alreadyOwned) {
                 fill(150, 0, 0);
                 text("Already Purchased", width / 2, promptY);
-            } else if (player.totalScore < hoveredItem.costPrice) {
+            } else if (!canAfford) {
                 fill(180, 50, 50);
                 text("Not enough Gold!", width / 2, promptY);
             } else {
-                fill(35, 140, 35);
-                text("Click to buy", width / 2, promptY);
+                // 双人模式提示从谁扣款
+                if (playerMode === PlayerMode.TWO_PLAYER) {
+                    fill(35, 140, 35);
+                    if (player.p1Score >= hoveredItem.costPrice) {
+                        text("Click to buy  (P1 pays)", width / 2, promptY);
+                    } else {
+                        text("Click to buy  (P1+" + (hoveredItem.costPrice - player.p1Score) + " from P2)", width / 2, promptY);
+                    }
+                } else {
+                    fill(35, 140, 35);
+                    text("Click to buy", width / 2, promptY);
+                }
             }
             pop();
         }
     }
 
-    handleMousePress(player) {
+    // playerMode 参数：用于双人模式下的差异化扣款逻辑
+    handleMousePress(player, playerMode = PlayerMode.SINGLE) {
         if (
             abs(mouseX - this.nextLevelBoxX) < 80 &&
             abs(mouseY - this.nextLevelBoxY) < 35
@@ -217,19 +245,29 @@ class ShopManager {
 
             let d = dist(mouseX, mouseY, pos.x, pos.y);
             if (d < this.hitRadius) {
+                // 双人模式：用两人合计判断；单人模式：用 totalScore
+                let canAfford = playerMode === PlayerMode.TWO_PLAYER
+                    ? (player.p1Score + player.p2Score >= item.costPrice)
+                    : (player.totalScore >= item.costPrice);
+
                 let alreadyOwned =
                     item.purchased ||
                     (item.name === "Submarine" && player.hasSubmarine);
-                if (!alreadyOwned && player.totalScore >= item.costPrice) {
-                    if (player.purchaseItem(item)) {
+
+                if (!alreadyOwned && canAfford) {
+                    // 双人：优先扣 P1，不足从 P2 补；单人：原逻辑
+                    let purchased = playerMode === PlayerMode.TWO_PLAYER
+                        ? player.purchaseItemTwoPlayer(item)
+                        : player.purchaseItem(item);
+
+                    if (purchased) {
                         item.purchased = true;
-                        // 潜水艇是永久升级，立即生效（不等 consumeItems）
+                        // 潜水艇是永久升级，立即生效
                         if (item.name === "Submarine") {
                             player.hasSubmarine = true;
                         }
-                        // --- 播放购买音效 ---
                         if (buySfx && buySfx.isPlaying()) {
-                            buySfx.stop(); // 如果连续点击，先停止上一次再播放
+                            buySfx.stop();
                         }
                         buySfx.play();
                     }
