@@ -1,3 +1,6 @@
+// 远程排行榜 API 地址，为空则跳过 fetch 仅用 localStorage 检测
+const REMOTE_LEADERBOARD_URL = '';
+
 class GameManager {
     constructor() {
         this.player = new Player();
@@ -10,6 +13,10 @@ class GameManager {
         this.levelNum = 1;
 
         this.inputText = ''; // For entering the name
+
+        // 名字重复检测：null=未检测/检测中, true=已存在, false=不存在
+        this.nameExistsCheck = null;
+        this.lastCheckedName = '';
 
         this.highScoreScrollY = 0;
         this.highScoreScrollDragging = false;
@@ -112,6 +119,67 @@ changeState(newState) {
                 shopBgm.stop();
             }
         }
+    }
+
+    // 名字重复检测：优先 fetch 远程，失败则用 localStorage
+    _triggerNameCheck() {
+        const name = (this.inputText || '').trim();
+        if (!name) {
+            this.nameExistsCheck = null;
+            this.lastCheckedName = '';
+            return;
+        }
+        if (name === this.lastCheckedName) return;
+        this.lastCheckedName = name;
+        this.nameExistsCheck = null;
+        this._checkNameExists(name).then((exists) => {
+            if (this.lastCheckedName === name) {
+                this.nameExistsCheck = exists;
+            }
+        });
+    }
+
+    async _checkNameExists(name) {
+        const n = name.trim().toLowerCase();
+        if (!n) return false;
+
+        if (REMOTE_LEADERBOARD_URL) {
+            try {
+                const res = await fetch(
+                    REMOTE_LEADERBOARD_URL + '?name=' + encodeURIComponent(name),
+                    { method: 'GET' },
+                );
+                if (res.ok) {
+                    const data = await res.json();
+                    let names = [];
+                    if (Array.isArray(data)) {
+                        names = data.map((e) =>
+                            (e.playerName || e.name || '').trim().toLowerCase(),
+                        );
+                    } else {
+                        const arr =
+                            data.entries ||
+                            data.scores ||
+                            data.names ||
+                            data.players ||
+                            [];
+                        names = arr.map((e) =>
+                            typeof e === 'string'
+                                ? e.trim().toLowerCase()
+                                : (e.playerName || e.name || '').trim().toLowerCase(),
+                        );
+                    }
+                    return names.includes(n);
+                }
+            } catch (_e) {
+                /* fetch 失败，回退到 localStorage */
+            }
+        }
+
+        const local = this.highScoreManager.topScores || [];
+        return local.some(
+            (e) => (e.playerName || '').trim().toLowerCase() === n,
+        );
     }
 
     // 图片背景：按比例缩放填满画布（cover）
@@ -360,6 +428,7 @@ changeState(newState) {
 
         switch (this.currentState) {
             case GameState.NAME_ENTRY:
+                this._triggerNameCheck();
                 this.drawNameEntry();
                 break;
             case GameState.DIFFICULTY_SELECT:
@@ -407,26 +476,34 @@ changeState(newState) {
         textAlign(CENTER, CENTER);
         rectMode(CENTER);
         noStroke();
+        const boxY = height / 2 + 25;
         fill(30, 60, 90, 200);
-        rect(width / 2, height / 2 - 20, 260, 50, 8);
+        rect(width / 2, boxY, 260, 50, 8);
         fill(255, 255, 255, 80);
-        rect(width / 2, height / 2 - 22, 256, 46, 6);
+        rect(width / 2, boxY - 2, 256, 46, 6);
         textSize(20);
         if (this.inputText) {
             fill(240, 248, 255);
             text(
                 this.inputText + (frameCount % 60 < 30 ? '|' : ''),
                 width / 2,
-                height / 2 - 20,
+                boxY,
             );
         } else {
             fill(180, 180, 200, 180);
-            text('enter your name', width / 2, height / 2 - 20);
+            text('enter your name', width / 2, boxY);
+        }
+
+        // 名字已存在时显示红色提示
+        if (this.nameExistsCheck === true) {
+            fill(255, 80, 80);
+            textSize(12);
+            text('name already exists', width / 2, boxY + 55);
         }
 
         fill(200, 230, 255);
         textSize(16);
-        text('Press ENTER to cast off', width / 2, height / 2 + 50);
+        text('Press ENTER to cast off', width / 2, boxY + 75);
         pop();
     }
 
