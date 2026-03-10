@@ -387,10 +387,15 @@ class LevelManager {
         imageMode(CENTER);
 
         if (this.isDeepSea) {
-            // 深海渲染顺序：物品 → 黑暗遮罩 → 鲨鱼 → 潜水艇+钩子
-            // 物品先画（被遮罩覆盖，只在光锥内可见）
+            // 深海渲染顺序：物品 → 鲨鱼 → 黑暗遮罩 → 潜水艇+钩子
+            // 物品和鲨鱼先画（被遮罩覆盖，只在光锥内可见）
             for (let item of this.activeItems) {
                 item.draw();
+            }
+
+            // 鲨鱼也隐藏在黑暗遮罩之后，只在光锥内可见
+            for (let shark of this.sharks) {
+                shark.draw();
             }
 
             // 应用黑暗遮罩（内含探照灯光锥 + 鮟鱇鱼光晕的擦除孔洞）
@@ -399,11 +404,6 @@ class LevelManager {
             imageMode(CORNER); // 遮罩必须从 (0,0) 角落开始铺满全屏
             image(this.darknessLayer, 0, 0);
             pop();
-
-            // 鲨鱼绘制在遮罩之上，始终可见（作为威胁提示）
-            for (let shark of this.sharks) {
-                shark.draw();
-            }
 
             // 潜水艇和钩子绘制在遮罩之上
             for (let i = 0; i < this.boats.length; i++) {
