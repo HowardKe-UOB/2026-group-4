@@ -1,6 +1,3 @@
-// 远程排行榜 API 地址，为空则跳过 fetch 仅用 localStorage 检测
-const REMOTE_LEADERBOARD_URL = '';
-
 class GameManager {
     constructor() {
         this.player = new Player();
@@ -144,36 +141,29 @@ changeState(newState) {
         const n = name.trim().toLowerCase();
         if (!n) return false;
 
-        if (REMOTE_LEADERBOARD_URL) {
+        const cfg =
+            typeof SUPABASE_CONFIG !== 'undefined' ? SUPABASE_CONFIG : null;
+        if (cfg && cfg.url && cfg.anonKey && !cfg.url.includes('YOUR_')) {
             try {
                 const res = await fetch(
-                    REMOTE_LEADERBOARD_URL + '?name=' + encodeURIComponent(name),
-                    { method: 'GET' },
+                    `${cfg.url}/rest/v1/scores?select=player_name&limit=200`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            apikey: cfg.anonKey,
+                            Authorization: `Bearer ${cfg.anonKey}`,
+                        },
+                    },
                 );
                 if (res.ok) {
-                    const data = await res.json();
-                    let names = [];
-                    if (Array.isArray(data)) {
-                        names = data.map((e) =>
-                            (e.playerName || e.name || '').trim().toLowerCase(),
-                        );
-                    } else {
-                        const arr =
-                            data.entries ||
-                            data.scores ||
-                            data.names ||
-                            data.players ||
-                            [];
-                        names = arr.map((e) =>
-                            typeof e === 'string'
-                                ? e.trim().toLowerCase()
-                                : (e.playerName || e.name || '').trim().toLowerCase(),
-                        );
-                    }
+                    const rows = await res.json();
+                    const names = (rows || []).map((r) =>
+                        (r.player_name || '').trim().toLowerCase(),
+                    );
                     return names.includes(n);
                 }
             } catch (_e) {
-                /* fetch 失败，回退到 localStorage */
+                /* Supabase fetch 失败，回退到 localStorage */
             }
         }
 
@@ -956,6 +946,7 @@ changeState(newState) {
             } else if (keyCode === ENTER) {
                 const name = this.inputText.trim();
                 if (name) {
+                    if (this.nameExistsCheck === true) return;
                     this.player.name = name;
                     this.changeState(GameState.DIFFICULTY_SELECT);
                 }
