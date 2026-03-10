@@ -355,7 +355,7 @@ class LevelManager {
         let timeLeft = Math.ceil(this.timeRemaining || 0);
         textSize(18);
         // 【修改】使用像素街机字体，如果加载失败则使用默认字体
-        if (typeof pixelFont !== 'undefined' && pixelFont) {
+        if (typeof pixelFont !== "undefined" && pixelFont) {
             textFont(pixelFont);
         } else {
             textFont("Courier New");
