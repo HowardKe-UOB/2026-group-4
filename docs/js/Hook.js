@@ -12,7 +12,7 @@ class Hook extends GameObject {
         this.angle = 0;
         this.angleVel = 0.028;
         this.length = 50;
-        this.maxLength = 500;
+        this.maxLength = 900;
 
         // 【新功能】：如果有专属图片就用专属的，没有就默认用原来的
         this.sprite = customSprite || (typeof hookImg !== "undefined" ? hookImg : null);

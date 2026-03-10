@@ -1,29 +1,45 @@
 class ShopManager {
     constructor() {
-        this.resetShop();
-        
-        this.itemPositions = [
-            { x: width / 2 - 125, y: height / 2 + 65 }, // Strength Potion
-            { x: width / 2,       y: height / 2 + 65 }, // Laser Sight
-            { x: width / 2 + 125, y: height / 2 + 65 }  // Sand Clock
-        ];
+    this.resetShop();
 
-        this.hitRadius = 60; 
+    this.goldBoxX = 260; 
+    this.goldBoxY = 70; 
+    this.nextLevelBoxX = 1020; 
+    this.nextLevelBoxY = 70; 
+
+    // --- 道具在柜台上的位置 ---
+    this.itemPositions = [
+            { x: width / 2 - 125, y: height / 2 + 110 }, // Strength Potion
+            { x: width / 2, y: height / 2 + 110 }, // Laser Sight
+            { x: width / 2 + 125, y: height / 2 + 110 }, // Sand Clock
+    ];
+
+    this.hitRadius = 60; // 判定范围
     }
 
     resetShop() {
         this.availableItems = [
-            // \n 换行
-            new ShopItem("Strength Potion", 200, "Pulls items 2x faster. \nperiod: 1 level"),
-            new ShopItem("Laser Sight", 200, "Often miss? Buy Laser Sight now! \nperiod: 1 level"),
-            new ShopItem("Sand Clock", 250, "Get extra 10 seconds. \nperiod: 1 level")
+            new ShopItem(
+                "Strength Potion",
+                200,
+                "Pulls items 2x faster.\nperiod: 1 level",
+            ),
+            new ShopItem(
+                "Laser Sight",
+                200,
+                "Often miss? Buy Laser Sight now!\nperiod: 1 level",
+            ),
+            new ShopItem(
+                "Sand Clock",
+                250,
+                "Get extra 10 seconds.\nperiod: 1 level",
+            ),
         ];
     }
 
     draw(player) {
+        // 绘制背景（使用覆盖模式以防止拉伸）
         push();
-        
-        // --- 1. 绘制背景 (Cover 模式防止拉伸) ---
         if (typeof shopBgImg !== "undefined" && shopBgImg) {
             let imgRatio = shopBgImg.width / shopBgImg.height;
             let canvasRatio = width / height;
@@ -42,47 +58,50 @@ class ShopManager {
             imageMode(CORNER);
             image(shopBgImg, drawX, drawY, drawW, drawH);
         } else {
-            background(40, 40, 60); 
+            background(40, 40, 60);
         }
+        pop();
 
-        // 金币显示
+        // Gold display
+        push();
         textAlign(CENTER, CENTER);
-        textSize(20);
+        textSize(28);
         textStyle(BOLD);
-        fill(150, 80, 0); 
-        text(`Gold: ${player.totalScore}`, 90, 60); 
+        textFont(pixelFont);
+        fill(150, 80, 0);
+        text("Gold: " + player.totalScore, this.goldBoxX, this.goldBoxY);
+        pop();
 
-        // “下一关”按钮
-        let nextBtnX = width - 90;
-        let nextBtnY = 60;
-        
-        // 判定鼠标是否在“下一关”文字区域
-        let isNextHovered = (abs(mouseX - nextBtnX) < 70 && abs(mouseY - nextBtnY) < 30);
-        
+        // Next Level button 检测区域
+        let isNextHovered =
+            abs(mouseX - this.nextLevelBoxX) < 80 &&
+            abs(mouseY - this.nextLevelBoxY) < 35;
+        // 高亮区域
         if (isNextHovered) {
             noStroke();
-            fill(255, 255, 255, 120); // 白色亮底
+            fill(255, 255, 255, 120);
             rectMode(CENTER);
-            rect(nextBtnX, nextBtnY, 140, 50, 10);
+            rect(this.nextLevelBoxX, this.nextLevelBoxY, 160, 70, 10);
         }
-        fill(0); // 文字设为黑色或深色，配合白底更显眼
-        if (!isNextHovered) fill(255); // 非悬停时保持白色或根据你背景图调整
-        
+        push();
+        fill(isNextHovered ? 0 : 255);
         textAlign(CENTER, CENTER);
-        textSize(20);
+        textSize(28);
         textStyle(BOLD);
-        text("Next Level", nextBtnX, nextBtnY);
+        textFont(pixelFont);
+        text("Next Level", this.nextLevelBoxX, this.nextLevelBoxY);
         textStyle(NORMAL);
+        pop();
 
-        // 商品绘制与悬停逻辑
+        // Item hover detection and drawing
         let hoveredItem = null;
 
         for (let i = 0; i < this.availableItems.length; i++) {
             let item = this.availableItems[i];
             let pos = this.itemPositions[i];
-            
+
             let d = dist(mouseX, mouseY, pos.x, pos.y);
-            let isHovered = (d < this.hitRadius);
+            let isHovered = d < this.hitRadius;
 
             if (isHovered) {
                 hoveredItem = item;
@@ -92,15 +111,25 @@ class ShopManager {
             }
 
             imageMode(CENTER);
-            let imgSize = 80; 
-            
-            if (item.name === "Strength Potion" && typeof potionImg !== "undefined" && potionImg) {
+            let imgSize = 80;
+
+            if (
+                item.name === "Strength Potion" &&
+                typeof potionImg !== "undefined" &&
+                potionImg
+            ) {
                 image(potionImg, pos.x, pos.y, imgSize, imgSize);
-            }
-            else if (item.name === "Laser Sight" && typeof laserImg !== "undefined" && laserImg) {
+            } else if (
+                item.name === "Laser Sight" &&
+                typeof laserImg !== "undefined" &&
+                laserImg
+            ) {
                 image(laserImg, pos.x, pos.y, imgSize, imgSize);
-            }
-            else if (item.name === "Sand Clock" && typeof clockImg !== "undefined" && clockImg) {
+            } else if (
+                item.name === "Sand Clock" &&
+                typeof clockImg !== "undefined" &&
+                clockImg
+            ) {
                 image(clockImg, pos.x, pos.y, imgSize, imgSize);
             }
 
@@ -110,49 +139,54 @@ class ShopManager {
                 fill(255, 50, 50);
                 textSize(20);
                 textStyle(BOLD);
-                text("SOLD", pos.x, pos.y);
+                text("SOLD", pos.x - 30, pos.y + 10);
                 textStyle(NORMAL);
             }
         }
 
-        // 底部柜台文本
         if (hoveredItem) {
-            fill(60, 40, 20); 
+            push();
+            textFont(pixelFont);
             textAlign(CENTER, CENTER);
-            let infoY = height - 105; 
+            let infoY = height - 120; 
 
-            textSize(24);
-            textStyle(BOLD);
-            text(`${hoveredItem.name}  -  $${hoveredItem.costPrice}`, width / 2, infoY - 20);
+            // 商品名称
+            fill(60, 40, 20); // 深褐色
+            textSize(28); 
+            textStyle(BOLD); 
+            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 40);
+
+            // 商品描述
+            textSize(20); 
             textStyle(NORMAL);
+            fill(100, 80, 60);
+            text(hoveredItem.description, width / 2, infoY);    // 放在中心位置
 
-            textSize(18);
-            fill(80, 60, 40);
-            text(hoveredItem.description, width / 2, infoY + 15);
+            // 购买提示
+            textSize(24); 
+            textStyle(BOLD);
+            let promptY = infoY + 40;
 
-            textSize(16);
             if (hoveredItem.purchased) {
                 fill(150, 0, 0);
-                text("Already Purchased", width / 2, infoY + 50); // Y越大越靠下
+                text("Already Purchased", width / 2, promptY);
             } else if (player.totalScore < hoveredItem.costPrice) {
-                fill(150, 0, 0);
-                text("Not enough Gold!", width / 2, infoY + 50);
+                fill(180, 50, 50);
+                text("Not enough Gold!", width / 2, promptY);
             } else {
-                fill(0, 120, 0);
-                text("Click to buy", width / 2, infoY + 50);
+                fill(35, 140, 35);
+                text("Click to buy", width / 2, promptY);
             }
+            pop();
         }
-
-        pop();
     }
 
     handleMousePress(player) {
-        // 同步修改“下一关”按钮的点击判定中心和范围
-        let nextBtnX = width - 90; // 与 draw 保持一致
-        let nextBtnY = 60;        // 与 draw 保持一致
-        
-        if (abs(mouseX - nextBtnX) < 70 && abs(mouseY - nextBtnY) < 30) {
-            return "NEXT_LEVEL"; 
+        if (
+            abs(mouseX - this.nextLevelBoxX) < 80 &&
+            abs(mouseY - this.nextLevelBoxY) < 35
+        ) {
+            return "NEXT_LEVEL";
         }
 
         for (let i = 0; i < this.availableItems.length; i++) {
@@ -164,6 +198,11 @@ class ShopManager {
                 if (!item.purchased && player.totalScore >= item.costPrice) {
                     if (player.purchaseItem(item)) {
                         item.purchased = true;
+                        // --- 播放购买音效 ---
+                        if (buySfx && buySfx.isPlaying()) {
+                        buySfx.stop(); // 如果连续点击，先停止上一次再播放
+                        }
+                        buySfx.play();   
                     }
                 }
                 return "BOUGHT";

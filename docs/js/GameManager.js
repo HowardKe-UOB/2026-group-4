@@ -484,17 +484,30 @@ changeState(newState) {
         rectMode(CORNER);
         noStroke();
 
-        const panelW = 520;
-        const panelH = 420;
+        // 使用水下像素艺术背景图
+        if (
+            typeof leaderboardBgImg !== 'undefined' &&
+            leaderboardBgImg &&
+            leaderboardBgImg.width
+        ) {
+            this.drawCoverBackground(leaderboardBgImg);
+        } else {
+            fill(8, 28, 55);
+            rect(0, 0, width, height);
+        }
+
+        // 适配 1280x720：居中卡片，留白和谐
+        const panelW = min(580, width * 0.45);
+        const panelH = min(500, height * 0.7);
         const panelX = (width - panelW) / 2;
-        const panelY = 60;
-        const rowH = 68;
-        const startY = panelY + 75;
-        const listAreaH = panelH - (startY - panelY) - 15;
-        const rowW = panelW - 72;
-        const rowX = panelX + 24;
-        const scrollbarW = 14;
-        const scrollbarX = panelX + panelW - scrollbarW - 16;
+        const panelY = (height - panelH) / 2 - 20;
+        const rowH = 58;
+        const startY = panelY + 70;
+        const listAreaH = panelH - (startY - panelY) - 20;
+        const rowW = panelW - 80;
+        const rowX = panelX + 28;
+        const scrollbarW = 12;
+        const scrollbarX = panelX + panelW - scrollbarW - 20;
         const scrollbarY = startY;
         const scrollbarH = listAreaH;
 
@@ -502,14 +515,16 @@ changeState(newState) {
         const maxScroll = max(0, totalH - listAreaH);
         this.highScoreScrollY = constrain(this.highScoreScrollY, 0, maxScroll);
 
-        fill(8, 28, 55);
+        // 半透明遮罩，提升面板可读性，同时保留背景氛围
+        fill(0, 25, 50, 70);
         rect(0, 0, width, height);
 
-        fill(0, 0, 0, 60);
+        // 毛玻璃风格面板：与水下主题协调
+        fill(0, 0, 0, 45);
         rect(panelX + 6, panelY + 6, panelW, panelH, 16);
-        fill(40, 100, 180);
+        fill(15, 45, 85, 200);
         rect(panelX, panelY, panelW, panelH, 16);
-        stroke(80, 150, 220);
+        stroke(60, 140, 200, 220);
         strokeWeight(2);
         noFill();
         rect(panelX, panelY, panelW, panelH, 16);
@@ -517,9 +532,9 @@ changeState(newState) {
 
         fill(255);
         textAlign(CENTER, CENTER);
-        textSize(28);
+        textSize(24);
         textStyle(BOLD);
-        text('🏆 LEADERBOARD', width / 2, panelY + 35);
+        text('🏆 LEADERBOARD', width / 2, panelY + 32);
         textStyle(NORMAL);
 
         push();
@@ -554,21 +569,21 @@ changeState(newState) {
                 entry.levelsCompleted != null ? entry.levelsCompleted : 0;
 
             if (isCurrent) {
-                fill(50, 180, 80, 220);
+                fill(40, 160, 120, 230);
             } else {
-                fill(60, 120, 200, 180);
+                fill(25, 70, 120, 200);
             }
             rect(rowX, rowTop + 4, rowW, rowH - 8, 12);
 
             fill(255);
             textAlign(LEFT, CENTER);
-            textSize(22);
-            text(i + 1, rowX + 28, ry);
-
-            this.drawScoreAvatar(rowX + 70, ry, entry.playerName);
-
             textSize(18);
-            text(entry.playerName, rowX + 115, ry);
+            text(i + 1, rowX + 24, ry);
+
+            this.drawScoreAvatar(rowX + 58, ry, entry.playerName);
+
+            textSize(16);
+            text(entry.playerName, rowX + 95, ry);
 
             textAlign(RIGHT, CENTER);
             fill(255, 215, 0);
@@ -583,7 +598,7 @@ changeState(newState) {
         pop();
 
         if (totalH > listAreaH) {
-            fill(30, 60, 120, 200);
+            fill(15, 45, 85, 220);
             rect(scrollbarX, scrollbarY, scrollbarW, scrollbarH, 7);
 
             const thumbRatio = listAreaH / totalH;
@@ -595,7 +610,7 @@ changeState(newState) {
                     ? (this.highScoreScrollY / maxScroll) * thumbRange
                     : 0);
 
-            fill(100, 160, 220);
+            fill(70, 140, 200, 240);
             rect(scrollbarX + 2, thumbY + 2, scrollbarW - 4, thumbH - 4, 5);
 
             this._scrollbarBounds = {
@@ -611,20 +626,20 @@ changeState(newState) {
         }
 
         textAlign(CENTER, CENTER);
-        fill(180, 220, 255);
-        textSize(16);
-        text('Click outside list to return', width / 2, height - 35);
+        fill(200, 235, 255);
+        textSize(14);
+        text('Click outside list to return', width / 2, height - 40);
         pop();
     }
 
     drawScoreAvatar(cx, cy, name) {
         push();
         noStroke();
-        fill(255, 220, 150);
-        ellipse(cx, cy, 36, 36);
-        fill(60, 100, 150);
+        fill(255, 230, 180);
+        ellipse(cx, cy, 30, 30);
+        fill(25, 70, 120);
         textAlign(CENTER, CENTER);
-        textSize(16);
+        textSize(14);
         text((name.charAt(0) || '?').toUpperCase(), cx, cy + 1);
         pop();
     }
@@ -746,12 +761,13 @@ changeState(newState) {
 
     handleMouseWheel(event) {
         if (this.currentState !== GameState.HIGH_SCORE) return;
-        const panelX = (width - 520) / 2;
-        const panelW = 520;
+        const panelW = min(580, width * 0.45);
+        const panelX = (width - panelW) / 2;
         if (mouseX >= panelX && mouseX <= panelX + panelW) {
             this.highScoreScrollY += event.delta;
-            const rowH = 68;
-            const listAreaH = 420 - 75 - 15;
+            const panelH = min(500, height * 0.7);
+            const listAreaH = panelH - 70 - 20;
+            const rowH = 58;
             const totalH = this.highScoreManager.topScores.length * rowH;
             this.highScoreScrollY = constrain(
                 this.highScoreScrollY,

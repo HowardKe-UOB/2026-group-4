@@ -1,12 +1,14 @@
 let gameManager;
 let bgImageLevel1;
 let bgImageLevel2;
+let bgImageDeepSea;  // 【新增】深海背景 - 用于Level >= 3或触发深海模式
 let potionImg;
 let laserImg;
 let clockImg;
 let shopBgImg;
 let titleBgm;
 let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
+let buySfx;
 let imgSmallFishes = [];
 let imgBigFishes = [];
 let imgSkeleton;
@@ -18,11 +20,16 @@ let hookImg2;
 let nameEntryBgImg;
 let modeSelectBgImg;
 let levelFailedImg;
+let leaderboardBgImg;
 let stones = [];
+// 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
+const pixelFont = "Press Start 2P";
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
     bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); // 确保文件名和后缀绝对一致！
+    // 【新增】预加载深海背景（暗色调海洋场景）
+    // bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 【修复】此文件不存在，使用 ocean_bg2 代替 // 需要新增此资源或使用现有的ocean_bg2作为深海
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     clockImg = loadImage("assets/SandClock.png");
@@ -33,6 +40,7 @@ function preload() {
     boatImg2 = loadImage("assets/boat2.png");
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
+    buySfx = loadSound("assets/Buy.mp3");
 
     for (let i = 1; i <= 43; i++) {
         let frame1 = loadImage(`assets/fish${i}_1.png`);
@@ -55,10 +63,11 @@ function preload() {
     nameEntryBgImg = loadImage("assets/deepsea_prospector.png");
     modeSelectBgImg = loadImage("assets/choose_fishing_challenge.png");
     levelFailedImg = loadImage("assets/levelfailed.png");
+    leaderboardBgImg = loadImage("assets/leaderboard.png");
 }
 
 function setup() {
-    const canvas = createCanvas(800, 600);
+    const canvas = createCanvas(1280, 720);
     canvas.parent("game-container");
     gameManager = new GameManager();
     wireModeButtons();
@@ -66,8 +75,22 @@ function setup() {
 
 function wireModeButtons() {
     const overlay = document.getElementById("button-overlay");
+    const mermaidCursor = document.getElementById("mermaid-cursor");
     const diffGroup = document.getElementById("difficulty-buttons");
     const playerGroup = document.getElementById("player-mode-buttons");
+
+    let hoveredButton = null;
+    const allModeButtons = [
+        document.getElementById("btn-easy"),
+        document.getElementById("btn-hard"),
+        document.getElementById("btn-single"),
+        document.getElementById("btn-two"),
+    ];
+    allModeButtons.forEach((btn) => {
+        if (!btn) return;
+        btn.addEventListener("mouseenter", () => { hoveredButton = btn; });
+        btn.addEventListener("mouseleave", () => { hoveredButton = null; });
+    });
 
     document.getElementById("btn-easy").addEventListener("click", () => {
         userStartAudio();
@@ -124,8 +147,49 @@ function wireModeButtons() {
         const idx = gameManager.menuSelectionIndex;
         const diffBtns = [document.getElementById("btn-easy"), document.getElementById("btn-hard")];
         const playerBtns = [document.getElementById("btn-single"), document.getElementById("btn-two")];
-        diffBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.DIFFICULTY_SELECT && i === idx));
-        playerBtns.forEach((b, i) => b?.classList.toggle("menu-selected", s === GameState.PLAYER_MODE_SELECT && i === idx));
+
+        // 【修复】首先清除所有的 row-selected 类，防止重影
+        document.querySelectorAll(".btn-row").forEach((r) => r.classList.remove("row-selected"));
+        document.querySelectorAll(".pixel-btn").forEach((b) => b.classList.remove("menu-selected"));
+
+        // 然后只添加到正确选中的选项
+        diffBtns.forEach((b, i) => {
+            const selected = s === GameState.DIFFICULTY_SELECT && i === idx;
+            if (selected) {
+                b?.classList.add("menu-selected");
+                b?.closest(".btn-row")?.classList.add("row-selected");
+            }
+        });
+        playerBtns.forEach((b, i) => {
+            const selected = s === GameState.PLAYER_MODE_SELECT && i === idx;
+            if (selected) {
+                b?.classList.add("menu-selected");
+                b?.closest(".btn-row")?.classList.add("row-selected");
+            }
+        });
+
+        // 单一美人鱼：鼠标优先，悬停时跟随鼠标，否则跟随键盘选择
+        const MARGIN = 12;
+        const ICON_SIZE = 48;
+        let activeBtn = null;
+        if (s === GameState.DIFFICULTY_SELECT) {
+            activeBtn = (hoveredButton && diffBtns.includes(hoveredButton))
+                ? hoveredButton
+                : (diffBtns[idx] ?? null);
+        } else if (s === GameState.PLAYER_MODE_SELECT) {
+            activeBtn = (hoveredButton && playerBtns.includes(hoveredButton))
+                ? hoveredButton
+                : (playerBtns[idx] ?? null);
+        }
+        if (mermaidCursor && activeBtn) {
+            const or = overlay.getBoundingClientRect();
+            const br = activeBtn.getBoundingClientRect();
+            mermaidCursor.style.left = `${br.left - or.left - ICON_SIZE - MARGIN}px`;
+            mermaidCursor.style.top = `${br.top - or.top + (br.height - ICON_SIZE) / 2}px`;
+            mermaidCursor.classList.add("visible");
+        } else if (mermaidCursor) {
+            mermaidCursor.classList.remove("visible");
+        }
     }
 
     gameManager._syncOverlay = syncOverlay;
