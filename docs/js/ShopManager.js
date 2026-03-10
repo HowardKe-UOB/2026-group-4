@@ -77,17 +77,17 @@ class ShopManager {
 
         if (playerMode === PlayerMode.TWO_PLAYER) {
             // 双人模式：分别显示 P1 / P2 余额，及合计
-            textSize(22);
+            textSize(30);
             fill(255, 150, 50); // P1 橙色
-            text("P1: $" + player.p1Score, this.goldBoxX - 90, this.goldBoxY);
+            text("P1: $" + player.p1Score, this.goldBoxX - 110, this.goldBoxY);
             fill(80, 160, 255); // P2 蓝色
-            text("P2: $" + player.p2Score, this.goldBoxX + 90, this.goldBoxY);
-            textSize(16);
+            text("P2: $" + player.p2Score, this.goldBoxX + 110, this.goldBoxY);
+            textSize(22);
             fill(255, 215, 0); // 合计金色
-            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 28);
+            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 32);
         } else {
             // 单人模式：原逻辑
-            textSize(28);
+            textSize(34);
             fill(150, 80, 0);
             text("Gold: " + player.totalScore, this.goldBoxX, this.goldBoxY);
         }
@@ -182,18 +182,18 @@ class ShopManager {
 
             // 商品名称
             fill(60, 40, 20);
-            textSize(28);
+            textSize(34);
             textStyle(BOLD);
-            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 40);
+            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 45);
 
             // 商品描述
-            textSize(20);
+            textSize(24);
             textStyle(NORMAL);
             fill(100, 80, 60);
             text(hoveredItem.description, width / 2, infoY);
 
             // 购买提示
-            textSize(24);
+            textSize(28);
             textStyle(BOLD);
             let promptY = infoY + 40;
 
