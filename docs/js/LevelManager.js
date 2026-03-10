@@ -664,20 +664,34 @@ class LevelManager {
             let bx = this.boats[i].x;
             // 从潜水艇底部发出光锥（与 image offset -40 对齐，底部约在 boats.y + 25）
             let by = this.boats[i].y + 25;
-            let coneLen = 400;
-            let spread = PI / 6; // ±30° 半角
+            let coneLen = 620;      // 探照深度
+            let spread = PI / 6;    // ±30° 半角
+            let nearDist = 30;      // 圆台顶端距潜水艇底部的距离
+            let topHalfW = 20;      // 圆台顶端半宽
+
+            // 光锥方向单位向量 & 垂直向量
+            let dx = sin(hook.angle);
+            let dy = cos(hook.angle);
+            let px = cos(hook.angle);
+            let py = -sin(hook.angle);
+
+            // 圆台顶端中心
+            let tx = bx + dx * nearDist;
+            let ty = by + dy * nearDist;
+
             let a1 = hook.angle - spread;
             let a2 = hook.angle + spread;
-            // 锥形区域（跟随鱼叉摆角）
-            dl.triangle(
-                bx,
-                by,
-                bx + sin(a1) * coneLen,
-                by + cos(a1) * coneLen,
-                bx + sin(a2) * coneLen,
-                by + cos(a2) * coneLen,
+
+            // 圆台形光锥（梯形：顶端窄，底端宽；顶点顺时针排列避免自交叉）
+            dl.quad(
+                tx + px * topHalfW, ty + py * topHalfW,   // 顶端右
+                bx + sin(a2) * coneLen, by + cos(a2) * coneLen, // 底端右
+                bx + sin(a1) * coneLen, by + cos(a1) * coneLen, // 底端左
+                tx - px * topHalfW, ty - py * topHalfW,   // 顶端左
             );
-            // 潜水艇周围的小圆形环境光，防止硬边
+            // 顶端小圆，平滑过渡
+            dl.ellipse(tx, ty, topHalfW * 2, topHalfW * 2);
+            // 潜水艇周围环境光
             dl.ellipse(bx, by, 90, 90);
         }
 
