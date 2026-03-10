@@ -446,6 +446,7 @@ changeState(newState) {
                     }
                 }
                 this.levelManager.draw();
+                if (this.gamePaused) this.drawPauseMenu();
                 break;
             case GameState.SHOP:
                 this.drawShop();
@@ -522,6 +523,93 @@ changeState(newState) {
         push();
         this.shopManager.draw(this.player, this.currentPlayerMode);
         pop();
+    }
+
+    drawPauseMenu() {
+        push();
+        if (typeof pixelFont !== 'undefined') textFont(pixelFont);
+        rectMode(CORNER);
+        noSmooth();
+
+        fill(0, 0, 0, 160);
+        rect(0, 0, width, height);
+
+        const panelW = 384;
+        const panelH = 224;
+        const panelX = (width - panelW) / 2;
+        const panelY = (height - panelH) / 2 - 32;
+
+        const px = 4;
+        fill(28, 28, 50);
+        rect(panelX + px, panelY + px, panelW, panelH, 0);
+        fill(15, 45, 85);
+        rect(panelX, panelY, panelW, panelH, 0);
+        stroke(80, 150, 220);
+        strokeWeight(4);
+        noFill();
+        rect(panelX, panelY, panelW, panelH, 0);
+        noStroke();
+
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(16);
+        textStyle(BOLD);
+        this._drawPixelTextOutline('PAUSED', width / 2, panelY + 36);
+        textStyle(NORMAL);
+
+        const btnW = 288;
+        const btnH = 48;
+        const btn1X = (width - btnW) / 2;
+        const btn1Y = panelY + 80;
+        const btn2Y = panelY + 144;
+
+        const closeBtnSize = 32;
+        const closeBtnX = panelX + panelW - closeBtnSize - 8;
+        const closeBtnY = panelY + 8;
+        this._drawPixelButton(closeBtnX, closeBtnY, closeBtnSize, closeBtnSize, [80, 120, 160], [50, 80, 120]);
+        fill(255);
+        textSize(12);
+        textAlign(CENTER, CENTER);
+        text('X', closeBtnX + closeBtnSize / 2, closeBtnY + closeBtnSize / 2);
+        this._pauseMenuBtnClose = { x: closeBtnX, y: closeBtnY, w: closeBtnSize, h: closeBtnSize };
+
+        this._drawPixelButton(btn1X, btn1Y, btnW, btnH, [180, 60, 60], [140, 40, 40]);
+        fill(255, 220, 220);
+        textSize(10);
+        text('FINISH THE GAME', width / 2, btn1Y + btnH / 2);
+
+        this._drawPixelButton(btn1X, btn2Y, btnW, btnH, [60, 140, 80], [40, 100, 60]);
+        fill(220, 255, 220);
+        textSize(10);
+        text('RESTART GAME', width / 2, btn2Y + btnH / 2);
+
+        this._pauseMenuBtn1 = { x: btn1X, y: btn1Y, w: btnW, h: btnH };
+        this._pauseMenuBtn2 = { x: btn1X, y: btn2Y, w: btnW, h: btnH };
+
+        pop();
+    }
+
+    _drawPixelButton(x, y, w, h, baseCol, shadowCol) {
+        noStroke();
+        fill(shadowCol[0], shadowCol[1], shadowCol[2]);
+        rect(x + 4, y + 4, w, h, 0);
+        fill(baseCol[0], baseCol[1], baseCol[2]);
+        rect(x, y, w, h, 0);
+        stroke(40, 40, 60);
+        strokeWeight(4);
+        noFill();
+        rect(x, y, w, h, 0);
+        noStroke();
+    }
+
+    _drawPixelTextOutline(txt, cx, cy) {
+        fill(28, 28, 50);
+        text(txt, cx - 2, cy - 2);
+        text(txt, cx + 2, cy - 2);
+        text(txt, cx - 2, cy + 2);
+        text(txt, cx + 2, cy + 2);
+        fill(255);
+        text(txt, cx, cy);
     }
 
     drawLevelResult() {
@@ -771,12 +859,39 @@ changeState(newState) {
                 }
                 break;
             case GameState.PLAYING: {
-                const pb = this.levelManager._pauseBtnBounds;
-                if (
-                    pb &&
-                    this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)
-                ) {
-                    this.gamePaused = !this.gamePaused;
+                if (this.gamePaused) {
+                    const bc = this._pauseMenuBtnClose;
+                    const b1 = this._pauseMenuBtn1;
+                    const b2 = this._pauseMenuBtn2;
+                    if (bc && mouseX >= bc.x && mouseX <= bc.x + bc.w && mouseY >= bc.y && mouseY <= bc.y + bc.h) {
+                        this.gamePaused = false;
+                        break;
+                    }
+                    if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
+                        this.gamePaused = false;
+                        const levelsCompleted = Math.max(0, this.levelNum - 1);
+                        this.highScoreManager.checkNewHighScore(
+                            this.player.totalScore,
+                            this.player.name || 'Anon',
+                            levelsCompleted,
+                        );
+                        this.changeState(GameState.LEVEL_RESULT);
+                        break;
+                    }
+                    if (b2 && mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y && mouseY <= b2.y + b2.h) {
+                        this.gamePaused = false;
+                        this.inputText = '';
+                        this.changeState(GameState.NAME_ENTRY);
+                        break;
+                    }
+                } else {
+                    const pb = this.levelManager._pauseBtnBounds;
+                    if (
+                        pb &&
+                        this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)
+                    ) {
+                        this.gamePaused = !this.gamePaused;
+                    }
                 }
                 break;
             }
