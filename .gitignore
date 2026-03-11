@@ -1,3 +1,4 @@
 node_modules/
 .claude/
 **/LevelManager.backup.js
+docs/clear_scores.html

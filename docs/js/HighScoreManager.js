@@ -1,3 +1,15 @@
+// 仅在此 URL 下才访问云端，其他环境只用本地 localStorage
+const PROD_URL = "https://uob-comsm0166.github.io/2026-group-4/";
+function isProdOrigin() {
+    try {
+        const h = window.location.hostname;
+        const p = window.location.pathname;
+        return h === "uob-comsm0166.github.io" && p.startsWith("/2026-group-4");
+    } catch (_) {
+        return false;
+    }
+}
+
 class HighScoreManager {
     constructor() {
         this.topScores = [];
@@ -48,6 +60,7 @@ class HighScoreManager {
     }
 
     async fetchFromSupabase() {
+        if (!isProdOrigin()) return;
         const cfg =
             typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
         if (!cfg || !cfg.url || !cfg.anonKey || cfg.url.includes("YOUR_")) {
@@ -80,6 +93,7 @@ class HighScoreManager {
     }
 
     async submitToSupabase(score, name, levelsCompleted) {
+        if (!isProdOrigin()) return;
         const cfg =
             typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
         if (!cfg || !cfg.url || !cfg.anonKey || cfg.url.includes("YOUR_")) {

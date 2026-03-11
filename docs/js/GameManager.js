@@ -145,7 +145,7 @@ changeState(newState) {
 
         const cfg =
             typeof SUPABASE_CONFIG !== 'undefined' ? SUPABASE_CONFIG : null;
-        if (cfg && cfg.url && cfg.anonKey && !cfg.url.includes('YOUR_')) {
+        if (typeof isProdOrigin === 'function' && isProdOrigin() && cfg && cfg.url && cfg.anonKey && !cfg.url.includes('YOUR_')) {
             try {
                 const res = await fetch(
                     `${cfg.url}/rest/v1/scores?select=player_name&limit=200`,
