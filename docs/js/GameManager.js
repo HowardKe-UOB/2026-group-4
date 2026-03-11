@@ -534,53 +534,62 @@ changeState(newState) {
         fill(0, 0, 0, 160);
         rect(0, 0, width, height);
 
-        const panelW = 384;
-        const panelH = 224;
+        const panelW = 380;
+        const panelH = 220;
         const panelX = (width - panelW) / 2;
-        const panelY = (height - panelH) / 2 - 32;
+        const panelY = (height - panelH) / 2;
 
-        const px = 4;
-        fill(28, 28, 50);
-        rect(panelX + px, panelY + px, panelW, panelH, 0);
-        fill(15, 45, 85);
-        rect(panelX, panelY, panelW, panelH, 0);
-        stroke(80, 150, 220);
-        strokeWeight(4);
-        noFill();
-        rect(panelX, panelY, panelW, panelH, 0);
-        noStroke();
+        if (typeof pauseMenuBgImg !== 'undefined' && pauseMenuBgImg && pauseMenuBgImg.width) {
+            imageMode(CORNER);
+            image(pauseMenuBgImg, panelX, panelY, panelW, panelH);
+        } else {
+            const px = 4;
+            fill(28, 28, 50);
+            rect(panelX + px, panelY + px, panelW, panelH, 0);
+            fill(15, 45, 85);
+            rect(panelX, panelY, panelW, panelH, 0);
+            stroke(80, 150, 220);
+            strokeWeight(4);
+            noFill();
+            rect(panelX, panelY, panelW, panelH, 0);
+            noStroke();
+        }
 
         fill(255);
         textAlign(CENTER, CENTER);
-        textSize(16);
+        textSize(8);
         textStyle(BOLD);
-        this._drawPixelTextOutline('PAUSED', width / 2, panelY + 36);
+        this._drawPixelTextOutline('PAUSED', width / 2, panelY + 50);
         textStyle(NORMAL);
 
-        const btnW = 288;
-        const btnH = 48;
+        const btnW = 180;
+        const btnH = 38;
+        const btnGap = 20;
         const btn1X = (width - btnW) / 2;
-        const btn1Y = panelY + 80;
-        const btn2Y = panelY + 144;
+        const titleH = 56;
+        const btnBlockH = btnH * 2 + btnGap;
+        const btnStartY = panelY + titleH + (panelH - titleH - btnBlockH) / 2 - 10;
+        const btn1Y = btnStartY;
+        const btn2Y = btnStartY + btnH + btnGap;
 
-        const closeBtnSize = 32;
-        const closeBtnX = panelX + panelW - closeBtnSize - 8;
-        const closeBtnY = panelY + 8;
+        const closeBtnSize = 22;
+        const closeBtnX = panelX + panelW - closeBtnSize - 6;
+        const closeBtnY = panelY + 6;
         this._drawPixelButton(closeBtnX, closeBtnY, closeBtnSize, closeBtnSize, [80, 120, 160], [50, 80, 120]);
         fill(255);
-        textSize(12);
+        textSize(10);
         textAlign(CENTER, CENTER);
         text('X', closeBtnX + closeBtnSize / 2, closeBtnY + closeBtnSize / 2);
         this._pauseMenuBtnClose = { x: closeBtnX, y: closeBtnY, w: closeBtnSize, h: closeBtnSize };
 
         this._drawPixelButton(btn1X, btn1Y, btnW, btnH, [180, 60, 60], [140, 40, 40]);
         fill(255, 220, 220);
-        textSize(10);
+        textSize(8);
         text('FINISH THE GAME', width / 2, btn1Y + btnH / 2);
 
         this._drawPixelButton(btn1X, btn2Y, btnW, btnH, [60, 140, 80], [40, 100, 60]);
         fill(220, 255, 220);
-        textSize(10);
+        textSize(8);
         text('RESTART GAME', width / 2, btn2Y + btnH / 2);
 
         this._pauseMenuBtn1 = { x: btn1X, y: btn1Y, w: btnW, h: btnH };
