@@ -50,13 +50,13 @@ class HighScoreManager {
         );
     }
 
-    checkNewHighScore(score, name, levelsCompleted = 0) {
+    checkNewHighScore(score, name, levelsCompleted = 0, difficulty = "easy", playerMode = "single") {
         let entry = new ScoreEntry(name, score, levelsCompleted);
         this.topScores.push(entry);
         this.topScores.sort((a, b) => b.score - a.score);
         this.topScores = this.topScores.slice(0, 50);
         this.saveScores();
-        this.submitToSupabase(score, name, levelsCompleted);
+        this.submitToSupabase(score, name, levelsCompleted, difficulty, playerMode);
     }
 
     async fetchFromSupabase() {
@@ -92,13 +92,15 @@ class HighScoreManager {
         }
     }
 
-    async submitToSupabase(score, name, levelsCompleted) {
+    async submitToSupabase(score, name, levelsCompleted, difficulty = "easy", playerMode = "single") {
         if (!isProdOrigin()) return;
         const cfg =
             typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
         if (!cfg || !cfg.url || !cfg.anonKey || cfg.url.includes("YOUR_")) {
             return;
         }
+        const d = (difficulty || "easy").toString().toLowerCase();
+        const p = (playerMode || "single").toString().toLowerCase();
         try {
             await fetch(`${cfg.url}/rest/v1/scores`, {
                 method: "POST",
@@ -111,6 +113,8 @@ class HighScoreManager {
                     player_name: name,
                     score: score,
                     levels_completed: levelsCompleted,
+                    difficulty: d,
+                    player_mode: p,
                 }),
             });
         } catch (e) {

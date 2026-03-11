@@ -441,6 +441,8 @@ changeState(newState) {
                             this.player.totalScore,
                             this.player.name || 'Anon',
                             levelsCompleted,
+                            this.currentDifficulty,
+                            this.currentPlayerMode,
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                     }
@@ -883,6 +885,8 @@ changeState(newState) {
                             this.player.totalScore,
                             this.player.name || 'Anon',
                             levelsCompleted,
+                            this.currentDifficulty,
+                            this.currentPlayerMode,
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                         break;
