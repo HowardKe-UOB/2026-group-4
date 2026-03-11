@@ -26,6 +26,8 @@ class HighScoreManager {
                         e.playerName,
                         e.score,
                         e.levelsCompleted ?? 0,
+                        e.difficulty ?? "easy",
+                        e.playerMode ?? "single",
                     ),
             );
         } else {
@@ -51,7 +53,7 @@ class HighScoreManager {
     }
 
     checkNewHighScore(score, name, levelsCompleted = 0, difficulty = "easy", playerMode = "single") {
-        let entry = new ScoreEntry(name, score, levelsCompleted);
+        let entry = new ScoreEntry(name, score, levelsCompleted, difficulty, playerMode);
         this.topScores.push(entry);
         this.topScores.sort((a, b) => b.score - a.score);
         this.topScores = this.topScores.slice(0, 50);
@@ -84,6 +86,8 @@ class HighScoreManager {
                         r.player_name,
                         r.score,
                         r.levels_completed ?? 0,
+                        r.difficulty ?? "easy",
+                        r.player_mode ?? "single",
                     ),
             );
             this.saveScores();

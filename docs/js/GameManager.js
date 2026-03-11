@@ -750,8 +750,10 @@ changeState(newState) {
 
             this.drawScoreAvatar(rowX + 58, ry, entry.playerName);
 
+            this.drawModeIcon(rowX + 90, ry, entry.difficulty, entry.playerMode);
+
             textSize(16);
-            text(entry.playerName, rowX + 95, ry);
+            text(entry.playerName, rowX + 118, ry);
 
             textAlign(RIGHT, CENTER);
             fill(255, 215, 0);
@@ -809,6 +811,18 @@ changeState(newState) {
         textAlign(CENTER, CENTER);
         textSize(14);
         text((name.charAt(0) || '?').toUpperCase(), cx, cy + 1);
+        pop();
+    }
+
+    drawModeIcon(cx, cy, difficulty, playerMode) {
+        push();
+        noStroke();
+        const isEasy = (difficulty || "easy").toString().toLowerCase() === "easy";
+        const isTwo = (playerMode || "single").toString().toLowerCase().includes("two");
+        fill(isEasy ? 60 : 220, isEasy ? 200 : 60, isEasy ? 80 : 60);
+        const r = 7;
+        ellipse(cx - (isTwo ? 6 : 0), cy, r * 2, r * 2);
+        if (isTwo) ellipse(cx + 6, cy, r * 2, r * 2);
         pop();
     }
 
