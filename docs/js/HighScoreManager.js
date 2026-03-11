@@ -28,6 +28,7 @@ class HighScoreManager {
                         e.levelsCompleted ?? 0,
                         e.difficulty ?? "easy",
                         e.playerMode ?? "single",
+                        e.catchHistory ?? {},
                     ),
             );
         } else {
@@ -52,13 +53,13 @@ class HighScoreManager {
         );
     }
 
-    checkNewHighScore(score, name, levelsCompleted = 0, difficulty = "easy", playerMode = "single") {
-        let entry = new ScoreEntry(name, score, levelsCompleted, difficulty, playerMode);
+    checkNewHighScore(score, name, levelsCompleted = 0, difficulty = "easy", playerMode = "single", catchHistory = {}) {
+        let entry = new ScoreEntry(name, score, levelsCompleted, difficulty, playerMode, catchHistory);
         this.topScores.push(entry);
         this.topScores.sort((a, b) => b.score - a.score);
         this.topScores = this.topScores.slice(0, 50);
         this.saveScores();
-        this.submitToSupabase(score, name, levelsCompleted, difficulty, playerMode);
+        this.submitToSupabase(score, name, levelsCompleted, difficulty, playerMode, catchHistory);
     }
 
     async fetchFromSupabase() {
@@ -88,6 +89,7 @@ class HighScoreManager {
                         r.levels_completed ?? 0,
                         r.difficulty ?? "easy",
                         r.player_mode ?? "single",
+                        r.catch_history ?? {},
                     ),
             );
             this.saveScores();
@@ -96,7 +98,7 @@ class HighScoreManager {
         }
     }
 
-    async submitToSupabase(score, name, levelsCompleted, difficulty = "easy", playerMode = "single") {
+    async submitToSupabase(score, name, levelsCompleted, difficulty = "easy", playerMode = "single", catchHistory = {}) {
         if (!isProdOrigin()) return;
         const cfg =
             typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
@@ -105,6 +107,7 @@ class HighScoreManager {
         }
         const d = (difficulty || "easy").toString().toLowerCase();
         const p = (playerMode || "single").toString().toLowerCase();
+        const ch = catchHistory && typeof catchHistory === "object" ? catchHistory : {};
         try {
             await fetch(`${cfg.url}/rest/v1/scores`, {
                 method: "POST",
@@ -119,6 +122,7 @@ class HighScoreManager {
                     levels_completed: levelsCompleted,
                     difficulty: d,
                     player_mode: p,
+                    catch_history: ch,
                 }),
             });
         } catch (e) {

@@ -65,7 +65,8 @@ class SmallFish extends BaseFish {
         );
 
         this.speed = random(1.2, 1.6);
-        this.frames = random(imgSmallFishes);
+        this.fishIndex = floor(random(imgSmallFishes.length)); // 0–42 → fish1–fish43
+        this.frames = imgSmallFishes[this.fishIndex];
     }
 
     draw() {
@@ -93,7 +94,8 @@ class BigFish extends BaseFish {
         super(x, y, "Big Fish", calculatedScore, calculatedWeight, randomSize);
 
         this.speed = random(0.3, 0.8);
-        this.frames = random(imgBigFishes);
+        this.fishIndex = floor(random(imgBigFishes.length)); // 0–20 → fish44–fish64
+        this.frames = imgBigFishes[this.fishIndex];
         this.catchRadius = this.width * 0.35; // tighter hitbox: ~32–56px vs visual 45–80px
     }
 
