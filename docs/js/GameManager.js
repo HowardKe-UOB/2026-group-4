@@ -21,6 +21,39 @@ class GameManager {
         this.gamePaused = false;
 
         this.menuSelectionIndex = 0;
+
+        // Fish gallery: ScoreEntry when a leaderboard row is clicked, null otherwise
+        this.fishGalleryEntry = null;
+    }
+
+    // Fish gallery: fish1–fish64 from assets (fish1_1.png … fish64_1.png)
+    static get FISH_GALLERY_TYPES() {
+        const list = [];
+        for (let i = 1; i <= 43; i++) {
+            const idx = i - 1;
+            list.push({
+                key: `fish${i}`,
+                label: `Fish ${i}`,
+                getImg: () => (typeof imgSmallFishes !== 'undefined' && imgSmallFishes[idx]) ? imgSmallFishes[idx][0] : null,
+            });
+        }
+        for (let i = 44; i <= 64; i++) {
+            const idx = i - 44;
+            list.push({
+                key: `fish${i}`,
+                label: `Fish ${i}`,
+                getImg: () => (typeof imgBigFishes !== 'undefined' && imgBigFishes[idx]) ? imgBigFishes[idx][0] : null,
+            });
+        }
+        return list;
+    }
+
+    _mergeFishCaught() {
+        if (!this.levelManager || !this.levelManager.fishCaught) return;
+        this.gameSessionFishCaught = this.gameSessionFishCaught || {};
+        for (const k in this.levelManager.fishCaught) {
+            this.gameSessionFishCaught[k] = (this.gameSessionFishCaught[k] || 0) + (this.levelManager.fishCaught[k] || 0);
+        }
     }
 
     isPreGameMenu() {
@@ -35,6 +68,7 @@ class GameManager {
         this.player.totalScore = 0;
         this.player.p1Score = 0;  // 重置双人各自余额
         this.player.p2Score = 0;
+        this.gameSessionFishCaught = {};
         this.levelNum = 1;
         const buttonOverlay = document.getElementById('button-overlay');
         if (buttonOverlay) {
@@ -69,6 +103,7 @@ changeState(newState) {
     }
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
+            this.fishGalleryEntry = null;
             this.highScoreManager.fetchFromSupabase();
         }
         if (
@@ -145,7 +180,7 @@ changeState(newState) {
 
         const cfg =
             typeof SUPABASE_CONFIG !== 'undefined' ? SUPABASE_CONFIG : null;
-        if (cfg && cfg.url && cfg.anonKey && !cfg.url.includes('YOUR_')) {
+        if (typeof isProdOrigin === 'function' && isProdOrigin() && cfg && cfg.url && cfg.anonKey && !cfg.url.includes('YOUR_')) {
             try {
                 const res = await fetch(
                     `${cfg.url}/rest/v1/scores?select=player_name&limit=200`,
@@ -434,18 +469,24 @@ changeState(newState) {
                 if (!this.gamePaused) {
                     let result = this.levelManager.update();
                     if (result === 'PASS') {
+                        this._mergeFishCaught();
                         this.changeState(GameState.SHOP);
                     } else if (result === 'FAIL') {
+                        this._mergeFishCaught();
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
                         this.highScoreManager.checkNewHighScore(
                             this.player.totalScore,
                             this.player.name || 'Anon',
                             levelsCompleted,
+                            this.currentDifficulty,
+                            this.currentPlayerMode,
+                            this.gameSessionFishCaught || {},
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                     }
                 }
                 this.levelManager.draw();
+                if (this.gamePaused) this.drawPauseMenu();
                 break;
             case GameState.SHOP:
                 this.drawShop();
@@ -522,6 +563,102 @@ changeState(newState) {
         push();
         this.shopManager.draw(this.player, this.currentPlayerMode);
         pop();
+    }
+
+    drawPauseMenu() {
+        push();
+        if (typeof pixelFont !== 'undefined') textFont(pixelFont);
+        rectMode(CORNER);
+        noSmooth();
+
+        fill(0, 0, 0, 160);
+        rect(0, 0, width, height);
+
+        const panelW = 380;
+        const panelH = 220;
+        const panelX = (width - panelW) / 2;
+        const panelY = (height - panelH) / 2;
+
+        if (typeof pauseMenuBgImg !== 'undefined' && pauseMenuBgImg && pauseMenuBgImg.width) {
+            imageMode(CORNER);
+            image(pauseMenuBgImg, panelX, panelY, panelW, panelH);
+        } else {
+            const px = 4;
+            fill(28, 28, 50);
+            rect(panelX + px, panelY + px, panelW, panelH, 0);
+            fill(15, 45, 85);
+            rect(panelX, panelY, panelW, panelH, 0);
+            stroke(80, 150, 220);
+            strokeWeight(4);
+            noFill();
+            rect(panelX, panelY, panelW, panelH, 0);
+            noStroke();
+        }
+
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(8);
+        textStyle(BOLD);
+        this._drawPixelTextOutline('PAUSED', width / 2, panelY + 50);
+        textStyle(NORMAL);
+
+        const btnW = 180;
+        const btnH = 38;
+        const btnGap = 20;
+        const btn1X = (width - btnW) / 2;
+        const titleH = 56;
+        const btnBlockH = btnH * 2 + btnGap;
+        const btnStartY = panelY + titleH + (panelH - titleH - btnBlockH) / 2 - 10;
+        const btn1Y = btnStartY;
+        const btn2Y = btnStartY + btnH + btnGap;
+
+        const closeBtnSize = 22;
+        const closeBtnX = panelX + panelW - closeBtnSize - 6;
+        const closeBtnY = panelY + 6;
+        this._drawPixelButton(closeBtnX, closeBtnY, closeBtnSize, closeBtnSize, [80, 120, 160], [50, 80, 120]);
+        fill(255);
+        textSize(10);
+        textAlign(CENTER, CENTER);
+        text('X', closeBtnX + closeBtnSize / 2, closeBtnY + closeBtnSize / 2);
+        this._pauseMenuBtnClose = { x: closeBtnX, y: closeBtnY, w: closeBtnSize, h: closeBtnSize };
+
+        this._drawPixelButton(btn1X, btn1Y, btnW, btnH, [180, 60, 60], [140, 40, 40]);
+        fill(255, 220, 220);
+        textSize(8);
+        text('FINISH THE GAME', width / 2, btn1Y + btnH / 2);
+
+        this._drawPixelButton(btn1X, btn2Y, btnW, btnH, [60, 140, 80], [40, 100, 60]);
+        fill(220, 255, 220);
+        textSize(8);
+        text('RESTART GAME', width / 2, btn2Y + btnH / 2);
+
+        this._pauseMenuBtn1 = { x: btn1X, y: btn1Y, w: btnW, h: btnH };
+        this._pauseMenuBtn2 = { x: btn1X, y: btn2Y, w: btnW, h: btnH };
+
+        pop();
+    }
+
+    _drawPixelButton(x, y, w, h, baseCol, shadowCol) {
+        noStroke();
+        fill(shadowCol[0], shadowCol[1], shadowCol[2]);
+        rect(x + 4, y + 4, w, h, 0);
+        fill(baseCol[0], baseCol[1], baseCol[2]);
+        rect(x, y, w, h, 0);
+        stroke(40, 40, 60);
+        strokeWeight(4);
+        noFill();
+        rect(x, y, w, h, 0);
+        noStroke();
+    }
+
+    _drawPixelTextOutline(txt, cx, cy) {
+        fill(28, 28, 50);
+        text(txt, cx - 2, cy - 2);
+        text(txt, cx + 2, cy - 2);
+        text(txt, cx - 2, cy + 2);
+        text(txt, cx + 2, cy + 2);
+        fill(255);
+        text(txt, cx, cy);
     }
 
     drawLevelResult() {
@@ -623,11 +760,22 @@ changeState(newState) {
         };
         listClip();
 
+        this._leaderboardRowBounds = [];
         for (let i = 0; i < this.highScoreManager.topScores.length; i++) {
             let entry = this.highScoreManager.topScores[i];
             let rowTop = startY + i * rowH - this.highScoreScrollY;
             let ry = rowTop + rowH / 2;
 
+            if (ry >= startY - rowH / 2 && ry <= startY + listAreaH + rowH / 2) {
+                this._leaderboardRowBounds.push({
+                    index: i,
+                    entry: entry,
+                    x: rowX,
+                    y: rowTop + 4,
+                    w: rowW,
+                    h: rowH - 8,
+                });
+            }
             if (ry < startY - rowH / 2 || ry > startY + listAreaH + rowH / 2)
                 continue;
 
@@ -651,8 +799,10 @@ changeState(newState) {
 
             this.drawScoreAvatar(rowX + 58, ry, entry.playerName);
 
+            this.drawModeIcon(rowX + 90, ry, entry.difficulty, entry.playerMode);
+
             textSize(16);
-            text(entry.playerName, rowX + 95, ry);
+            text(entry.playerName, rowX + 118, ry);
 
             textAlign(RIGHT, CENTER);
             fill(255, 215, 0);
@@ -697,7 +847,96 @@ changeState(newState) {
         textAlign(CENTER, CENTER);
         fill(200, 235, 255);
         textSize(14);
-        text('Click outside list to return', width / 2, height - 40);
+        text('Click row to view catch · Click outside to return', width / 2, height - 40);
+        pop();
+
+        if (this.fishGalleryEntry) {
+            this.drawFishGallery(this.fishGalleryEntry);
+        }
+    }
+
+    drawFishGallery(entry) {
+        push();
+        noStroke();
+        fill(0, 0, 0, 180);
+        rect(0, 0, width, height);
+
+        const cols = 8;
+        const cellW = 72;
+        const cellH = 68;
+        const panelW = cols * cellW + 48;
+        const panelH = 8 * cellH + 80;
+        const panelX = (width - panelW) / 2;
+        const panelY = (height - panelH) / 2 - 20;
+
+        fill(15, 45, 85, 200);
+        rect(panelX, panelY, panelW, panelH, 16);
+        stroke(60, 140, 200, 220);
+        strokeWeight(2);
+        noFill();
+        rect(panelX, panelY, panelW, panelH, 16);
+        noStroke();
+
+        fill(255);
+        textAlign(CENTER, CENTER);
+        textSize(20);
+        textStyle(BOLD);
+        text(`${entry.playerName}'s Fish Gallery`, width / 2, panelY + 28);
+        textStyle(NORMAL);
+
+        const raw = entry.catchHistory || {};
+        const catchHistory = { ...raw };
+        if (raw['Treasure Chest'] != null && catchHistory['Treasure'] == null) {
+            catchHistory['Treasure'] = raw['Treasure Chest'];
+        }
+        const types = GameManager.FISH_GALLERY_TYPES;
+        const startX = panelX + 24 + cellW / 2;
+        const startY = panelY + 52 + cellH / 2;
+
+        for (let i = 0; i < types.length; i++) {
+            const t = types[i];
+            const count = catchHistory[t.key] || 0;
+            const caught = count > 0;
+            const col = i % cols;
+            const row = floor(i / cols);
+            const cx = startX + col * cellW;
+            const cy = startY + row * cellH;
+
+            if (caught) fill(25, 90, 70);
+            else fill(40, 40, 55);
+            rect(cx - cellW / 2 + 4, cy - cellH / 2 + 4, cellW - 8, cellH - 8, 8);
+
+            const img = t.getImg();
+            if (img && img.width) {
+                push();
+                if (!caught) tint(80, 80, 90);
+                imageMode(CENTER);
+                const imgSize = Math.min(44, img.width, img.height);
+                image(img, cx, cy - 6, imgSize, imgSize);
+                if (!caught) noTint();
+                pop();
+            } else {
+                fill(caught ? 120 : 60);
+                textSize(10);
+                text(t.key, cx, cy - 6);
+            }
+
+            textSize(10);
+            textAlign(CENTER, CENTER);
+            if (caught) {
+                fill(255, 215, 0);
+                text(`×${count}`, cx, cy + 22);
+            } else {
+                fill(120, 120, 130);
+                text('?', cx, cy + 22);
+            }
+        }
+
+        fill(200, 235, 255);
+        textSize(12);
+        text('Click anywhere to close', width / 2, height - 40);
+
+        this._fishGalleryBounds = { x: panelX, y: panelY, w: panelW, h: panelH };
         pop();
     }
 
@@ -710,6 +949,18 @@ changeState(newState) {
         textAlign(CENTER, CENTER);
         textSize(14);
         text((name.charAt(0) || '?').toUpperCase(), cx, cy + 1);
+        pop();
+    }
+
+    drawModeIcon(cx, cy, difficulty, playerMode) {
+        push();
+        noStroke();
+        const isEasy = (difficulty || "easy").toString().toLowerCase() === "easy";
+        const isTwo = (playerMode || "single").toString().toLowerCase().includes("two");
+        fill(isEasy ? 60 : 220, isEasy ? 200 : 60, isEasy ? 80 : 60);
+        const r = 7;
+        ellipse(cx - (isTwo ? 6 : 0), cy, r * 2, r * 2);
+        if (isTwo) ellipse(cx + 6, cy, r * 2, r * 2);
         pop();
     }
 
@@ -771,12 +1022,43 @@ changeState(newState) {
                 }
                 break;
             case GameState.PLAYING: {
-                const pb = this.levelManager._pauseBtnBounds;
-                if (
-                    pb &&
-                    this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)
-                ) {
-                    this.gamePaused = !this.gamePaused;
+                if (this.gamePaused) {
+                    const bc = this._pauseMenuBtnClose;
+                    const b1 = this._pauseMenuBtn1;
+                    const b2 = this._pauseMenuBtn2;
+                    if (bc && mouseX >= bc.x && mouseX <= bc.x + bc.w && mouseY >= bc.y && mouseY <= bc.y + bc.h) {
+                        this.gamePaused = false;
+                        break;
+                    }
+                    if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
+                        this.gamePaused = false;
+                        this._mergeFishCaught();
+                        const levelsCompleted = Math.max(0, this.levelNum - 1);
+                        this.highScoreManager.checkNewHighScore(
+                            this.player.totalScore,
+                            this.player.name || 'Anon',
+                            levelsCompleted,
+                            this.currentDifficulty,
+                            this.currentPlayerMode,
+                            this.gameSessionFishCaught || {},
+                        );
+                        this.changeState(GameState.LEVEL_RESULT);
+                        break;
+                    }
+                    if (b2 && mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y && mouseY <= b2.y + b2.h) {
+                        this.gamePaused = false;
+                        this.inputText = '';
+                        this.changeState(GameState.NAME_ENTRY);
+                        break;
+                    }
+                } else {
+                    const pb = this.levelManager._pauseBtnBounds;
+                    if (
+                        pb &&
+                        this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)
+                    ) {
+                        this.gamePaused = !this.gamePaused;
+                    }
                 }
                 break;
             }
@@ -794,10 +1076,14 @@ changeState(newState) {
                 this.changeState(GameState.HIGH_SCORE);
                 break;
             case GameState.HIGH_SCORE: {
-                const panelX = (width - 520) / 2;
-                const panelY = 60;
-                const panelW = 520;
-                const panelH = 420;
+                if (this.fishGalleryEntry) {
+                    this.fishGalleryEntry = null;
+                    break;
+                }
+                const panelW = min(580, width * 0.45);
+                const panelX = (width - panelW) / 2;
+                const panelH = min(500, height * 0.7);
+                const panelY = (height - panelH) / 2 - 20;
                 const inPanel =
                     mouseX >= panelX &&
                     mouseX <= panelX + panelW &&
@@ -805,7 +1091,21 @@ changeState(newState) {
                     mouseY <= panelY + panelH;
                 if (!inPanel) {
                     this.changeState(GameState.NAME_ENTRY);
-                } else if (this._scrollbarBounds) {
+                } else if (this._leaderboardRowBounds) {
+                    for (const rb of this._leaderboardRowBounds) {
+                        if (
+                            mouseX >= rb.x &&
+                            mouseX <= rb.x + rb.w &&
+                            mouseY >= rb.y &&
+                            mouseY <= rb.y + rb.h
+                        ) {
+                            this.fishGalleryEntry = rb.entry;
+                            break;
+                        }
+                    }
+                }
+                if (this.fishGalleryEntry) break;
+                if (this._scrollbarBounds) {
                     const sb = this._scrollbarBounds;
                     const thumbRange = sb.h - sb.thumbH;
                     const thumbY =

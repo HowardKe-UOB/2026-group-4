@@ -1,3 +1,15 @@
+// 仅在此 URL 下才访问云端，其他环境只用本地 localStorage
+const PROD_URL = "https://uob-comsm0166.github.io/2026-group-4/";
+function isProdOrigin() {
+    try {
+        const h = window.location.hostname;
+        const p = window.location.pathname;
+        return h === "uob-comsm0166.github.io" && p.startsWith("/2026-group-4");
+    } catch (_) {
+        return false;
+    }
+}
+
 class HighScoreManager {
     constructor() {
         this.topScores = [];
@@ -14,6 +26,9 @@ class HighScoreManager {
                         e.playerName,
                         e.score,
                         e.levelsCompleted ?? 0,
+                        e.difficulty ?? "easy",
+                        e.playerMode ?? "single",
+                        e.catchHistory ?? {},
                     ),
             );
         } else {
@@ -38,16 +53,17 @@ class HighScoreManager {
         );
     }
 
-    checkNewHighScore(score, name, levelsCompleted = 0) {
-        let entry = new ScoreEntry(name, score, levelsCompleted);
+    checkNewHighScore(score, name, levelsCompleted = 0, difficulty = "easy", playerMode = "single", catchHistory = {}) {
+        let entry = new ScoreEntry(name, score, levelsCompleted, difficulty, playerMode, catchHistory);
         this.topScores.push(entry);
         this.topScores.sort((a, b) => b.score - a.score);
         this.topScores = this.topScores.slice(0, 50);
         this.saveScores();
-        this.submitToSupabase(score, name, levelsCompleted);
+        this.submitToSupabase(score, name, levelsCompleted, difficulty, playerMode, catchHistory);
     }
 
     async fetchFromSupabase() {
+        if (!isProdOrigin()) return;
         const cfg =
             typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
         if (!cfg || !cfg.url || !cfg.anonKey || cfg.url.includes("YOUR_")) {
@@ -71,6 +87,9 @@ class HighScoreManager {
                         r.player_name,
                         r.score,
                         r.levels_completed ?? 0,
+                        r.difficulty ?? "easy",
+                        r.player_mode ?? "single",
+                        r.catch_history ?? {},
                     ),
             );
             this.saveScores();
@@ -79,12 +98,16 @@ class HighScoreManager {
         }
     }
 
-    async submitToSupabase(score, name, levelsCompleted) {
+    async submitToSupabase(score, name, levelsCompleted, difficulty = "easy", playerMode = "single", catchHistory = {}) {
+        if (!isProdOrigin()) return;
         const cfg =
             typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
         if (!cfg || !cfg.url || !cfg.anonKey || cfg.url.includes("YOUR_")) {
             return;
         }
+        const d = (difficulty || "easy").toString().toLowerCase();
+        const p = (playerMode || "single").toString().toLowerCase();
+        const ch = catchHistory && typeof catchHistory === "object" ? catchHistory : {};
         try {
             await fetch(`${cfg.url}/rest/v1/scores`, {
                 method: "POST",
@@ -97,6 +120,9 @@ class HighScoreManager {
                     player_name: name,
                     score: score,
                     levels_completed: levelsCompleted,
+                    difficulty: d,
+                    player_mode: p,
+                    catch_history: ch,
                 }),
             });
         } catch (e) {

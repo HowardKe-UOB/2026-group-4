@@ -24,6 +24,7 @@ let nameEntryBgImg;
 let modeSelectBgImg;
 let levelFailedImg;
 let leaderboardBgImg;
+let pauseMenuBgImg;
 let stones = [];
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
 const pixelFont = "Press Start 2P";
@@ -73,11 +74,45 @@ function preload() {
     modeSelectBgImg = loadImage("assets/choose_fishing_challenge.png");
     levelFailedImg = loadImage("assets/levelfailed.png");
     leaderboardBgImg = loadImage("assets/leaderboard.png");
+    pauseMenuBgImg = loadImage("assets/pause_button_bg.png");
+}
+
+function makeWhiteTransparent(img, threshold = 245) {
+    if (!img || !img.pixels) return;
+    img.loadPixels();
+    const p = img.pixels;
+    for (let i = 0; i < p.length; i += 4) {
+        const r = p[i], g = p[i + 1], b = p[i + 2];
+        if (r >= threshold && g >= threshold && b >= threshold) {
+            p[i + 3] = 0;
+        }
+    }
+    img.updatePixels();
+}
+
+function makeBlackTransparent(img, threshold = 40) {
+    if (!img || !img.pixels) return;
+    img.loadPixels();
+    const p = img.pixels;
+    for (let i = 0; i < p.length; i += 4) {
+        const r = p[i], g = p[i + 1], b = p[i + 2];
+        if (r <= threshold && g <= threshold && b <= threshold) {
+            p[i + 3] = 0;
+        }
+    }
+    img.updatePixels();
 }
 
 function setup() {
     const canvas = createCanvas(1280, 720);
     canvas.parent("game-container");
+
+    if (potionImg) makeBlackTransparent(potionImg);
+    if (laserImg) makeBlackTransparent(laserImg);
+    if (clockImg) makeBlackTransparent(clockImg);
+    if (submarineImg) makeBlackTransparent(submarineImg);
+    if (pauseMenuBgImg) makeWhiteTransparent(pauseMenuBgImg);
+
     gameManager = new GameManager();
     wireModeButtons();
 }

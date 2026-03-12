@@ -71,6 +71,7 @@ class LevelManager {
         }
 
         this.activeItems = [];
+        this.fishCaught = {};
         this.spawnItems();
         this.floatingScores = [];
 
@@ -274,6 +275,13 @@ class LevelManager {
             let returnedItem = currentHook.update();
 
             if (returnedItem) {
+                let key = returnedItem.itemName || "Unknown";
+                if (returnedItem.itemName === "Small Fish" && returnedItem.fishIndex != null) {
+                    key = `fish${returnedItem.fishIndex + 1}`; // fishIndex 0–42 → fish1–fish43
+                } else if (returnedItem.itemName === "Big Fish" && returnedItem.fishIndex != null) {
+                    key = `fish${44 + returnedItem.fishIndex}`; // fishIndex 0–20 → fish44–fish64
+                }
+                this.fishCaught[key] = (this.fishCaught[key] || 0) + 1;
                 this.scores[i] += returnedItem.scoreValue;
                 // 双人模式分别追踪 P1/P2 余额；单人模式走原逻辑
                 if (this.playerMode === PlayerMode.TWO_PLAYER) {
