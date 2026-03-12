@@ -77,17 +77,17 @@ class ShopManager {
 
         if (playerMode === PlayerMode.TWO_PLAYER) {
             // 双人模式：分别显示 P1 / P2 余额，及合计
-            textSize(30);
+            textSize(96);
             fill(255, 150, 50); // P1 橙色
-            text("P1: $" + player.p1Score, this.goldBoxX - 110, this.goldBoxY);
+            text("P1: $" + player.p1Score, this.goldBoxX - 130, this.goldBoxY);
             fill(80, 160, 255); // P2 蓝色
-            text("P2: $" + player.p2Score, this.goldBoxX + 110, this.goldBoxY);
-            textSize(22);
+            text("P2: $" + player.p2Score, this.goldBoxX + 130, this.goldBoxY);
+            textSize(72);
             fill(255, 215, 0); // 合计金色
-            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 32);
+            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 42);
         } else {
-            // 单人模式：原逻辑
-            textSize(34);
+            // 单人模式
+            textSize(52);
             fill(150, 80, 0);
             text("Gold: " + player.totalScore, this.goldBoxX, this.goldBoxY);
         }
@@ -107,7 +107,7 @@ class ShopManager {
         push();
         fill(isNextHovered ? 0 : 255);
         textAlign(CENTER, CENTER);
-        textSize(28);
+        textSize(34);
         textStyle(BOLD);
         textFont(pixelFont);
         text("Next Level", this.nextLevelBoxX, this.nextLevelBoxY);
@@ -182,18 +182,18 @@ class ShopManager {
 
             // 商品名称
             fill(60, 40, 20);
-            textSize(34);
+            textSize(48);
             textStyle(BOLD);
-            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 45);
+            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 55);
 
             // 商品描述
-            textSize(24);
+            textSize(36);
             textStyle(NORMAL);
             fill(100, 80, 60);
             text(hoveredItem.description, width / 2, infoY);
 
             // 购买提示
-            textSize(28);
+            textSize(40);
             textStyle(BOLD);
             let promptY = infoY + 40;
 
