@@ -523,13 +523,13 @@ class LevelManager {
             let goalX = width - 180;
             this.drawPixelText(
                 `GOAL: ${this.targetScore}`,
-                goalX,
+                goalX - 50,
                 line1Y,
                 this.cPrimary,
             );
             this.drawPixelText(
                 `TIME: ${timeLeft}`,
-                goalX,
+                goalX - 50,
                 line2Y,
                 this.cP1,
                 tAlpha,
@@ -560,8 +560,8 @@ class LevelManager {
             );
             textAlign(RIGHT, TOP);
             this.drawPixelText(
-                `P2: ${this.player.p2Score}`,
-                rightX - 36, // 为暂停按钮留出空间
+                `P2: ${this.scores[1]}`,
+                rightX - 50, // 为暂停按钮留出空间
                 line1Y,
                 this.cP2,
             );

@@ -68,6 +68,7 @@ class GameManager {
         this.player.totalScore = 0;
         this.player.p1Score = 0;  // 重置双人各自余额
         this.player.p2Score = 0;
+        this.player.hasSubmarine = false;  // 新游戏重置深海解锁，否则会沿用上一局的潜水艇
         this.gameSessionFishCaught = {};
         this.levelNum = 1;
         const buttonOverlay = document.getElementById('button-overlay');
@@ -105,6 +106,11 @@ changeState(newState) {
             this.highScoreScrollY = 0;
             this.fishGalleryEntry = null;
             this.highScoreManager.fetchFromSupabase();
+        }
+        if (newState === GameState.NAME_ENTRY) {
+            this.inputText = '';  // 返回名字输入时清空，不显示上一盘的名字
+            this.nameExistsCheck = null;
+            this.lastCheckedName = '';
         }
         if (
             newState === GameState.DIFFICULTY_SELECT ||
@@ -1065,7 +1071,6 @@ changeState(newState) {
                     }
                     if (b2 && mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y && mouseY <= b2.y + b2.h) {
                         this.gamePaused = false;
-                        this.inputText = '';
                         this.changeState(GameState.NAME_ENTRY);
                         break;
                     }

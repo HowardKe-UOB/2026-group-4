@@ -29,7 +29,8 @@ let leaderboardBgImg;
 let pauseMenuBgImg;
 let stones = [];
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
-const pixelFont = "Press Start 2P";
+// Press Start 2P加单引号，让浏览器解析
+const pixelFont = "'Press Start 2P'";
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
