@@ -56,8 +56,8 @@ function preload() {
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
     buySfx = loadSound("assets/Buy.mp3");
-    catchSfx = loadSound("assets/catch_sfx.wav");
-    ballCatchSfx = loadSound("assets/514989__toasthatter__ballcatch.wav");
+    catchSfx = loadSound("assets/catch_sfx.mp3");
+    ballCatchSfx = loadSound("assets/514989__toasthatter__ballcatch.mp3");
     sharkStolenSfx = loadSound("assets/632231__audacitier__biting-apple-2.mp3");
     gameplayBgm = loadSound("assets/gameplay_bgm.mp3");
 
