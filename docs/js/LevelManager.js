@@ -829,7 +829,7 @@ class LevelManager {
 
     _drawHelpPanel(btnY) {
         const panelW = 400;
-        const panelH = 310;
+        const panelH = 450;
         const panelX = width - panelW - 15;
         const panelY = btnY - panelH - 15;
 
@@ -851,6 +851,7 @@ class LevelManager {
         const lineH = 22;
 
         // ── 游戏介绍 ──
+        // ── 游戏介绍 ──
         fill(0, 220, 255);
         textAlign(LEFT, TOP);
         textSize(13);
@@ -862,11 +863,19 @@ class LevelManager {
         fill(190, 230, 255);
         textSize(11);
         textStyle(NORMAL);
-        text("Catch fish & treasure to reach the GOAL score.", lx, cy);
+        // 【修复】拆分过长的目标句
+        text("Catch fish & treasure to reach", lx, cy);
         cy += lineH;
+        text("the GOAL score.", lx, cy);
+        cy += lineH;
+        
         text("Avoid stones & fish bones (0 pts).", lx, cy);
         cy += lineH;
-        text("Shop between levels to buy power-ups!", lx, cy);
+        
+        // 【修复】拆分过长的商店提示句
+        text("Shop between levels to buy", lx, cy);
+        cy += lineH;
+        text("power-ups!", lx, cy);
         cy += lineH + 10;
 
         // 分割线
@@ -887,14 +896,20 @@ class LevelManager {
         textSize(11);
         textStyle(NORMAL);
         if (this.playerMode === PlayerMode.TWO_PLAYER) {
-            text("P1 (Left  boat) : Press  S  to cast hook", lx, cy);
+            text("P1 (Left  boat) : Press S", lx, cy);
             cy += lineH;
-            text("P2 (Right boat) : Press DOWN \u2193 to cast hook", lx, cy);
+            text("P2 (Right boat) : Press DOWN \u2193", lx, cy);
+            cy += lineH;
         } else {
-            text("Press DOWN ARROW \u2193 to cast hook", lx, cy);
+            // 【修复】拆分过长的单人操作句
+            text("Press DOWN ARROW \u2193 to cast", lx, cy);
+            cy += lineH;
         }
-        cy += lineH + 4;
-        text("Pause : click the \u23F8 button (top-right)", lx, cy);
+        
+        // 【修复】拆分过长的暂停说明句
+        text("Pause : click the \u23F8 button", lx, cy);
+        cy += lineH;
+        text("(top-right)", lx, cy);
         cy += lineH + 10;
 
         // 分割线
@@ -910,11 +925,17 @@ class LevelManager {
         textStyle(BOLD);
         text("ITEM VALUES", lx, cy);
         cy += lineH;
+        
         fill(190, 230, 255);
         textStyle(NORMAL);
-        text("Small Fish: 30-150 pts    Big Fish: 250-600 pts", lx, cy);
+        // 【修复】左右排列太长会超出边界，改为分4行上下排列
+        text("Small Fish: 30-150 pts", lx, cy);
         cy += lineH;
-        text("Treasure: 100-500 pts     Bone/Stone: 0 pts", lx, cy);
+        text("Big Fish: 250-600 pts", lx, cy);
+        cy += lineH;
+        text("Treasure: 100-500 pts", lx, cy);
+        cy += lineH;
+        text("Bone/Stone: 0 pts", lx, cy);
 
         pop();
     }
