@@ -107,6 +107,11 @@ changeState(newState) {
             this.fishGalleryEntry = null;
             this.highScoreManager.fetchFromSupabase();
         }
+        if (newState === GameState.NAME_ENTRY) {
+            this.inputText = '';  // 返回名字输入时清空，不显示上一盘的名字
+            this.nameExistsCheck = null;
+            this.lastCheckedName = '';
+        }
         if (
             newState === GameState.DIFFICULTY_SELECT ||
             newState === GameState.PLAYER_MODE_SELECT
@@ -1066,7 +1071,6 @@ changeState(newState) {
                     }
                     if (b2 && mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y && mouseY <= b2.y + b2.h) {
                         this.gamePaused = false;
-                        this.inputText = '';
                         this.changeState(GameState.NAME_ENTRY);
                         break;
                     }
