@@ -7,7 +7,7 @@ class ShopManager {
         this.nextLevelBoxX = 1020;
         this.nextLevelBoxY = 70;
 
-        // --- 道具在柜台上的位置 ---
+        //道具在柜台上的位置
         this.itemPositions = [
             { x: width / 2 - 187, y: height / 2 + 110 }, // Strength Potion
             { x: width / 2 - 62, y: height / 2 + 110 }, // Laser Sight
@@ -77,19 +77,22 @@ class ShopManager {
 
         if (playerMode === PlayerMode.TWO_PLAYER) {
             // 双人模式：分别显示 P1 / P2 余额，及合计
-            textSize(120);
+            textSize(10);
+            textStyle(NORMAL);
             fill(255, 150, 50); // P1 橙色
-            text("P1: $" + player.p1Score, this.goldBoxX - 130, this.goldBoxY);
+            text("P1:$" + player.p1Score, this.goldBoxX, this.goldBoxY-20);
             fill(80, 160, 255); // P2 蓝色
-            text("P2: $" + player.p2Score, this.goldBoxX + 130, this.goldBoxY);
-            textSize(96);
+            text("P2:$" + player.p2Score, this.goldBoxX, this.goldBoxY+5);
+            textSize(12);
+            textStyle(NORMAL);
             fill(255, 215, 0); // 合计金色
-            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 55);
+            text("Total:$" + player.totalScore, this.goldBoxX, this.goldBoxY + 30);
         } else {
             // 单人模式
-            textSize(80);
-            fill(150, 80, 0);
-            text("Gold: " + player.totalScore, this.goldBoxX, this.goldBoxY);
+            textSize(14);
+            textStyle(NORMAL);
+            fill(255, 150, 50);
+            text("Gold:$" + player.totalScore, this.goldBoxX, this.goldBoxY);
         }
         pop();
 
@@ -107,7 +110,7 @@ class ShopManager {
         push();
         fill(isNextHovered ? 0 : 255);
         textAlign(CENTER, CENTER);
-        textSize(34);
+        textSize(15);
         textStyle(BOLD);
         textFont(pixelFont);
         text("Next Level", this.nextLevelBoxX, this.nextLevelBoxY);
@@ -131,9 +134,9 @@ class ShopManager {
                 circle(pos.x, pos.y, this.hitRadius * 2);
             }
 
+            push();
             imageMode(CENTER);
             let imgSize = 80;
-
             if (
                 item.name === "Strength Potion" &&
                 typeof potionImg !== "undefined" &&
@@ -159,11 +162,13 @@ class ShopManager {
             ) {
                 image(submarineImg, pos.x, pos.y, imgSize, imgSize);
             }
+            pop();
 
             let isSold =
                 item.purchased ||
                 (item.name === "Submarine" && player.hasSubmarine);
             if (isSold) {
+                push();
                 fill(0, 0, 0, 180);
                 circle(pos.x, pos.y, imgSize + 5);
                 fill(255, 50, 50);
@@ -171,6 +176,7 @@ class ShopManager {
                 textStyle(BOLD);
                 text("SOLD", pos.x - 30, pos.y + 10);
                 textStyle(NORMAL);
+                pop();
             }
         }
 
@@ -178,24 +184,24 @@ class ShopManager {
             push();
             textFont(pixelFont);
             textAlign(CENTER, CENTER);
-            let infoY = height - 120;
+            let infoY = height - 90;
 
             // 商品名称
             fill(60, 40, 20);
-            textSize(48);
+            textSize(18);
             textStyle(BOLD);
-            text(hoveredItem.name + "  -  $" + hoveredItem.costPrice, width / 2, infoY - 55);
+            text(hoveredItem.name + " - $" + hoveredItem.costPrice, width / 2, infoY - 55);
 
             // 商品描述
-            textSize(36);
+            textSize(14);
             textStyle(NORMAL);
             fill(100, 80, 60);
-            text(hoveredItem.description, width / 2, infoY);
+            text(hoveredItem.description, width / 2, infoY - 20);
 
             // 购买提示
-            textSize(40);
-            textStyle(BOLD);
-            let promptY = infoY + 40;
+            textSize(16);
+            textStyle(NORMAL);
+            let promptY = infoY + 20;
 
             // 双人模式：用两人合计判断是否够钱
             let canAfford = playerMode === PlayerMode.TWO_PLAYER
@@ -217,9 +223,9 @@ class ShopManager {
                 if (playerMode === PlayerMode.TWO_PLAYER) {
                     fill(35, 140, 35);
                     if (player.p1Score >= hoveredItem.costPrice) {
-                        text("Click to buy  (P1 pays)", width / 2, promptY);
+                        text("Click to buy (P1 pays)", width / 2, promptY);
                     } else {
-                        text("Click to buy  (P1+" + (hoveredItem.costPrice - player.p1Score) + " from P2)", width / 2, promptY);
+                        text("Click to buy (P1+" + (hoveredItem.costPrice - player.p1Score) + " from P2)", width / 2, promptY);
                     }
                 } else {
                     fill(35, 140, 35);

@@ -137,23 +137,23 @@ changeState(newState) {
             }
         }
         //游戏中背景音乐
-        if (this.currentState === GameState.PLAYING) {
-            if (
-                typeof gameplayBgm !== 'undefined' &&
-                gameplayBgm &&
-                !gameplayBgm.isPlaying()
-            ) {
-                gameplayBgm.loop();
-            }
-        } else {
-            if (
-                typeof gameplayBgm !== 'undefined' &&
-                gameplayBgm &&
-                gameplayBgm.isPlaying()
-            ) {
-                gameplayBgm.stop();
-            }
-        }
+        // if (this.currentState === GameState.PLAYING) {
+        //     if (
+        //         typeof gameplayBgm !== 'undefined' &&
+        //         gameplayBgm &&
+        //         !gameplayBgm.isPlaying()
+        //     ) {
+        //         gameplayBgm.loop();
+        //     }
+        // } else {
+        //     if (
+        //         typeof gameplayBgm !== 'undefined' &&
+        //         gameplayBgm &&
+        //         gameplayBgm.isPlaying()
+        //     ) {
+        //         gameplayBgm.stop();
+        //     }
+        // }
         //商店音乐
         if (this.currentState === GameState.SHOP) {
             if (

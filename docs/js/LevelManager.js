@@ -276,10 +276,10 @@ class LevelManager {
 
             if (returnedItem) {
                 // 播放抓中音效
-                if (typeof catchSfx !== 'undefined' && catchSfx) {
-                    if (catchSfx.isPlaying()) catchSfx.stop();
-                    catchSfx.play();
-                }
+                // if (typeof catchSfx !== 'undefined' && catchSfx) {
+                //     if (catchSfx.isPlaying()) catchSfx.stop();
+                //     catchSfx.play();
+                // }
                 let key = returnedItem.itemName || "Unknown";
                 if (returnedItem.itemName === "Small Fish" && returnedItem.fishIndex != null) {
                     key = `fish${returnedItem.fishIndex + 1}`; // fishIndex 0–42 → fish1–fish43
@@ -514,13 +514,13 @@ class LevelManager {
             let goalX = width - 180;
             this.drawPixelText(
                 `GOAL: ${this.targetScore}`,
-                goalX,
+                goalX - 50,
                 line1Y,
                 this.cPrimary,
             );
             this.drawPixelText(
                 `TIME: ${timeLeft}`,
-                goalX,
+                goalX - 50,
                 line2Y,
                 this.cP1,
                 tAlpha,
@@ -552,7 +552,7 @@ class LevelManager {
             textAlign(RIGHT, TOP);
             this.drawPixelText(
                 `P2: ${this.scores[1]}`,
-                rightX - 36, // 为暂停按钮留出空间
+                rightX - 50, // 为暂停按钮留出空间
                 line1Y,
                 this.cP2,
             );

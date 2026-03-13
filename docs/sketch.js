@@ -29,7 +29,8 @@ let leaderboardBgImg;
 let pauseMenuBgImg;
 let stones = [];
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
-const pixelFont = "Press Start 2P";
+// Press Start 2P加单引号，让浏览器解析
+const pixelFont = "'Press Start 2P'";
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
@@ -53,8 +54,9 @@ function preload() {
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
     buySfx = loadSound("assets/Buy.mp3");
-    catchSfx = loadSound("assets/catch_sfx.wav");
-    gameplayBgm = loadSound("assets/gameplay_bgm.mp3");
+    // 目前似乎没有加入抓住音效和背景音效？
+    //catchSfx = loadSound("assets/catch_sfx.wav");
+    //gameplayBgm = loadSound("assets/gameplay_bgm.mp3");
 
     for (let i = 1; i <= 43; i++) {
         let frame1 = loadImage(`assets/fish${i}_1.png`);
