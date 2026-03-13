@@ -511,6 +511,15 @@ class LevelManager {
                 this.cMoney,
             );
 
+            // 关卡编号显示在顶部中央
+            textAlign(CENTER, TOP);
+            this.drawPixelText(
+                `LV.${this.levelNum}`,
+                centerX,
+                line1Y,
+                this.cPrimary,
+            );
+
             let goalX = width - 180;
             this.drawPixelText(
                 `GOAL: ${this.targetScore}`,
@@ -531,13 +540,13 @@ class LevelManager {
         } else {
             // 双人模式 UI 布局：
             // 行1 (y=20)：P1（左） | TOTAL（中央） | P2（右）
-            // 行2 (y=45)：GOAL（中央）
+            // 行2 (y=45)：LV.X（左） | GOAL（中央）
             // 行3 (y=70/95)：TIME（中央，深海时让位至 y=95）
             let timeLabelY = this.isDeepSea ? 95 : 70;
 
             textAlign(LEFT, TOP);
             this.drawPixelText(
-                `P1: ${this.scores[0]}`,
+                `P1: ${this.player.p1Score}`,
                 leftX,
                 line1Y,
                 this.cP1,
@@ -551,10 +560,18 @@ class LevelManager {
             );
             textAlign(RIGHT, TOP);
             this.drawPixelText(
-                `P2: ${this.scores[1]}`,
+                `P2: ${this.player.p2Score}`,
                 rightX - 36, // 为暂停按钮留出空间
                 line1Y,
                 this.cP2,
+            );
+            // 关卡编号显示在左侧第二行
+            textAlign(LEFT, TOP);
+            this.drawPixelText(
+                `LV.${this.levelNum}`,
+                leftX,
+                line2Y,
+                this.cPrimary,
             );
             textAlign(CENTER, TOP);
             this.drawPixelText(
