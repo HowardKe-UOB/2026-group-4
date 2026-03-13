@@ -275,6 +275,11 @@ class LevelManager {
             let returnedItem = currentHook.update();
 
             if (returnedItem) {
+                // 播放抓中音效
+                if (typeof catchSfx !== 'undefined' && catchSfx) {
+                    if (catchSfx.isPlaying()) catchSfx.stop();
+                    catchSfx.play();
+                }
                 let key = returnedItem.itemName || "Unknown";
                 if (returnedItem.itemName === "Small Fish" && returnedItem.fishIndex != null) {
                     key = `fish${returnedItem.fishIndex + 1}`; // fishIndex 0–42 → fish1–fish43

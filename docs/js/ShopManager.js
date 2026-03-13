@@ -77,17 +77,17 @@ class ShopManager {
 
         if (playerMode === PlayerMode.TWO_PLAYER) {
             // 双人模式：分别显示 P1 / P2 余额，及合计
-            textSize(96);
+            textSize(120);
             fill(255, 150, 50); // P1 橙色
             text("P1: $" + player.p1Score, this.goldBoxX - 130, this.goldBoxY);
             fill(80, 160, 255); // P2 蓝色
             text("P2: $" + player.p2Score, this.goldBoxX + 130, this.goldBoxY);
-            textSize(72);
+            textSize(96);
             fill(255, 215, 0); // 合计金色
-            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 42);
+            text("Total: $" + player.totalScore, this.goldBoxX, this.goldBoxY + 55);
         } else {
             // 单人模式
-            textSize(52);
+            textSize(80);
             fill(150, 80, 0);
             text("Gold: " + player.totalScore, this.goldBoxX, this.goldBoxY);
         }
