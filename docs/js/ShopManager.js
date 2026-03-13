@@ -44,7 +44,7 @@ class ShopManager {
     }
 
     // playerMode 参数：用于双人模式下显示各自余额及差异化扣款
-    draw(player, playerMode = PlayerMode.SINGLE) {
+    draw(player, playerMode = PlayerMode.SINGLE, levelNum = 1) {
         // 绘制背景（使用覆盖模式以防止拉伸）
         push();
         if (typeof shopBgImg !== "undefined" && shopBgImg) {
@@ -68,6 +68,7 @@ class ShopManager {
             background(40, 40, 60);
         }
         pop();
+
 
         // ── 金额显示 ──────────────────────────────────────────────────
         push();

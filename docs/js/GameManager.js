@@ -585,7 +585,7 @@ changeState(newState) {
 
     drawShop() {
         push();
-        this.shopManager.draw(this.player, this.currentPlayerMode);
+        this.shopManager.draw(this.player, this.currentPlayerMode, this.levelNum);
         pop();
     }
 
