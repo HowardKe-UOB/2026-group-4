@@ -13,6 +13,8 @@ let titleBgm;
 let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
 let buySfx;
 let catchSfx;    // 抓鱼抓中音效
+let ballCatchSfx; // 钩子碰到鱼的音效
+let sharkStolenSfx; // 鲨鱼偷走物品的音效
 let gameplayBgm; // 游戏中背景音乐
 let imgSmallFishes = [];
 let imgBigFishes = [];
@@ -55,6 +57,8 @@ function preload() {
     hookImg2 = loadImage("assets/hook2.png");
     buySfx = loadSound("assets/Buy.mp3");
     catchSfx = loadSound("assets/catch_sfx.wav");
+    ballCatchSfx = loadSound("assets/514989__toasthatter__ballcatch.wav");
+    sharkStolenSfx = loadSound("assets/632231__audacitier__biting-apple-2.mp3");
     gameplayBgm = loadSound("assets/gameplay_bgm.mp3");
 
     for (let i = 1; i <= 43; i++) {

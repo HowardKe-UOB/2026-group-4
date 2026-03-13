@@ -69,15 +69,6 @@ class ShopManager {
         }
         pop();
 
-        // ── 关卡编号 ──────────────────────────────────────────────────
-        push();
-        textAlign(CENTER, CENTER);
-        textStyle(BOLD);
-        textFont(pixelFont);
-        textSize(48);
-        fill(0, 200, 150);
-        text(`LEVEL ${levelNum}`, width / 2, 38);
-        pop();
 
         // ── 金额显示 ──────────────────────────────────────────────────
         push();

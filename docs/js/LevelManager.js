@@ -318,6 +318,9 @@ class LevelManager {
 
                     if (d < (item.catchRadius ?? item.width / 2) + 10) {
                         if (item.canBeCaught) {
+                            if (ballCatchSfx && !ballCatchSfx.isPlaying()) {
+                                ballCatchSfx.play();
+                            }
                             currentHook.grabItem(item);
                             this.activeItems.splice(j, 1);
                             break;
@@ -353,6 +356,9 @@ class LevelManager {
                             )
                         ) {
                             // 鲨鱼吃掉物品，钩子空手回收
+                            if (sharkStolenSfx && !sharkStolenSfx.isPlaying()) {
+                                sharkStolenSfx.play();
+                            }
                             this.floatingScores.push({
                                 x: item.position.x,
                                 y: item.position.y - 20,
