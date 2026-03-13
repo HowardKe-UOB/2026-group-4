@@ -68,6 +68,7 @@ class GameManager {
         this.player.totalScore = 0;
         this.player.p1Score = 0;  // 重置双人各自余额
         this.player.p2Score = 0;
+        this.player.hasSubmarine = false;  // 新游戏重置深海解锁，否则会沿用上一局的潜水艇
         this.gameSessionFishCaught = {};
         this.levelNum = 1;
         const buttonOverlay = document.getElementById('button-overlay');
