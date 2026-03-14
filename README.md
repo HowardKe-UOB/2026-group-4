@@ -212,6 +212,14 @@ LOW: Extra point
 | End Game Feedback | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached).                 | Visibility of system status     | 2               | 2            | 2                 | (2 + 2 + 2) / 3 = 2.00     |
 | Multiplayer       | In two-player mode, it is unclear which hook belongs to which player.                                                       | Consistency and standards       | 2               | 2            | 2                 | (2 + 2 + 2) / 3 = 2.00     |
 
+### 6.2 Quantitative Evaluation
+
+To balance difficulty with ease of use, we ran quantitative usability assessments using two validated instruments and statistical analysis:
+
+- **Raw NASA TLX** — measures perceived workload quantitatively
+- **System Usability Scale (SUS)** — measures perceived system usability quantitatively 
+- **Wilcoxon Signed-Rank Test** — used to test for statistical significance
+
 - 15% ~750 words
 - One qualitative evaluation (of your choice)
 - One quantitative evaluation (of your choice)
