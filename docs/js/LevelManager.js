@@ -550,13 +550,6 @@ class LevelManager {
             // 行3 (y=70/95)：TIME（中央，深海时让位至 y=95）
             let timeLabelY = this.isDeepSea ? 95 : 70;
 
-            textAlign(LEFT, TOP);
-            this.drawPixelText(
-                `P1: ${this.player.p1Score}`,
-                leftX,
-                line1Y,
-                this.cP1,
-            );
             textAlign(CENTER, TOP);
             this.drawPixelText(
                 `TOTAL: ${this.player.totalScore}`,
@@ -564,9 +557,17 @@ class LevelManager {
                 line1Y,
                 this.cSecondary,
             );
+            textAlign(LEFT, TOP);
+            this.drawPixelText(
+                `P1: ${this.player.p1Score}`,
+                leftX,
+                line1Y,
+                this.cP1,
+            );
+            // 【修改前】：`P2: ${this.scores[1]}`
             textAlign(RIGHT, TOP);
             this.drawPixelText(
-                `P2: ${this.scores[1]}`,
+                `P2: ${this.player.p2Score}`,
                 rightX - 50, // 为暂停按钮留出空间
                 line1Y,
                 this.cP2,

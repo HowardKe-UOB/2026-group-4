@@ -117,9 +117,9 @@ function setup() {
     canvas.parent("game-container");
 
     if (potionImg) makeBlackTransparent(potionImg);
-    if (laserImg) makeBlackTransparent(laserImg);
+    //if (laserImg) makeBlackTransparent(laserImg);
     if (clockImg) makeBlackTransparent(clockImg);
-    if (submarineImg) makeBlackTransparent(submarineImg);
+    //if (submarineImg) makeBlackTransparent(submarineImg);
     if (pauseMenuBgImg) makeWhiteTransparent(pauseMenuBgImg);
 
     gameManager = new GameManager();
