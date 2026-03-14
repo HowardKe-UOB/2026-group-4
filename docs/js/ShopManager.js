@@ -18,28 +18,32 @@ class ShopManager {
         this.hitRadius = 60; // 判定范围
     }
 
-    resetShop() {
+    resetShop(levelNum = 1) {
         this.availableItems = [
             new ShopItem(
                 "Strength Potion",
-                200,
+                250,
                 "Pulls items 2x faster.\nperiod: 1 level",
+                levelNum
             ),
             new ShopItem(
                 "Laser Sight",
-                200,
+                175,
                 "Often miss? Buy Laser Sight now!\nperiod: 1 level",
+                levelNum
             ),
             new ShopItem(
                 "Sand Clock",
-                250,
+                200,
                 "Get extra 10 seconds.\nperiod: 1 level",
+                levelNum
             ),
             new ShopItem(
                 "Submarine",
-                200,
-                "Dive into deep sea!\nPermanent upgrade.",
-            ),
+                2000,
+                "Explore the deep sea.\nPermanent upgrade",
+                levelNum
+            )
         ];
     }
 
@@ -187,11 +191,18 @@ class ShopManager {
             textAlign(CENTER, CENTER);
             let infoY = height - 90;
 
-            // 商品名称
+            // 商品名称 商品打折显示
             fill(60, 40, 20);
-            textSize(18);
+            textSize(16);
             textStyle(BOLD);
-            text(hoveredItem.name + " - $" + hoveredItem.costPrice, width / 2, infoY - 55);
+            if(hoveredItem.isDiscounted){
+                fill(255, 50, 50);
+                textSize(16);
+                textStyle(BOLD);
+                text(hoveredItem.name + " - $" + hoveredItem.costPrice + " 50%OFF!", width / 2, infoY - 55);
+            }else{
+                text(hoveredItem.name + " - $" + hoveredItem.costPrice, width / 2, infoY - 55);
+            }
 
             // 商品描述
             textSize(14);
