@@ -35,7 +35,6 @@ class LevelManager {
         this.scores = [];
 
         // 分配专属钩子图片，如果没加载成功就用原来的
-        // ─── 修改开始：只在这里判断是不是潜水艇 ───
         let p1HookImg =
             typeof hookImg2 !== "undefined"
                 ? hookImg2
