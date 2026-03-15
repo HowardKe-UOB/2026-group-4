@@ -212,6 +212,76 @@ LOW: Extra point
 | End Game Feedback | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached).                 | Visibility of system status     | 2               | 2            | 2                 | (2 + 2 + 2) / 3 = 2.00     |
 | Multiplayer       | In two-player mode, it is unclear which hook belongs to which player.                                                       | Consistency and standards       | 2               | 2            | 2                 | (2 + 2 + 2) / 3 = 2.00     |
 
+### 6.2 Quantitative Evaluation
+
+We evaluated usability quantitatively, using two well-established, validated questionnaires and statistical analyses, to ensure the game was both sufficiently challenging and easy to use.
+
+- **Raw NASA TLX** — to measre  perceived workload
+- **System Usability Scale (SUS)** — to test  system usabilityquantitatively
+- **Wilcoxon Signed-Rank Test** — to estimate  the statistical significance of the evaluations
+
+#### Process
+
+These evaluations involved 10participants, each trialing two difficulty modes  Initially, participants struggled to understand the control key of  the gameplay, urge  us to add a short documetation.
+
+#### Raw NASA TLX
+
+**Subscale Workload Scores**
+
+Across all six subscales, the median scores for all participants increased with difficulty (Table 3). The largest change was in [Frustration/Effort/Temporal Demand], which rose from a median of [X] (Shallow) to [Y] (Deep Sea).
+
+*Table 3: Median NASA TLX subscale scores for all participants*
+
+| Scale | Median (Shallow) | Median (Deep Sea) | Δ Median |
+| :---- | :--------------- | :---------------- | :------- |
+| Mental Demand | [ ] | [ ] | [ ] |
+| Physical Demand | [ ] | [ ] | [ ] |
+| Temporal Demand | [ ] | [ ] | [ ] |
+| Frustration | [ ] | [ ] | [ ] |
+| Effort | [ ] | [ ] | [ ] |
+| Performance | [ ] | [ ] | [ ] |
+
+**Statistical Analysis**
+
+A Wilcoxon Signed-Rank test was performed at both a subscale and overall level to ascertain the statistical significance of the change at varying levels of detail. The results (Table 4) show that increasing difficulty produced a statistically significant difference in overall perceived workload, and in [all/most] subscales.
+
+| Scale | W Test Statistic | Critical Value | Statistical Significance |
+| :---- | :--------------- | :------------- | :---------------------- |
+| Mental Demand | [ ] | 8 | Yes/No |
+| Physical Demand | [ ] | 8 | Yes/No |
+| Temporal Demand | [ ] | 8 | Yes/No |
+| Frustration | [ ] | 8 | Yes/No |
+| Effort | [ ] | 8 | Yes/No |
+| Performance | [ ] | 8 | Yes/No |
+| Overall Perceived Workload | [ ] | 8 | Yes/No |
+
+*Table 4: Wilcoxon Signed-Rank Test, with N = [10], α = 0.05 and a critical value of 8*
+
+**Solutions and Adjustments**
+
+Since the data show that higher difficulty led to significant increases in median [frustration/effort], we made several design changes to maintain challenge without increasing frustration: balanced fish spawn rates and shark behaviour, improved the shop's upgradable items to help reduce player effort, and ensured that difficulty increases felt rewarding, not frustrating.
+
+#### System Usability Scale (SUS)
+
+**Process**
+
+After completing the NASA TLX, all [N] participants completed the SUS, which consists of 10 standardised questions assessing overall system usability. Scores were calculated using standard SUS methodology.
+
+**Results**
+
+- Mean SUS score (Shallow Water) — [ ]
+- Mean SUS score (Deep Sea) — [ ]
+
+While [some] participants rated the harder difficulty below average usability, overall scores remained [above/below] the standard usability benchmark of 68. This suggests that our game had [excellent/moderate] usability even at a higher difficulty level.
+
+**Statistical Analysis**
+
+A Wilcoxon Signed-Rank test was performed on the SUS scores for both difficulties. The critical value was 8 (N = [10], α = 0.05), and the W Test statistic was calculated to be [ ], indicating that there [was/was not] a statistically significant difference between usability at different difficulty.
+
+**Solutions and Adjustments**
+
+While the SUS confirmed [high/moderate] usability, we noted potential questionnaire fatigue due to administering the SUS immediately after the NASA TLX, which may have affected response quality. In future iterations, we would schedule breaks or separate the two evaluations.
+
 - 15% ~750 words
 - One qualitative evaluation (of your choice)
 - One quantitative evaluation (of your choice)
