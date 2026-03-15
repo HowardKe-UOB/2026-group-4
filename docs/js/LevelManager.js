@@ -35,6 +35,7 @@ class LevelManager {
         this.scores = [];
 
         // 分配专属钩子图片，如果没加载成功就用原来的
+        // ─── 修改开始：只在这里判断是不是潜水艇 ───
         let p1HookImg =
             typeof hookImg2 !== "undefined"
                 ? hookImg2
@@ -42,34 +43,47 @@ class LevelManager {
                   ? hookImg
                   : null;
 
+        let startY = 180;
+
+        if (this.isDeepSea) {
+            p1HookImg = typeof newhookImg !== "undefined" ? newhookImg : null;
+            startY = 183; // 潜水艇吃水深，发射点往下移，如果不喜欢可以改回185
+        }
+        // ───────────────────────────────────────────────────
+
         if (this.playerMode === PlayerMode.SINGLE) {
             let boatX = width / 2;
             this.boats.push(createVector(boatX, 195));
-            this.hooks.push(new Hook(boatX, 185, p1HookImg));
+            this.hooks.push(new Hook(boatX, startY, p1HookImg));
             this.scores.push(0);
             this.hook = this.hooks[0];
         } else {
             let boat1X = width * 0.3;
             let boat2X = width * 0.7;
 
+            // 左边玩家 (P1)
             this.boats.push(createVector(boat1X, 195));
-            this.hooks.push(new Hook(boat1X, 185, p1HookImg));
+            this.hooks.push(new Hook(boat1X, startY, p1HookImg));
             this.scores.push(0);
 
+            // 右边玩家 (P2)
             this.boats.push(createVector(boat2X, 195));
-            this.hooks.push(
-                new Hook(
-                    boat2X,
-                    185,
-                    typeof hookImg !== "undefined" ? hookImg : null,
-                ),
-            );
+            
+            // ─── 核心修改：给右边玩家专属的新鱼钩 ───
+            let p2HookImg = (typeof hookImg !== "undefined" ? hookImg : null);
+            let p2StartY = 185;
+            
+            if (this.isDeepSea) {
+                p2HookImg = typeof newhook2Img !== "undefined" ? newhook2Img : null;
+                p2StartY = 179; // 提上高度，完美镶嵌在潜水艇肚子下
+            }
+            
+            this.hooks.push(new Hook(boat2X, p2StartY, p2HookImg));
             this.scores.push(0);
 
             this.hook1 = this.hooks[0];
             this.hook2 = this.hooks[1];
         }
-
         this.activeItems = [];
         this.fishCaught = {};
         this.spawnItems();
@@ -348,7 +362,12 @@ class LevelManager {
                         hook.state === HookState.MOVING_UP
                     ) {
                         let item = hook.attachedItem;
+                        
+                        // ─── 核心修改：如果是石头或鱼骨，鲨鱼直接无视，不触发抢夺！ ───
+                        let isStoneOrBone = (item instanceof Stone) || (item instanceof FishBone);
+
                         if (
+                            !isStoneOrBone &&  // 👈 新增的判定条件：不能是石头或鱼骨
                             shark.overlaps(
                                 item.position.x,
                                 item.position.y,
@@ -442,11 +461,17 @@ class LevelManager {
                 let rockAngle = cos(waveSpeed * 0.8 + phaseOffset) * 0.025;
                 translate(this.boats[i].x, this.boats[i].y + bobY);
                 rotate(rockAngle);
-                if (typeof submarineImg !== "undefined" && submarineImg) {
-                    image(submarineImg, 0, -40, 240, 130); // 上移至水面附近
+                // ─── 核心修改开始：P2 用新潜水艇，P1 用老潜水艇 ───
+                if (i === 1 && typeof submarineImg2 !== "undefined" && submarineImg2) {
+                    // P2 (右边玩家) 用新的 submarineImg2
+                    image(submarineImg2, 0, -40, 240, 130);
+                } else if (typeof submarineImg !== "undefined" && submarineImg) {
+                    // P1 (左边玩家) 或单人模式用老潜水艇
+                    image(submarineImg, 0, -40, 240, 130); 
                 } else {
                     this._drawSubmarine(i);
                 }
+                // ─── 核心修改结束 ───
                 pop();
                 this.hooks[i].draw();
             }

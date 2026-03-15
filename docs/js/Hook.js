@@ -87,22 +87,50 @@ class Hook extends GameObject {
             pop();
         }
 
-        stroke(85, 55, 35);
+        let isNewHook = (typeof newhookImg !== "undefined" && this.sprite === newhookImg);
+        let isNewHook2 = (typeof newhook2Img !== "undefined" && this.sprite === newhook2Img);
+        let isOldHook2 = (typeof hookImg2 !== "undefined" && this.sprite === hookImg2);
+        let isAnyMechHook = isNewHook || isNewHook2;
+
+        // 修改绳子颜色：机械臂用银灰色，老鱼叉用棕色
+        if (isAnyMechHook) {
+            stroke(150, 160, 170); 
+        } else {
+            stroke(85, 55, 35); 
+        }
         strokeWeight(3);
-        line(this.origin.x, this.origin.y, this.position.x, this.position.y);
+
+        // 如果是深海机械臂且正在待机，则隐藏绳子（镶嵌效果）
+        if (!(isAnyMechHook && this.state === HookState.IDLE_SWINGING)) {
+            line(this.origin.x, this.origin.y, this.position.x, this.position.y);
+        }
 
         push();
         translate(this.position.x, this.position.y);
-
-        let lineAngle = atan2(
-            this.position.y - this.origin.y,
-            this.position.x - this.origin.x,
-        );
-        rotate(lineAngle + radians(135));
-
+        let lineAngle = atan2(this.position.y - this.origin.y, this.position.x - this.origin.x);
         imageMode(CENTER);
-        if (this.sprite) {
+
+       
+        if (isNewHook2) {
+            // 【右边玩家 P2】: 填 -90 完美垂直
+            rotate(lineAngle + radians(-90)); 
+            image(this.sprite, 0, 0, 110, 110); 
+            
+        } else if (isNewHook) {
+            // 【左边玩家 P1】: 把 90 改成 270，让它倒转 180 度！
+            rotate(lineAngle + radians(270));  
+            image(this.sprite, 0, 0, 110, 110);
+            
+        } else if (isOldHook2) {
+            // 左边玩家(P1)的浅海老鱼叉
+            rotate(lineAngle + radians(135));
             image(this.sprite, 0, 0, 80, 80);
+        } else {
+            // 右边玩家(P2)的浅海老鱼叉
+            rotate(lineAngle + radians(135));
+            if (this.sprite) {
+                image(this.sprite, 0, 0, 80, 80);
+            }
         }
         pop();
 

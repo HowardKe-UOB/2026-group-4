@@ -30,6 +30,9 @@ let levelFailedImg;
 let leaderboardBgImg;
 let pauseMenuBgImg;
 let stones = [];
+let newhookImg;
+let submarineImg2;
+let newhook2Img;
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
 // Press Start 2P加单引号，让浏览器解析
 const pixelFont = "'Press Start 2P'";
@@ -49,12 +52,15 @@ function preload() {
     boatImg2 = loadImage("assets/boat2.png");
     // 【新增】潜水艇图片（文件不存在时自动使用代码绘制的 fallback）
     submarineImg = loadImage("assets/submarineImg.png");
+    submarineImg2 = loadImage('assets/submarineImg2.png');
     for (let i = 1; i <= 4; i++) {
         sharkImgs.push(loadImage(`assets/shark_${i}.png`));
         anglerFishImgs.push(loadImage(`assets/AnglerFish_${i}.png`));
     }
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
+    newhookImg = loadImage("assets/newhook.png");
+    newhook2Img = loadImage("assets/newhook2.png");
     buySfx = loadSound("assets/Buy.mp3");
     catchSfx = loadSound("assets/catch_sfx.mp3");
     ballCatchSfx = loadSound("assets/ballcatch.mp3");
