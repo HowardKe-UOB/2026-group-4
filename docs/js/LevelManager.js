@@ -42,34 +42,47 @@ class LevelManager {
                   ? hookImg
                   : null;
 
+        let startY = 180;
+
+        if (this.isDeepSea) {
+            p1HookImg = typeof newhookImg !== "undefined" ? newhookImg : null;
+            startY = 183; // 潜水艇吃水深，发射点往下移，如果不喜欢可以改回185
+        }
+        // ───────────────────────────────────────────────────
+
         if (this.playerMode === PlayerMode.SINGLE) {
             let boatX = width / 2;
             this.boats.push(createVector(boatX, 195));
-            this.hooks.push(new Hook(boatX, 185, p1HookImg));
+            this.hooks.push(new Hook(boatX, startY, p1HookImg));
             this.scores.push(0);
             this.hook = this.hooks[0];
         } else {
             let boat1X = width * 0.3;
             let boat2X = width * 0.7;
 
+            // 左边玩家 (P1)
             this.boats.push(createVector(boat1X, 195));
-            this.hooks.push(new Hook(boat1X, 185, p1HookImg));
+            this.hooks.push(new Hook(boat1X, startY, p1HookImg));
             this.scores.push(0);
 
+            // 右边玩家 (P2)
             this.boats.push(createVector(boat2X, 195));
-            this.hooks.push(
-                new Hook(
-                    boat2X,
-                    185,
-                    typeof hookImg !== "undefined" ? hookImg : null,
-                ),
-            );
+            
+            // ─── 核心修改：给右边玩家专属的新鱼钩 ───
+            let p2HookImg = (typeof hookImg !== "undefined" ? hookImg : null);
+            let p2StartY = 185;
+            
+            if (this.isDeepSea) {
+                p2HookImg = typeof newhook2Img !== "undefined" ? newhook2Img : null;
+                p2StartY = 179; // 提上高度，完美镶嵌在潜水艇肚子下
+            }
+            
+            this.hooks.push(new Hook(boat2X, p2StartY, p2HookImg));
             this.scores.push(0);
 
             this.hook1 = this.hooks[0];
             this.hook2 = this.hooks[1];
         }
-
         this.activeItems = [];
         this.fishCaught = {};
         this.spawnItems();
@@ -348,7 +361,12 @@ class LevelManager {
                         hook.state === HookState.MOVING_UP
                     ) {
                         let item = hook.attachedItem;
+                        
+                        // ─── 核心修改：如果是石头或鱼骨，鲨鱼直接无视，不触发抢夺！ ───
+                        let isStoneOrBone = (item instanceof Stone) || (item instanceof FishBone);
+
                         if (
+                            !isStoneOrBone &&  // 👈 新增的判定条件：不能是石头或鱼骨
                             shark.overlaps(
                                 item.position.x,
                                 item.position.y,
@@ -442,11 +460,17 @@ class LevelManager {
                 let rockAngle = cos(waveSpeed * 0.8 + phaseOffset) * 0.025;
                 translate(this.boats[i].x, this.boats[i].y + bobY);
                 rotate(rockAngle);
-                if (typeof submarineImg !== "undefined" && submarineImg) {
-                    image(submarineImg, 0, -40, 240, 130); // 上移至水面附近
+                // ─── 核心修改开始：P2 用新潜水艇，P1 用老潜水艇 ───
+                if (i === 1 && typeof submarineImg2 !== "undefined" && submarineImg2) {
+                    // P2 (右边玩家) 用新的 submarineImg2
+                    image(submarineImg2, 0, -40, 240, 130);
+                } else if (typeof submarineImg !== "undefined" && submarineImg) {
+                    // P1 (左边玩家) 或单人模式用老潜水艇
+                    image(submarineImg, 0, -40, 240, 130); 
                 } else {
                     this._drawSubmarine(i);
                 }
+                // ─── 核心修改结束 ───
                 pop();
                 this.hooks[i].draw();
             }
@@ -550,13 +574,6 @@ class LevelManager {
             // 行3 (y=70/95)：TIME（中央，深海时让位至 y=95）
             let timeLabelY = this.isDeepSea ? 95 : 70;
 
-            textAlign(LEFT, TOP);
-            this.drawPixelText(
-                `P1: ${this.player.p1Score}`,
-                leftX,
-                line1Y,
-                this.cP1,
-            );
             textAlign(CENTER, TOP);
             this.drawPixelText(
                 `TOTAL: ${this.player.totalScore}`,
@@ -564,9 +581,17 @@ class LevelManager {
                 line1Y,
                 this.cSecondary,
             );
+            textAlign(LEFT, TOP);
+            this.drawPixelText(
+                `P1: ${this.player.p1Score}`,
+                leftX,
+                line1Y,
+                this.cP1,
+            );
+            // 【修改前】：`P2: ${this.scores[1]}`
             textAlign(RIGHT, TOP);
             this.drawPixelText(
-                `P2: ${this.scores[1]}`,
+                `P2: ${this.player.p2Score}`,
                 rightX - 50, // 为暂停按钮留出空间
                 line1Y,
                 this.cP2,
@@ -829,7 +854,7 @@ class LevelManager {
 
     _drawHelpPanel(btnY) {
         const panelW = 400;
-        const panelH = 310;
+        const panelH = 450;
         const panelX = width - panelW - 15;
         const panelY = btnY - panelH - 15;
 
@@ -851,6 +876,7 @@ class LevelManager {
         const lineH = 22;
 
         // ── 游戏介绍 ──
+        // ── 游戏介绍 ──
         fill(0, 220, 255);
         textAlign(LEFT, TOP);
         textSize(13);
@@ -862,11 +888,19 @@ class LevelManager {
         fill(190, 230, 255);
         textSize(11);
         textStyle(NORMAL);
-        text("Catch fish & treasure to reach the GOAL score.", lx, cy);
+        // 【修复】拆分过长的目标句
+        text("Catch fish & treasure to reach", lx, cy);
         cy += lineH;
+        text("the GOAL score.", lx, cy);
+        cy += lineH;
+        
         text("Avoid stones & fish bones (0 pts).", lx, cy);
         cy += lineH;
-        text("Shop between levels to buy power-ups!", lx, cy);
+        
+        // 【修复】拆分过长的商店提示句
+        text("Shop between levels to buy", lx, cy);
+        cy += lineH;
+        text("power-ups!", lx, cy);
         cy += lineH + 10;
 
         // 分割线
@@ -887,14 +921,20 @@ class LevelManager {
         textSize(11);
         textStyle(NORMAL);
         if (this.playerMode === PlayerMode.TWO_PLAYER) {
-            text("P1 (Left  boat) : Press  S  to cast hook", lx, cy);
+            text("P1 (Left  boat) : Press S", lx, cy);
             cy += lineH;
-            text("P2 (Right boat) : Press DOWN \u2193 to cast hook", lx, cy);
+            text("P2 (Right boat) : Press DOWN \u2193", lx, cy);
+            cy += lineH;
         } else {
-            text("Press DOWN ARROW \u2193 to cast hook", lx, cy);
+            // 【修复】拆分过长的单人操作句
+            text("Press DOWN ARROW \u2193 to cast", lx, cy);
+            cy += lineH;
         }
-        cy += lineH + 4;
-        text("Pause : click the \u23F8 button (top-right)", lx, cy);
+        
+        // 【修复】拆分过长的暂停说明句
+        text("Pause : click the \u23F8 button", lx, cy);
+        cy += lineH;
+        text("(top-right)", lx, cy);
         cy += lineH + 10;
 
         // 分割线
@@ -910,11 +950,17 @@ class LevelManager {
         textStyle(BOLD);
         text("ITEM VALUES", lx, cy);
         cy += lineH;
+        
         fill(190, 230, 255);
         textStyle(NORMAL);
-        text("Small Fish: 30-150 pts    Big Fish: 250-600 pts", lx, cy);
+        // 【修复】左右排列太长会超出边界，改为分4行上下排列
+        text("Small Fish: 30-150 pts", lx, cy);
         cy += lineH;
-        text("Treasure: 100-500 pts     Bone/Stone: 0 pts", lx, cy);
+        text("Big Fish: 250-600 pts", lx, cy);
+        cy += lineH;
+        text("Treasure: 100-500 pts", lx, cy);
+        cy += lineH;
+        text("Bone/Stone: 0 pts", lx, cy);
 
         pop();
     }

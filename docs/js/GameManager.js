@@ -494,6 +494,7 @@ changeState(newState) {
                     let result = this.levelManager.update();
                     if (result === 'PASS') {
                         this._mergeFishCaught();
+                        this.shopManager.resetShop(this.levelNum);
                         this.changeState(GameState.SHOP);
                     } else if (result === 'FAIL') {
                         this._mergeFishCaught();
@@ -1091,7 +1092,7 @@ changeState(newState) {
                     this.levelNum++;
                     this.startLevel();
                     this.player.consumeItems(this.levelManager);
-                    this.shopManager.resetShop();
+                    this.shopManager.resetShop(this.levelNum);
                 }
                 break;
             }

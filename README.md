@@ -220,19 +220,19 @@ LOW: Extra point
 
 We evaluated usability quantitatively, using two well-established, validated questionnaires and statistical analyses, to ensure the game was both sufficiently challenging and easy to use.
 
-- **Raw NASA TLX** — to measre  perceived workload
-- **System Usability Scale (SUS)** — to test  system usabilityquantitatively
-- **Wilcoxon Signed-Rank Test** — to estimate  the statistical significance of the evaluations
+- **Raw NASA TLX** — to measure perceived workload
+- **System Usability Scale (SUS)** — to test system usability quantitatively
+- **Wilcoxon Signed-Rank Test** — to estimate the statistical significance of the evaluations
 
 #### Process
 
-These evaluations involved 10participants, each trialing two difficulty modes  Initially, participants struggled to understand the control key of  the gameplay, urge  us to add a short documetation.
+These evaluations involved 10 participants, each trialing two difficulty modes. Initially, participants struggled to understand the control key of the gameplay, urging us to add short documentation.
 
 #### Raw NASA TLX
 
 **Subscale Workload Scores**
 
-Across all six subscales, the median scores for all participants only issultrated tiny increasewith with the viriance in the  leve of difficulty (Table 3).  The change in median scores only varies from 
+Across all six subscales, the median scores for all participants illustrated a tiny increase with the variance in the level of difficulty (Table 1). The change in median scores only varies slightly.
 
 *Table 1: Median NASA TLX subscale scores for all participants*
 
@@ -246,7 +246,7 @@ Across all six subscales, the median scores for all participants only issultrate
 | Performance | 85 | 88 | 3 |
 | Overall Perceived Workload | 36 | 38 | 2 |
 
-*Brief analysis: All 10 participants reported slight differences in overal  workload in hard mode  than in Easy mode (median 38 vs 36). The increase is small and consistent across participants; it is also reflected in the Wilcoxon test (Table 2) found  that no statistically significant difference, suggesting the difficulty step did not substantially raise perceived workload.*
+*Brief analysis: All 10 participants reported slight differences in overall workload in hard mode than in Easy mode (median 38 vs 36). The increase is small and consistent across participants; the Wilcoxon test (Table 2) found no statistically significant difference, suggesting the difficulty step did not substantially raise perceived workload.*
 
 ![NASA TLX Overall Workload by Participant](docs/evaluation%20report%20figure/overal_workload.png)
 
@@ -268,7 +268,7 @@ A Wilcoxon Signed-Rank test was performed for each subscale and for overall work
 
 **Solutions and Adjustments**
 
-To create a meaningfully harder experience in the hard  mode, we implemented several design changes based on the codebase: (1) **target score +30%** and **shorter time limits** (25−levelNum seconds, min 15s) to raise pressure; (2) **faster fish** (1.3–1.8× speed) to increase aiming difficulty; (3) **more obstacles** (guard stones around treasure, 8–12 loose stones in deep sea) to complicate hook paths; (4) **sharks** that steal caught items during reel-up; (5) **limited visibility** (darkness layer with only a cone of light from the submarine) to add spatial uncertainty; (6) **different fish composition** (AnglerFish 400–800 pts, fewer but higher-value targets). We also rebalanced the economy: **fish values** were adjusted (SmallFish 30–150→10–50, BigFish 250–600→150–350, Treasure 100–500→50–400) to better match level targets; the **shop** was changed from fixed prices to level-scaled pricing so upgrades remain attainable as difficulty rises. The NASA TLX results showed no statistically significant increase in perceived workload, suggesting these changes added challenge without overwhelming players.
+To create a meaningfully harder experience in hard mode, we implemented several design changes based on the codebase: (1) **target score +30%** and **shorter time limits** (25−levelNum seconds, min 15s) to raise pressure; (2) **faster fish** (1.3–1.8× speed) to increase aiming difficulty; (3) **more obstacles** (guard stones around treasure, 8–12 loose stones in deep sea) to complicate hook paths; (4) **sharks** that steal caught items during reel-up; (5) **limited visibility** (darkness layer with only a cone of light from the submarine) to add spatial uncertainty; (6) **different fish composition** (AnglerFish 400–800 pts, fewer but higher-value targets). We also rebalanced the economy: **fish values** were adjusted (SmallFish 30–150→10–50, BigFish 250–600→150–350, Treasure 100–500→50–400) to better match level targets; the **shop** was changed from fixed prices to level-scaled pricing so upgrades remain attainable as difficulty rises. The NASA TLX results showed no statistically significant increase in perceived workload, suggesting these changes added challenge without overwhelming players.
 
 #### System Usability Scale (SUS)
 
@@ -281,7 +281,7 @@ After completing the NASA TLX, all [N] participants completed the SUS, which con
 - Mean SUS score (Shallow Water) — [ ]
 - Mean SUS score (Deep Sea) — [ ]
 
-While [some] participants rated the harder difficulty below average   usability, overall scores remained [above/below] the standard usability benchmark of 68. This suggests that our game had [excellent/moderate] usability even at a higher difficulty level.
+While [some] participants rated the harder difficulty below average usability, overall scores remained [above/below] the standard usability benchmark of 68. This suggests that our game had [excellent/moderate] usability even at a higher difficulty level.
 
 **Statistical Analysis**
 
