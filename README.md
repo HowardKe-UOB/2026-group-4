@@ -274,27 +274,33 @@ To create a meaningfully harder experience in hard mode, we implemented several 
 
 **Process**
 
-After completing the NASA TLX, all [N] participants completed the SUS, which consists of 10 standardised questions assessing overall system usability. Scores were calculated using standard SUS methodology.
+After finishing the NASA-TLX evaluation, all 10 participants filled out the SUS questionnaire, a standardized tool with 10 questions to measure overall system usability (Lewis, 2018). We calculated scores following the standard SUS methodology.
 
 **Results**
 
-- Mean SUS score (Shallow Water) — [ ]
-- Mean SUS score (Deep Sea) — [ ]
+Mean SUS score (easy) — 88.25
 
-While [some] participants rated the harder difficulty below average usability, overall scores remained [above/below] the standard usability benchmark of 68. This suggests that our game had [excellent/moderate] usability even at a higher difficulty level.
+Mean SUS score (hard ) — 75.0
+
+
+
+  
+
+![SUS Evaluation Results](docs/evaluation%20report%20figure/sus_evaluation.png)
+
+*Table 2: SUS evaluation results*
+
+Based on our SUS results, all participants rated both difficulty levels above the standard usability benchmark of 68, with Shallow Water averaging 88.25 and Deep Sea averaging 75.0. These scores indicate excellent perceived usability for the easier condition and solidly above‑average usability even in the more challenging Deep Sea mode, suggesting that the game remains easy to use across difficulty levels.
 
 **Statistical Analysis**
 
-A Wilcoxon Signed-Rank test was performed on the SUS scores for both difficulties. The critical value was 8 (N = [10], α = 0.05), and the W Test statistic was calculated to be [ ], indicating that there [was/was not] a statistically significant difference between usability at different difficulty.
+A Wilcoxon Signed-Rank test was A Wilcoxon signed-rank test was conducted to compare SUS scores between the Shallow Water and Deep Sea conditions. For a sample size of 10 at α = 0.05, the critical value of W was 8. The obtained test statistic did not exceed this critical value, indicating no statistically significant difference in perceived usability between the two difficulty levels.
 
 **Solutions and Adjustments**
 
-While the SUS confirmed [high/moderate] usability, we noted potential questionnaire fatigue due to administering the SUS immediately after the NASA TLX, which may have affected response quality. In future iterations, we would schedule breaks or separate the two evaluations.
+The SUS confirmed that both difficulty levels offered strong overall usability, but it was less informative for driving concrete design changes than our qualitative observations and NASA TLX workload ratings. Instead, we used the SUS primarily as a summative check to validate that the game provided a positive user experience across conditions. We also noticed indications of questionnaire fatigue, likely because participants completed the SUS immediately after the NASA TLX, which may have reduced how carefully they responded. for the future conduction , we plan to include short breaks or separate the SUS and NASA TLX into different sessions to lower cognitive load and improve response quality.
 
-- 15% ~750 words
-- One qualitative evaluation (of your choice)
-- One quantitative evaluation (of your choice)
-- Description of how code was tested.
+
 
 <a id="7-sustainability"></a>
 
