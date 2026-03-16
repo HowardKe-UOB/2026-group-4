@@ -565,6 +565,14 @@ changeState(newState) {
         fill(200, 230, 255);
         textSize(16);
         text('Press ENTER to cast off', width / 2, boxY + 75);
+
+        // 右下角小奖杯，点击进入高分榜
+        const trophySize = 28;
+        const trophyX = width - 36;
+        const trophyY = height - 36;
+        textSize(trophySize);
+        text('🏆', trophyX, trophyY);
+        this._trophyButtonBounds = { cx: trophyX, cy: trophyY, w: 44, h: 44 };
         pop();
     }
 
@@ -992,6 +1000,21 @@ changeState(newState) {
     // Interaction Handling
     handleMousePress() {
         switch (this.currentState) {
+            case GameState.NAME_ENTRY:
+                if (
+                    this._trophyButtonBounds &&
+                    this.isPointInRect(
+                        mouseX,
+                        mouseY,
+                        this._trophyButtonBounds.cx,
+                        this._trophyButtonBounds.cy,
+                        this._trophyButtonBounds.w,
+                        this._trophyButtonBounds.h,
+                    )
+                ) {
+                    this.changeState(GameState.HIGH_SCORE);
+                }
+                break;
             case GameState.DIFFICULTY_SELECT:
                 if (
                     this.isPointInRect(
