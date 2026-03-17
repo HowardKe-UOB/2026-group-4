@@ -239,7 +239,8 @@ class ShopManager {
 
             let alreadyOwned =
                 hoveredItem.purchased ||
-                (hoveredItem.name === "Submarine" && player.hasSubmarine);
+                (hoveredItem.name === "Submarine" && player.hasSubmarine) ||
+                (hoveredItem.name === "Four-Leaf Clover" && player.hasClover);
 
             if (alreadyOwned) {
                 fill(150, 0, 0);
@@ -292,7 +293,7 @@ class ShopManager {
                 let alreadyOwned =
                     item.purchased ||
                     (item.name === "Submarine" && player.hasSubmarine) ||
-                    (item.name === "Four-Leaf Clover" && player.hasClover);;
+                    (item.name === "Four-Leaf Clover" && player.hasClover);
 
                 if (!alreadyOwned && canAfford) {
                     // 双人：优先扣 P1，不足从 P2 补；单人：原逻辑
