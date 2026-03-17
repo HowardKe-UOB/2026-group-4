@@ -36,7 +36,7 @@ class ShopManager {
             ),
             new ShopItem(
                 "Sand Clock",
-                200,
+                175,
                 "Get extra 10 seconds.\nperiod: 1 level",
                 levelNum
             ),

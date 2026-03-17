@@ -87,8 +87,8 @@ class SmallFish extends BaseFish {
 class BigFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(110, 150);
-        // Score nerfed: 220–300 (was 250–600), high-risk high-reward
-        let calculatedScore = floor(map(randomSize, 110, 150, 220, 300));
+        // Score nerfed: 220–340 (was 250–600), high-risk high-reward
+        let calculatedScore = floor(map(randomSize, 110, 150, 220, 340));
         let calculatedWeight = map(randomSize, 110, 150, 6, 9);
 
         super(x, y, "Big Fish", calculatedScore, calculatedWeight, randomSize);
@@ -132,9 +132,8 @@ class FishBone extends SeaItem {
 
 class Treasure extends SeaItem {
     constructor(x, y) {
-        // Score range widened: 250-350 (was 50–400), mystery-box feel
-        let val = floor(random(250, 350));
-        super(x, y, "Treasure", val, 5);
+        let val = floor(random(190, 280));
+        super(x, y, "Treasure", val, 4.5);
         this.width = 80;
         this.height = 60;
 

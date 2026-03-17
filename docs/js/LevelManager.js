@@ -117,7 +117,7 @@ class LevelManager {
         const WATER_LEVEL = 160;
         const SHALLOW_WATER_MIN_Y = 300;
         const DEEP_WATER_MIN_Y = 350;
-        const MAX_ITEMS = 20;
+        const MAX_ITEMS = 15;
         const SAFE_MARGIN = 40;
 
         // 碰撞检测辅助函数
@@ -155,10 +155,12 @@ class LevelManager {
         let fishCount;
         if (this.isDeepSea) {
             // 深海鱼数量减少，但质量更高（AnglerFish + BigFish 为主）
+            // 深海模式最多12条鱼，一般模式最多MAX_ITEMS = 15条
             fishCount = Math.floor((4 + this.levelNum) * multiplier);
+            fishCount = Math.min(fishCount, 12 * multiplier);
         } else {
             fishCount = Math.floor((8 + this.levelNum) * multiplier);
-            fishCount = Math.min(fishCount, MAX_ITEMS);
+            fishCount = Math.min(fishCount, (MAX_ITEMS * multiplier));
         }
 
         for (let i = 0; i < treasureCount; i++) {
