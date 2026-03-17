@@ -9,10 +9,11 @@ class ShopManager {
 
         //道具在柜台上的位置
         this.itemPositions = [
-            { x: width / 2 - 187, y: height / 2 + 110 }, // Strength Potion
-            { x: width / 2 - 62, y: height / 2 + 110 }, // Laser Sight
-            { x: width / 2 + 62, y: height / 2 + 110 }, // Sand Clock
-            { x: width / 2 + 187, y: height / 2 + 110 }, // Submarine
+            { x: width / 2 - 180, y: height / 2 + 110 }, // Strength Potion
+            { x: width / 2 - 60, y: height / 2 + 110 }, // Laser Sight
+            { x: width / 2 + 60, y: height / 2 + 110 }, // Sand Clock
+            { x: width / 2 + 180, y: height / 2 + 110 }, // Submarine
+            { x: width / 2 -120, y: height / 2 - 140 },// Clover
         ];
 
         this.hitRadius = 60; // 判定范围
@@ -42,6 +43,11 @@ class ShopManager {
                 "Submarine",
                 2000,
                 "Explore the deep sea.\nPermanent upgrade",
+                levelNum
+            ),
+            new ShopItem("Four-Leaf Clover",
+                600,
+                "Treasures worth 30% more.\nPermanent upgrade.",
                 levelNum
             )
         ];
@@ -167,11 +173,19 @@ class ShopManager {
             ) {
                 image(submarineImg, pos.x, pos.y, imgSize, imgSize);
             }
+            else if (
+                item.name === "Four-Leaf Clover" && 
+                typeof cloverImg !== "undefined" && 
+                cloverImg
+            ) {
+                image(cloverImg, pos.x, pos.y, imgSize, imgSize);
+            }
             pop();
 
             let isSold =
                 item.purchased ||
-                (item.name === "Submarine" && player.hasSubmarine);
+                (item.name === "Submarine" && player.hasSubmarine) ||
+                (item.name === "Four-Leaf Clover" && player.hasClover);
             if (isSold) {
                 push();
                 fill(0, 0, 0, 180);
@@ -277,7 +291,8 @@ class ShopManager {
 
                 let alreadyOwned =
                     item.purchased ||
-                    (item.name === "Submarine" && player.hasSubmarine);
+                    (item.name === "Submarine" && player.hasSubmarine) ||
+                    (item.name === "Four-Leaf Clover" && player.hasClover);;
 
                 if (!alreadyOwned && canAfford) {
                     // 双人：优先扣 P1，不足从 P2 补；单人：原逻辑

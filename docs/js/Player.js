@@ -6,6 +6,7 @@ class Player {
         this.p2Score = 0; // P2 独立余额（双人模式）
         this.inventory = [];
         this.hasSubmarine = false;
+        this.hasClover = false;
     }
 
     addScore(amount) {

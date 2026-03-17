@@ -12,8 +12,9 @@ class ShopItem {
             inflationRate = 0;    // Laser不涨价
         } else if (this.name === "Submarine") {
             inflationRate = 0.03; // 潜水艇涨价系数
+        }else if(this.name === "Four-Leaf Clover") {
+            inflationRate = 0.05; // 四叶草涨价系数
         }
-
         // --- 2. 计算通胀后的价格 ---
         // 从11关起，停止涨价
         let inflationLevel = Math.min(levelNum, 11);
@@ -50,6 +51,11 @@ class ShopItem {
         // 潜水艇：永久解锁深海模式（持久化在 player 上）
         if (this.name === "Submarine") {
             levelManager.player.hasSubmarine = true;
+        }
+
+        // 四叶草：永久解锁
+        if (this.name === "Four-Leaf Clover") {
+            levelManager.player.hasClover = true;
         }
     }
 }

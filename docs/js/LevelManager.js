@@ -189,7 +189,7 @@ class LevelManager {
                             if (
                                 sx > 40 &&
                                 sx < width - 40 &&
-                                sy > 280 &&
+                                sy > 200 &&
                                 sy < height - 20
                             ) {
                                 let stone = new Stone(sx, sy);
@@ -288,6 +288,10 @@ class LevelManager {
             let returnedItem = currentHook.update();
 
             if (returnedItem) {
+                // 如果抓上来的是宝箱，且玩家有四叶草，金额乘增加
+                if (this.player.hasClover && (returnedItem.constructor.name === "Treasure" || returnedItem.itemName === "Treasure")) {
+                    returnedItem.scoreValue = Math.floor(returnedItem.scoreValue * 1.3);
+                }
                 // 播放抓中音效
                 if (typeof catchSfx !== 'undefined' && catchSfx) {
                     if (catchSfx.isPlaying()) catchSfx.stop();

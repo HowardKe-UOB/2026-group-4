@@ -132,8 +132,8 @@ class FishBone extends SeaItem {
 
 class Treasure extends SeaItem {
     constructor(x, y) {
-        // Score range widened: 50–400 (was 100–500), mystery-box feel
-        let val = floor(random(50, 400));
+        // Score range widened: (was 50–400), mystery-box feel
+        let val = floor(random(150, 400));
         super(x, y, "Treasure", val, 4);
         this.width = 80;
         this.height = 60;
