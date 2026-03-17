@@ -47,12 +47,12 @@ class ShopManager {
                 levelNum
             ),
             new ShopItem("Four-Leaf Clover",
-                10,
+                600,
                 "Treasures worth 35% more.\nPermanent upgrade.",
                 levelNum
             ),
             new ShopItem("Fishbone Collector",
-                10,
+                300,
                 "Museums love old fishbones!\nFishbones now worth $20~$50.\nPermanent upgrade",
                 levelNum
             )

@@ -50,10 +50,10 @@ class BaseFish extends SeaItem {
 
 class SmallFish extends BaseFish {
     constructor(x, y) {
-        let randomSize = random(50, 75);
-        // Score nerfed: 40–70 (was 30–150), keeps it a "filler" item
-        let calculatedScore = floor(map(randomSize, 30, 70, 40, 70));
-        let calculatedWeight = map(randomSize, 30, 70, 1, 3);
+        let randomSize = random(40, 60);
+        // Score nerfed: 60–90 (was 30–150), keeps it a "filler" item
+        let calculatedScore = floor(map(randomSize, 40, 60, 60, 90));
+        let calculatedWeight = map(randomSize, 40, 60, 2, 3);
 
         super(
             x,
@@ -86,10 +86,10 @@ class SmallFish extends BaseFish {
 
 class BigFish extends BaseFish {
     constructor(x, y) {
-        let randomSize = random(100, 150);
-        // Score nerfed: 200–350 (was 250–600), high-risk high-reward
-        let calculatedScore = floor(map(randomSize, 90, 160, 200, 350));
-        let calculatedWeight = map(randomSize, 90, 160, 5, 9);
+        let randomSize = random(110, 150);
+        // Score nerfed: 220–300 (was 250–600), high-risk high-reward
+        let calculatedScore = floor(map(randomSize, 110, 150, 220, 300));
+        let calculatedWeight = map(randomSize, 110, 150, 6, 9);
 
         super(x, y, "Big Fish", calculatedScore, calculatedWeight, randomSize);
 
@@ -132,9 +132,9 @@ class FishBone extends SeaItem {
 
 class Treasure extends SeaItem {
     constructor(x, y) {
-        // Score range widened: 250-400(was 50–400), mystery-box feel
-        let val = floor(random(250, 400));
-        super(x, y, "Treasure", val, 4);
+        // Score range widened: 250-350 (was 50–400), mystery-box feel
+        let val = floor(random(250, 350));
+        super(x, y, "Treasure", val, 5);
         this.width = 80;
         this.height = 60;
 
@@ -158,12 +158,12 @@ class Treasure extends SeaItem {
 
 class Stone extends SeaItem {
     constructor(x, y) {
-        let val = floor(random(30, 60));
+        let val = floor(random(70, 110));
         let w = random(6, 12);
 
         super(x, y, "Stone", val, w);
 
-        this.width = random(50, 90);
+        this.width = random(50, 80);
         this.height = this.width;
 
         if (typeof stones !== "undefined" && stones.length > 0) {
