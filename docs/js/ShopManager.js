@@ -22,7 +22,7 @@ class ShopManager {
         this.availableItems = [
             new ShopItem(
                 "Strength Potion",
-                250,
+                225,
                 "Pulls items 2x faster.\nperiod: 1 level",
                 levelNum
             ),

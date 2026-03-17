@@ -135,8 +135,8 @@ class Treasure extends SeaItem {
         // Score range widened: 50–400 (was 100–500), mystery-box feel
         let val = floor(random(50, 400));
         super(x, y, "Treasure", val, 4);
-        this.width = 60;
-        this.height = 50;
+        this.width = 80;
+        this.height = 60;
 
         this.sprite = treasureChest;
     }

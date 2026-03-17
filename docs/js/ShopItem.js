@@ -6,12 +6,12 @@ class ShopItem {
         this.isDiscounted = false;
 
         // 涨价系数
-        let inflationRate = 0.15; // 每关涨价系数
+        let inflationRate = 0.10; // 每关涨价系数
         
         if (this.name === "Laser Sight") {
             inflationRate = 0;    // Laser不涨价
         } else if (this.name === "Submarine") {
-            inflationRate = 0.05; // 潜水艇涨价系数
+            inflationRate = 0.03; // 潜水艇涨价系数
         }
 
         // --- 2. 计算通胀后的价格 ---
@@ -22,7 +22,7 @@ class ShopItem {
         let finalPrice = Math.floor(basePrice * multiplier);
 
         // 随机打折机制，10% 的概率触发 5 折，潜水艇不参与打折
-        if (this.name !== "Submarine" && Math.random() < 0.10) {
+        if (this.name !== "Submarine" && Math.random() <= 0.10) {
             finalPrice = Math.floor(finalPrice * 0.5);
             this.isDiscounted = true;
         }
