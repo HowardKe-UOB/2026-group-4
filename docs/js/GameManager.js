@@ -70,6 +70,7 @@ class GameManager {
         this.player.p2Score = 0;
         this.player.hasSubmarine = false;  // 避免沿用上一局的潜水艇
         this.player.hasClover = false;  // 避免沿用上一局的四叶草
+        this.player.hasFishboneCollector = false;   // 避免沿用上一局的鱼骨收藏书
         this.gameSessionFishCaught = {};
         this.levelNum = 1;
         const buttonOverlay = document.getElementById('button-overlay');

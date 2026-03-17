@@ -117,7 +117,7 @@ class LevelManager {
         const WATER_LEVEL = 160;
         const SHALLOW_WATER_MIN_Y = 300;
         const DEEP_WATER_MIN_Y = 350;
-        const MAX_ITEMS = 30;
+        const MAX_ITEMS = 20;
         const SAFE_MARGIN = 40;
 
         // 碰撞检测辅助函数
@@ -155,9 +155,9 @@ class LevelManager {
         let fishCount;
         if (this.isDeepSea) {
             // 深海鱼数量减少，但质量更高（AnglerFish + BigFish 为主）
-            fishCount = 10;
+            fishCount = Math.floor((4 + this.levelNum) * multiplier);
         } else {
-            fishCount = Math.floor((12 + this.levelNum * 2) * multiplier);
+            fishCount = Math.floor((8 + this.levelNum) * multiplier);
             fishCount = Math.min(fishCount, MAX_ITEMS);
         }
 
@@ -288,9 +288,13 @@ class LevelManager {
             let returnedItem = currentHook.update();
 
             if (returnedItem) {
-                // 如果抓上来的是宝箱，且玩家有四叶草，金额乘增加
-                if (this.player.hasClover && (returnedItem.constructor.name === "Treasure" || returnedItem.itemName === "Treasure")) {
-                    returnedItem.scoreValue = Math.floor(returnedItem.scoreValue * 1.3);
+                // 如果抓上来的是宝箱，且玩家有四叶草，金额增加
+                if (this.player.hasClover && returnedItem.itemName === "Treasure") {
+                    returnedItem.scoreValue = Math.floor(returnedItem.scoreValue * 1.35);
+                }
+                // 如果抓上来的是鱼骨，且玩家有鱼骨收藏书，金额增加
+                if (this.player.hasFishboneCollector && returnedItem.itemName === "FishBone") {
+                    returnedItem.scoreValue = Math.floor(random(20, 51));
                 }
                 // 播放抓中音效
                 if (typeof catchSfx !== 'undefined' && catchSfx) {

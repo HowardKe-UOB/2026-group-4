@@ -6,14 +6,14 @@ class ShopItem {
         this.isDiscounted = false;
 
         // 涨价系数
-        let inflationRate = 0.10; // 每关涨价系数
+        let inflationRate = 0.10; // 常规商品每关涨价系数
         
         if (this.name === "Laser Sight") {
             inflationRate = 0;    // Laser不涨价
         } else if (this.name === "Submarine") {
             inflationRate = 0.03; // 潜水艇涨价系数
-        }else if(this.name === "Four-Leaf Clover") {
-            inflationRate = 0.05; // 四叶草涨价系数
+        } else if (this.name === "Four-Leaf Clover" || this.name === "Fishbone Collector") {
+            inflationRate = 0.05; // 四叶草/鱼骨收藏书涨价系数
         }
         // --- 2. 计算通胀后的价格 ---
         // 从11关起，停止涨价
@@ -56,6 +56,11 @@ class ShopItem {
         // 四叶草：永久解锁
         if (this.name === "Four-Leaf Clover") {
             levelManager.player.hasClover = true;
+        }
+
+        // 鱼骨收藏书：永久解锁
+        if (this.name === "Fishbone Collector") {
+            levelManager.player.hasFishboneCollector = true;
         }
     }
 }

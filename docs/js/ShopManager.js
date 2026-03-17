@@ -12,8 +12,9 @@ class ShopManager {
             { x: width / 2 - 180, y: height / 2 + 110 }, // Strength Potion
             { x: width / 2 - 60, y: height / 2 + 110 }, // Laser Sight
             { x: width / 2 + 60, y: height / 2 + 110 }, // Sand Clock
-            { x: width / 2 + 180, y: height / 2 + 110 }, // Submarine
-            { x: width / 2 -120, y: height / 2 - 140 },// Clover
+            { x: width / 2 + 300, y: height / 2 + 110 }, // Submarine
+            { x: width / 2 - 120, y: height / 2 - 140 }, // Clover
+            { x: width / 2, y: height / 2 - 140 }, // Fishbone Collector
         ];
 
         this.hitRadius = 60; // 判定范围
@@ -41,13 +42,18 @@ class ShopManager {
             ),
             new ShopItem(
                 "Submarine",
-                2000,
+                10,
                 "Explore the deep sea.\nPermanent upgrade",
                 levelNum
             ),
             new ShopItem("Four-Leaf Clover",
-                600,
-                "Treasures worth 30% more.\nPermanent upgrade.",
+                10,
+                "Treasures worth 35% more.\nPermanent upgrade.",
+                levelNum
+            ),
+            new ShopItem("Fishbone Collector",
+                10,
+                "Museums love old fishbones!\nFishbones now worth $20~$50.\nPermanent upgrade",
                 levelNum
             )
         ];
@@ -180,12 +186,20 @@ class ShopManager {
             ) {
                 image(cloverImg, pos.x, pos.y, imgSize, imgSize);
             }
+            else if (
+                item.name === "Fishbone Collector" && 
+                typeof fishboneCollectorImg !== "undefined" && 
+                fishboneCollectorImg
+            ) {
+                image(fishboneCollectorImg, pos.x, pos.y, imgSize, imgSize);
+            }
             pop();
 
             let isSold =
                 item.purchased ||
                 (item.name === "Submarine" && player.hasSubmarine) ||
-                (item.name === "Four-Leaf Clover" && player.hasClover);
+                (item.name === "Four-Leaf Clover" && player.hasClover) ||
+                (item.name === "Fishbone Collector" && player.hasFishboneCollector);
             if (isSold) {
                 push();
                 fill(0, 0, 0, 180);
@@ -240,7 +254,8 @@ class ShopManager {
             let alreadyOwned =
                 hoveredItem.purchased ||
                 (hoveredItem.name === "Submarine" && player.hasSubmarine) ||
-                (hoveredItem.name === "Four-Leaf Clover" && player.hasClover);
+                (hoveredItem.name === "Four-Leaf Clover" && player.hasClover) ||
+                (hoveredItem.name === "Fishbone Collector" && player.hasFishboneCollector);
 
             if (alreadyOwned) {
                 fill(150, 0, 0);
@@ -293,7 +308,8 @@ class ShopManager {
                 let alreadyOwned =
                     item.purchased ||
                     (item.name === "Submarine" && player.hasSubmarine) ||
-                    (item.name === "Four-Leaf Clover" && player.hasClover);
+                    (item.name === "Four-Leaf Clover" && player.hasClover) ||
+                    (item.name === "Fishbone Collector" && player.hasFishboneCollector);
 
                 if (!alreadyOwned && canAfford) {
                     // 双人：优先扣 P1，不足从 P2 补；单人：原逻辑

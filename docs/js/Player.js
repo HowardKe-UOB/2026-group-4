@@ -7,6 +7,7 @@ class Player {
         this.inventory = [];
         this.hasSubmarine = false;
         this.hasClover = false;
+        this.hasFishboneCollector = false;
     }
 
     addScore(amount) {
