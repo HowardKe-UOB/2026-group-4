@@ -31,6 +31,7 @@ class HighScoreManager {
                         e.catchHistory ?? {},
                     ),
             );
+            this._sortScores();
         } else {
             this.topScores = [
                 new ScoreEntry("AAA", 3000, 5),
@@ -42,8 +43,16 @@ class HighScoreManager {
                 new ScoreEntry("GGG", 400, 1),
                 new ScoreEntry("HHH", 300, 1),
             ];
+            this._sortScores();
         }
         this.fetchFromSupabase();
+    }
+
+    _sortScores() {
+        this.topScores.sort((a, b) => {
+            if (b.levelsCompleted !== a.levelsCompleted) return b.levelsCompleted - a.levelsCompleted;
+            return b.score - a.score;
+        });
     }
 
     saveScores() {
@@ -56,7 +65,7 @@ class HighScoreManager {
     checkNewHighScore(score, name, levelsCompleted = 0, difficulty = "easy", playerMode = "single", catchHistory = {}) {
         let entry = new ScoreEntry(name, score, levelsCompleted, difficulty, playerMode, catchHistory);
         this.topScores.push(entry);
-        this.topScores.sort((a, b) => b.score - a.score);
+        this._sortScores();
         this.topScores = this.topScores.slice(0, 50);
         this.saveScores();
         this.submitToSupabase(score, name, levelsCompleted, difficulty, playerMode, catchHistory);
@@ -71,7 +80,7 @@ class HighScoreManager {
         }
         try {
             const res = await fetch(
-                `${cfg.url}/rest/v1/scores?order=score.desc&limit=50`,
+                `${cfg.url}/rest/v1/scores?order=levels_completed.desc,score.desc&limit=50`,
                 {
                     headers: {
                         apikey: cfg.anonKey,
@@ -92,6 +101,7 @@ class HighScoreManager {
                         r.catch_history ?? {},
                     ),
             );
+            this._sortScores();
             this.saveScores();
         } catch (e) {
             console.warn("Supabase fetch failed:", e);
