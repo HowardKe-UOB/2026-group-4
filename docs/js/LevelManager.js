@@ -189,7 +189,7 @@ class LevelManager {
                             if (
                                 sx > 40 &&
                                 sx < width - 40 &&
-                                sy > 240 &&
+                                sy > 280 &&
                                 sy < height - 20
                             ) {
                                 let stone = new Stone(sx, sy);
