@@ -79,7 +79,8 @@ class GameManager {
             buttonOverlay.classList.remove('active'); // 确保完全禁用点击
         }
 
-        this.startLevel();
+        // 先展示操作说明，点击后再真正开始
+        this.changeState(GameState.HOW_TO_PLAY);
     }
 
     startLevel() {
@@ -491,6 +492,9 @@ changeState(newState) {
             case GameState.PLAYER_MODE_SELECT:
                 this.drawPlayerModeSelect();
                 break;
+            case GameState.HOW_TO_PLAY:
+                this.drawHowToPlay();
+                break;
             case GameState.PLAYING:
                 if (!this.gamePaused) {
                     let result = this.levelManager.update();
@@ -592,6 +596,136 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
+    }
+
+    drawPlayerModeSelect() {
+        if (typeof modeSelectBgImg !== 'undefined' && modeSelectBgImg) {
+            this.drawCoverBackground(modeSelectBgImg);
+        } else {
+            this.drawOceanMenuBackground();
+        }
+    }
+
+    drawHowToPlay() {
+        // 深海背景
+        background(5, 20, 45);
+
+        push();
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+        rectMode(CORNER);
+        noSmooth();
+
+        // 居中面板
+        const panelW = 520;
+        const panelH = 520;
+        const panelX = (width - panelW) / 2;
+        const panelY = (height - panelH) / 2;
+
+        // 面板背景
+        noStroke();
+        fill(0, 0, 0, 140);
+        rect(panelX + 4, panelY + 4, panelW, panelH, 12);
+        fill(5, 30, 60, 230);
+        rect(panelX, panelY, panelW, panelH, 12);
+        stroke(0, 160, 220);
+        strokeWeight(2);
+        noFill();
+        rect(panelX, panelY, panelW, panelH, 12);
+        noStroke();
+
+        const lx = panelX + 24;
+        const maxW = panelW - 48; // 文字可用宽度
+        let cy = panelY + 24;
+        const lineH = 24;
+
+        // 标题
+        fill(0, 220, 255);
+        textAlign(LEFT, TOP);
+        textSize(13);
+        textStyle(BOLD);
+        text("HOW TO PLAY", lx, cy);
+        cy += lineH + 8;
+
+        // GAME INTRO
+        fill(255, 210, 50);
+        textSize(11);
+        text("GAME INTRO", lx, cy);
+        cy += lineH;
+        fill(190, 230, 255);
+        textStyle(NORMAL);
+        text("Catch fish & treasure to reach", lx, cy);
+        cy += lineH;
+        text("the GOAL score.", lx, cy);
+        cy += lineH;
+        text("Avoid stones & fish bones (0 pts).", lx, cy);
+        cy += lineH;
+        text("Shop between levels to buy power-ups!", lx, cy);
+        cy += lineH + 8;
+
+        // 分割线
+        stroke(0, 120, 180, 180);
+        strokeWeight(1);
+        line(lx, cy, panelX + panelW - 24, cy);
+        noStroke();
+        cy += 12;
+
+        // CONTROLS
+        fill(255, 210, 50);
+        textSize(11);
+        textStyle(BOLD);
+        text("CONTROLS", lx, cy);
+        cy += lineH;
+        fill(190, 230, 255);
+        textStyle(NORMAL);
+        if (this.currentPlayerMode === PlayerMode.TWO_PLAYER) {
+            text("P1 (Left  boat) : Press S", lx, cy);
+            cy += lineH;
+            text("P2 (Right boat) : Press DOWN \u2193", lx, cy);
+            cy += lineH;
+        } else {
+            text("Press DOWN ARROW \u2193 to cast the hook", lx, cy);
+            cy += lineH;
+        }
+        text("Pause : click the \u23F8 button (top-right)", lx, cy);
+        cy += lineH + 8;
+
+        // 分割线
+        stroke(0, 120, 180, 180);
+        strokeWeight(1);
+        line(lx, cy, panelX + panelW - 24, cy);
+        noStroke();
+        cy += 12;
+
+        // ITEM VALUES
+        fill(255, 210, 50);
+        textSize(11);
+        textStyle(BOLD);
+        text("ITEM VALUES", lx, cy);
+        cy += lineH;
+        fill(190, 230, 255);
+        textStyle(NORMAL);
+        text("Small Fish: 60-90 pts", lx, cy);
+        cy += lineH;
+        text("Big Fish / Angler Fish: 220-800 pts", lx, cy);
+        cy += lineH;
+        text("Treasure: 190-280 pts", lx, cy);
+        cy += lineH;
+        text("Pearl: 500-800 pts", lx, cy);
+        cy += lineH;
+        text("  (rare, tiny hitbox!)", lx, cy);
+        cy += lineH;
+        text("Bone / Stone: 0 pts", lx, cy);
+        cy += lineH + 16;
+
+        // 闪烁提示
+        let blinkAlpha = 150 + 105 * sin(frameCount * 0.08);
+        fill(0, 220, 180, blinkAlpha);
+        textAlign(CENTER, TOP);
+        textSize(11);
+        textStyle(BOLD);
+        text("CLICK ANYWHERE TO START", width / 2, cy);
+
+        pop();
     }
 
     drawShop() {
@@ -1070,6 +1204,10 @@ changeState(newState) {
                     this.currentPlayerMode = PlayerMode.TWO_PLAYER;
                     this.startGame(); // 【新增】：让双人模式也能启动游戏！
                 }
+                break;
+            case GameState.HOW_TO_PLAY:
+                // 点击任意位置开始游戏
+                this.startLevel();
                 break;
             case GameState.PLAYING: {
                 if (this.gamePaused) {

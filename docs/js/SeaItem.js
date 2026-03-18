@@ -155,6 +155,52 @@ class Treasure extends SeaItem {
     }
 }
 
+// ─── 珍珠：深海底层稀有高价值物品，极小体积，极难抓取 ───
+class Pearl extends SeaItem {
+    constructor(x, y) {
+        // 高分值（500-800），极轻（容易拉上来），但碰撞体积极小
+        let val = floor(random(500, 800));
+        super(x, y, "Pearl", val, 1.5);
+        this.width = 22;
+        this.height = 22;
+        this.catchRadius = 8; // 极小的抓取半径，非常难命中
+        // 珍珠光泽脉冲动画参数（同时用于深海遮罩层的光源挖洞）
+        this.glowPhase = random(TWO_PI);
+        this.glowRadius = 50; // 深海遮罩中的光晕半径，比鮟鱇鱼小但足够引人注目
+        this.sprite = typeof pearlImg !== "undefined" ? pearlImg : null;
+    }
+
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+
+        // 外层光晕（脉冲呼吸效果）
+        let pulse = 0.2 * sin(frameCount * 0.06 + this.glowPhase);
+        let glowSize = this.width * (1.8 + pulse);
+        noStroke();
+        fill(220, 230, 255, 40);
+        ellipse(0, 0, glowSize, glowSize);
+
+        imageMode(CENTER);
+        if (this.sprite) {
+            image(this.sprite, 0, 0, this.width, this.height);
+        } else {
+            // fallback：无图片时用代码绘制
+            fill(240, 245, 255);
+            ellipse(0, 0, this.width, this.height);
+            fill(255, 255, 255, 200);
+            ellipse(-3, -4, 6, 5);
+            stroke(180, 190, 210, 100);
+            strokeWeight(1);
+            noFill();
+            arc(0, 2, this.width * 0.6, this.height * 0.4, 0, PI);
+        }
+
+        pop();
+        this.drawScoreText();
+    }
+}
+
 class Stone extends SeaItem {
     constructor(x, y) {
         let val = floor(random(70, 110));

@@ -67,16 +67,17 @@ class LevelManager {
 
             // 右边玩家 (P2)
             this.boats.push(createVector(boat2X, 195));
-            
+
             // ─── 核心修改：给右边玩家专属的新鱼钩 ───
-            let p2HookImg = (typeof hookImg !== "undefined" ? hookImg : null);
+            let p2HookImg = typeof hookImg !== "undefined" ? hookImg : null;
             let p2StartY = 185;
-            
+
             if (this.isDeepSea) {
-                p2HookImg = typeof newhook2Img !== "undefined" ? newhook2Img : null;
+                p2HookImg =
+                    typeof newhook2Img !== "undefined" ? newhook2Img : null;
                 p2StartY = 179; // 提上高度，完美镶嵌在潜水艇肚子下
             }
-            
+
             this.hooks.push(new Hook(boat2X, p2StartY, p2HookImg));
             this.scores.push(0);
 
@@ -107,18 +108,22 @@ class LevelManager {
 
     spawnItems() {
         this.activeItems = [];
-        let dynamicItems = [];
-        let staticItems = [];
 
         let isHard = this.difficulty === Difficulty.HARD;
         let multiplier = this.playerMode === PlayerMode.TWO_PLAYER ? 1.5 : 1;
 
-        // 环境常量定义
-        const WATER_LEVEL = 160;
-        const SHALLOW_WATER_MIN_Y = 300;
-        const DEEP_WATER_MIN_Y = 350;
-        const MAX_ITEMS = 15;
+        // ═══════════════════════════════════════════════════════════
+        // 分层生成系统（Layered Spawning）
+        // 将屏幕垂直划分为三个生成层，各类物品有专属区间
+        // ═══════════════════════════════════════════════════════════
         const SAFE_MARGIN = 40;
+        const LAYER_SHALLOW = { minY: 320, maxY: 380 }; // 浅层：小鱼活动区
+        const LAYER_MID = { minY: 350, maxY: 500 }; // 中层：大鱼 + 障碍物
+        const LAYER_DEEP = { minY: 480, maxY: height - 20 }; // 深层：宝箱 + 珍珠 + 石头
+
+        // 分类独立上限，不再使用全局 MAX_ITEMS 硬性总上限
+        // 让海洋显得生机勃勃又充满挑战
+        const MAX_OBSTACLES = 12; // 宝箱 + 石头 + 鱼骨上限（两种模式统一）
 
         // 碰撞检测辅助函数
         const checkOverlap = (newItem, list, padding) => {
@@ -135,59 +140,55 @@ class LevelManager {
             return false;
         };
 
-        let treasureCount;
-        if (this.isDeepSea) {
-            treasureCount = Math.floor(random(4, 6) * multiplier);
-        } else {
-            treasureCount = Math.floor(
-                random(isHard ? 2 : 3, isHard ? 4 : 5) * multiplier,
-            );
-        }
-        let looseStoneCount;
-        if (this.isDeepSea) {
-            // 深海：大量石头和鱼骨作为障碍，营造压迫感
-            looseStoneCount = Math.floor(random(8, 12) * multiplier);
-        } else {
-            looseStoneCount = Math.floor(
-                (isHard ? 3 + this.levelNum : 2) * multiplier,
-            );
-        }
-        let fishCount;
-        if (this.isDeepSea) {
-            // 深海鱼数量减少，但质量更高（AnglerFish + BigFish 为主）
-            // 深海模式最多12条鱼，一般模式最多MAX_ITEMS = 15条
-            fishCount = Math.floor((4 + this.levelNum) * multiplier);
-            fishCount = Math.min(fishCount, 12 * multiplier);
-        } else {
-            fishCount = Math.floor((8 + this.levelNum) * multiplier);
-            fishCount = Math.min(fishCount, (MAX_ITEMS * multiplier));
-        }
+        // 用于分层碰撞检测的独立列表
+        let staticItems = []; // 障碍物（宝箱、石头、鱼骨、珍珠）
+        let dynamicItems = []; // 生物（鱼类）
 
-        for (let i = 0; i < treasureCount; i++) {
+        // ─── 第一阶段：计算各类物品数量（重新平衡） ───
+        // 宝箱：普通 2-3，深海 3-4
+        let treasureCount = this.isDeepSea
+            ? Math.floor(random(3, 5) * multiplier)
+            : Math.floor(random(2, 4) * multiplier);
+
+        // 散落石头/鱼骨：固定 5-7 个
+        let looseStoneCount = Math.floor(random(5, 8) * multiplier);
+
+        // 大鱼/鮟鱇鱼：4-5 条，严格限制在中深水区
+        let bigFishCount = Math.floor(random(4, 6) * multiplier);
+
+        // 小鱼：8-10 条，浅水区和中水区干扰视线
+        let smallFishCount = Math.floor(random(8, 11) * multiplier);
+
+        // 珍珠：每局固定 1 个（50% 概率生成）
+        let pearlCount = random() < 0.5 ? 1 : 0;
+
+        // ─── 第二阶段：生成宝箱（深层底部） ───
+        for (
+            let i = 0;
+            i < treasureCount && staticItems.length < MAX_OBSTACLES;
+            i++
+        ) {
             let attempts = 0;
             while (attempts < 30) {
                 let tx = random(80, width - 80);
-                let ty = height - random(30, 80);
+                let ty = height - random(30, 80); // 宝箱始终贴近海底
                 let treasure = new Treasure(tx, ty);
 
                 if (!checkOverlap(treasure, staticItems, 40)) {
                     this.activeItems.push(treasure);
                     staticItems.push(treasure);
 
+                    // 困难模式：宝箱周围生成守卫石头
                     if (isHard) {
                         let guardCount = floor(
                             random(1, Math.min(4, 1 + this.levelNum * 0.5)),
                         );
-
                         for (let j = 0; j < guardCount; j++) {
-                            // 在宝箱上方的半圆区域 (PI 到 TWO_PI) 生成石头形成“保护罩”
                             let angle = random(PI + 0.2, TWO_PI - 0.2);
-                            let distance = random(60, 110); // 距离宝箱的半径
-
+                            let distance = random(60, 110);
                             let sx = tx + cos(angle) * distance;
                             let sy = ty + sin(angle) * distance;
 
-                            // 确保石头不要飞出屏幕或离水面太近
                             if (
                                 sx > 40 &&
                                 sx < width - 40 &&
@@ -208,14 +209,18 @@ class LevelManager {
             }
         }
 
-        // 4. 生成散落的石头和鱼骨 (增加底层和中层障碍)
-        for (let i = 0; i < looseStoneCount; i++) {
+        // ─── 第三阶段：生成散落石头和鱼骨（中层 + 深层） ───
+        for (
+            let i = 0;
+            i < looseStoneCount && staticItems.length < MAX_OBSTACLES;
+            i++
+        ) {
             let attempts = 0;
             while (attempts < 20) {
                 let sx = random(SAFE_MARGIN, width - SAFE_MARGIN);
-                let sy = random(DEEP_WATER_MIN_Y, height - 20);
+                // 障碍物分布在中层和深层之间
+                let sy = random(LAYER_MID.minY, LAYER_DEEP.maxY);
 
-                // 随机决定是石头还是鱼骨
                 let obstacle =
                     random() > 0.3 ? new Stone(sx, sy) : new FishBone(sx, sy);
 
@@ -228,39 +233,62 @@ class LevelManager {
             }
         }
 
-        for (
-            let i = 0;
-            i < fishCount && this.activeItems.length < MAX_ITEMS;
-            i++
-        ) {
+        // ─── 第四阶段：生成珍珠（仅限深层底部，极深位置） ───
+        for (let i = 0; i < pearlCount; i++) {
+            let attempts = 0;
+            while (attempts < 30) {
+                let px = random(SAFE_MARGIN + 20, width - SAFE_MARGIN - 20);
+                // 珍珠必须在屏幕最底部区域（深海底层）
+                let py = random(height - 80, height - 25);
+                let pearl = new Pearl(px, py);
+
+                if (!checkOverlap(pearl, staticItems, 30)) {
+                    this.activeItems.push(pearl);
+                    staticItems.push(pearl);
+                    break;
+                }
+                attempts++;
+            }
+        }
+
+        // ─── 第五阶段：生成大鱼/鮟鱇鱼（独立配额，严格限制在中深水区） ───
+        for (let i = 0; i < bigFishCount; i++) {
             let attempts = 0;
             while (attempts < 30) {
                 let fx = random(50, width - 50);
-                let fy;
-
-                if (this.isDeepSea) {
-                    fy = random(DEEP_WATER_MIN_Y, height - 100);
-                } else {
-                    fy = random(SHALLOW_WATER_MIN_Y, height - 100);
-                }
-
+                let fy = random(LAYER_DEEP.minY, LAYER_DEEP.maxY - 60);
                 let fish;
+
                 if (this.isDeepSea) {
-                    // 深海场景：20% AnglerFish（移动光源+高分），55% BigFish，25% SmallFish
-                    let r = random();
+                    // 深海：约 40% 鮟鱇鱼，60% 大鱼
                     fish =
-                        r < 0.2
+                        random() < 0.4
                             ? new AnglerFish(fx, fy)
-                            : r < 0.75
-                              ? new BigFish(fx, fy)
-                              : new SmallFish(fx, fy);
-                } else {
-                    // 浅海场景：70% SmallFish，30% BigFish
-                    fish =
-                        random() > 0.3
-                            ? new SmallFish(fx, fy)
                             : new BigFish(fx, fy);
+                } else {
+                    fish = new BigFish(fx, fy);
                 }
+
+                if (isHard) {
+                    fish.speed *= random(1.3, 1.8);
+                }
+
+                if (!checkOverlap(fish, dynamicItems, 5)) {
+                    this.activeItems.push(fish);
+                    dynamicItems.push(fish);
+                    break;
+                }
+                attempts++;
+            }
+        }
+
+        // ─── 第六阶段：生成小鱼（浅水区 + 中水区，干扰视线的移动障碍） ───
+        for (let i = 0; i < smallFishCount; i++) {
+            let attempts = 0;
+            while (attempts < 30) {
+                let fx = random(50, width - 50);
+                let fy = random(LAYER_SHALLOW.minY, LAYER_MID.maxY);
+                let fish = new SmallFish(fx, fy);
 
                 if (isHard) {
                     fish.speed *= random(1.3, 1.8);
@@ -291,22 +319,36 @@ class LevelManager {
 
             if (returnedItem) {
                 // 如果抓上来的是宝箱，且玩家有四叶草，金额增加
-                if (this.player.hasClover && returnedItem.itemName === "Treasure") {
-                    returnedItem.scoreValue = Math.floor(returnedItem.scoreValue * 1.35);
+                if (
+                    this.player.hasClover &&
+                    returnedItem.itemName === "Treasure"
+                ) {
+                    returnedItem.scoreValue = Math.floor(
+                        returnedItem.scoreValue * 1.35,
+                    );
                 }
-                // 如果抓上来的是鱼骨，且玩家有鱼骨收藏书，金额增加
-                if (this.player.hasFishboneCollector && returnedItem.itemName === "FishBone") {
+                // 鱼骨收藏书：对鱼骨和石头同时生效，抓到也能随机获得金币
+                if (
+                    this.player.hasFishboneCollector &&
+                    ["FishBone", "Stone"].includes(returnedItem.itemName)
+                ) {
                     returnedItem.scoreValue = Math.floor(random(20, 51));
                 }
                 // 播放抓中音效
-                if (typeof catchSfx !== 'undefined' && catchSfx) {
+                if (typeof catchSfx !== "undefined" && catchSfx) {
                     if (catchSfx.isPlaying()) catchSfx.stop();
                     catchSfx.play();
                 }
                 let key = returnedItem.itemName || "Unknown";
-                if (returnedItem.itemName === "Small Fish" && returnedItem.fishIndex != null) {
+                if (
+                    returnedItem.itemName === "Small Fish" &&
+                    returnedItem.fishIndex != null
+                ) {
                     key = `fish${returnedItem.fishIndex + 1}`; // fishIndex 0–42 → fish1–fish43
-                } else if (returnedItem.itemName === "Big Fish" && returnedItem.fishIndex != null) {
+                } else if (
+                    returnedItem.itemName === "Big Fish" &&
+                    returnedItem.fishIndex != null
+                ) {
                     key = `fish${44 + returnedItem.fishIndex}`; // fishIndex 0–20 → fish44–fish64
                 }
                 this.fishCaught[key] = (this.fishCaught[key] || 0) + 1;
@@ -364,24 +406,35 @@ class LevelManager {
             for (let i = this.sharks.length - 1; i >= 0; i--) {
                 let shark = this.sharks[i];
                 shark.update();
-                // 检测鲨鱼与正在上升的钩子挂载物品的碰撞
+                // 检测鲨鱼头部与正在上升的钩子挂载物品的碰撞
                 for (let hook of this.hooks) {
                     if (
                         hook.attachedItem &&
                         hook.state === HookState.MOVING_UP
                     ) {
                         let item = hook.attachedItem;
-                        
-                        // ─── 核心修改：如果是石头或鱼骨，鲨鱼直接无视，不触发抢夺！ ───
-                        let isStoneOrBone = (item instanceof Stone) || (item instanceof FishBone);
+
+                        // 石头或鱼骨，鲨鱼直接无视，不触发抢夺
+                        let isStoneOrBone =
+                            item instanceof Stone || item instanceof FishBone;
+
+                        // ─── 鲨鱼头部碰撞判定 ───
+                        // 根据鲨鱼朝向计算头部坐标（中心点向前方偏移 35% 身长）
+                        let headX =
+                            shark.x + shark.direction * shark.width * 0.35;
+                        let headY = shark.y;
+                        const SHARK_BITE_RADIUS = 25; // 咬合判定半径（仅头部小圆）
+                        let itemRadius = item.catchRadius ?? item.width / 2;
+                        let headDist = dist(
+                            headX,
+                            headY,
+                            item.position.x,
+                            item.position.y,
+                        );
 
                         if (
-                            !isStoneOrBone &&  // 👈 新增的判定条件：不能是石头或鱼骨
-                            shark.overlaps(
-                                item.position.x,
-                                item.position.y,
-                                item.catchRadius ?? item.width / 2,
-                            )
+                            !isStoneOrBone &&
+                            headDist < SHARK_BITE_RADIUS + itemRadius
                         ) {
                             // 鲨鱼吃掉物品，钩子空手回收
                             if (sharkStolenSfx && !sharkStolenSfx.isPlaying()) {
@@ -471,12 +524,19 @@ class LevelManager {
                 translate(this.boats[i].x, this.boats[i].y + bobY);
                 rotate(rockAngle);
                 // ─── 核心修改开始：P2 用新潜水艇，P1 用老潜水艇 ───
-                if (i === 1 && typeof submarineImg2 !== "undefined" && submarineImg2) {
+                if (
+                    i === 1 &&
+                    typeof submarineImg2 !== "undefined" &&
+                    submarineImg2
+                ) {
                     // P2 (右边玩家) 用新的 submarineImg2
                     image(submarineImg2, 0, -40, 240, 130);
-                } else if (typeof submarineImg !== "undefined" && submarineImg) {
+                } else if (
+                    typeof submarineImg !== "undefined" &&
+                    submarineImg
+                ) {
                     // P1 (左边玩家) 或单人模式用老潜水艇
-                    image(submarineImg, 0, -40, 240, 130); 
+                    image(submarineImg, 0, -40, 240, 130);
                 } else {
                     this._drawSubmarine(i);
                 }
@@ -735,10 +795,10 @@ class LevelManager {
             let bx = this.boats[i].x;
             // 从潜水艇底部发出光锥（与 image offset -40 对齐，底部约在 boats.y + 25）
             let by = this.boats[i].y + 25;
-            let coneLen = 620;      // 探照深度
-            let spread = PI / 6;    // ±30° 半角
-            let nearDist = 30;      // 圆台顶端距潜水艇底部的距离
-            let topHalfW = 20;      // 圆台顶端半宽
+            let coneLen = 620; // 探照深度
+            let spread = PI / 6; // ±30° 半角
+            let nearDist = 30; // 圆台顶端距潜水艇底部的距离
+            let topHalfW = 20; // 圆台顶端半宽
 
             // 光锥方向单位向量 & 垂直向量
             let dx = sin(hook.angle);
@@ -755,10 +815,14 @@ class LevelManager {
 
             // 圆台形光锥（梯形：顶端窄，底端宽；顶点顺时针排列避免自交叉）
             dl.quad(
-                tx + px * topHalfW, ty + py * topHalfW,   // 顶端右
-                bx + sin(a2) * coneLen, by + cos(a2) * coneLen, // 底端右
-                bx + sin(a1) * coneLen, by + cos(a1) * coneLen, // 底端左
-                tx - px * topHalfW, ty - py * topHalfW,   // 顶端左
+                tx + px * topHalfW,
+                ty + py * topHalfW, // 顶端右
+                bx + sin(a2) * coneLen,
+                by + cos(a2) * coneLen, // 底端右
+                bx + sin(a1) * coneLen,
+                by + cos(a1) * coneLen, // 底端左
+                tx - px * topHalfW,
+                ty - py * topHalfW, // 顶端左
             );
             // 顶端小圆，平滑过渡
             dl.ellipse(tx, ty, topHalfW * 2, topHalfW * 2);
@@ -770,6 +834,12 @@ class LevelManager {
         for (let item of this.activeItems) {
             if (item instanceof AnglerFish) {
                 let pulse = 0.15 * sin(frameCount * 0.05 + item.glowPulse);
+                let r = item.glowRadius * (1 + pulse);
+                dl.ellipse(item.position.x, item.position.y, r * 2, r * 2);
+            }
+            // 珍珠：柔和的蓝白光晕，在深海中若隐若现引导玩家寻宝
+            if (item instanceof Pearl) {
+                let pulse = 0.25 * sin(frameCount * 0.06 + item.glowPhase);
                 let r = item.glowRadius * (1 + pulse);
                 dl.ellipse(item.position.x, item.position.y, r * 2, r * 2);
             }
@@ -903,10 +973,10 @@ class LevelManager {
         cy += lineH;
         text("the GOAL score.", lx, cy);
         cy += lineH;
-        
+
         text("Avoid stones & fish bones (0 pts).", lx, cy);
         cy += lineH;
-        
+
         // 【修复】拆分过长的商店提示句
         text("Shop between levels to buy", lx, cy);
         cy += lineH;
@@ -940,7 +1010,7 @@ class LevelManager {
             text("Press DOWN ARROW \u2193 to cast", lx, cy);
             cy += lineH;
         }
-        
+
         // 【修复】拆分过长的暂停说明句
         text("Pause : click the \u23F8 button", lx, cy);
         cy += lineH;
@@ -960,7 +1030,7 @@ class LevelManager {
         textStyle(BOLD);
         text("ITEM VALUES", lx, cy);
         cy += lineH;
-        
+
         fill(190, 230, 255);
         textStyle(NORMAL);
         // 【修复】左右排列太长会超出边界，改为分4行上下排列
