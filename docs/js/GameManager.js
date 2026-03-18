@@ -617,7 +617,7 @@ changeState(newState) {
 
         // 居中面板
         const panelW = 520;
-        const panelH = 520;
+        const panelH = 680;
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2;
 
@@ -657,9 +657,28 @@ changeState(newState) {
         cy += lineH;
         text("the GOAL score.", lx, cy);
         cy += lineH;
-        text("Avoid stones & fish bones (0 pts).", lx, cy);
+        text("Stone: 70-110 pts. Fish bone: 0 pts", lx, cy);
         cy += lineH;
-        text("Shop between levels to buy power-ups!", lx, cy);
+        text("  (20-50 with Fishbone Collector).", lx, cy);
+        cy += lineH + 8;
+
+        // SHOP & DEEP SEA
+        fill(255, 210, 50);
+        textSize(11);
+        textStyle(BOLD);
+        text("SHOP & DEEP SEA", lx, cy);
+        cy += lineH;
+        fill(190, 230, 255);
+        textStyle(NORMAL);
+        text("Pass a level to enter the shop.", lx, cy);
+        cy += lineH;
+        text("Submarine: unlocks Deep Sea mode", lx, cy);
+        cy += lineH;
+        text("  (dark waters, high-value fish).", lx, cy);
+        cy += lineH;
+        text("Sharks in Deep Sea: steal your catch", lx, cy);
+        cy += lineH;
+        text("  while reeling up!", lx, cy);
         cy += lineH + 8;
 
         // 分割线
@@ -714,7 +733,9 @@ changeState(newState) {
         cy += lineH;
         text("  (rare, tiny hitbox!)", lx, cy);
         cy += lineH;
-        text("Bone / Stone: 0 pts", lx, cy);
+        text("Stone: 70-110 pts", lx, cy);
+        cy += lineH;
+        text("Fish bone: 0 pts (20-50 w/ Collector)", lx, cy);
         cy += lineH + 16;
 
         // 闪烁提示
