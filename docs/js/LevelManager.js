@@ -117,7 +117,7 @@ class LevelManager {
         const WATER_LEVEL = 160;
         const SHALLOW_WATER_MIN_Y = 300;
         const DEEP_WATER_MIN_Y = 350;
-        const MAX_ITEMS = 15;
+        const MAX_ITEMS = this.isDeepSea ? 24 : 15;  // 深海障碍多，提高上限以免鱼无法生成
         const SAFE_MARGIN = 40;
 
         // 碰撞检测辅助函数
@@ -137,7 +137,8 @@ class LevelManager {
 
         let treasureCount;
         if (this.isDeepSea) {
-            treasureCount = Math.floor(random(4, 6) * multiplier);
+            const baseTreasures = this.levelNum <= 2 ? random(2, 4) : random(4, 6);
+            treasureCount = Math.floor(baseTreasures * multiplier);
         } else {
             treasureCount = Math.floor(
                 random(isHard ? 2 : 3, isHard ? 4 : 5) * multiplier,
@@ -145,8 +146,9 @@ class LevelManager {
         }
         let looseStoneCount;
         if (this.isDeepSea) {
-            // 深海：大量石头和鱼骨作为障碍，营造压迫感
-            looseStoneCount = Math.floor(random(8, 12) * multiplier);
+            // 深海：石头和鱼骨作为障碍，但低关卡保留鱼的生成空间
+            const baseStones = this.levelNum <= 2 ? random(4, 6) : random(8, 12);
+            looseStoneCount = Math.floor(baseStones * multiplier);
         } else {
             looseStoneCount = Math.floor(
                 (isHard ? 3 + this.levelNum : 2) * multiplier,
