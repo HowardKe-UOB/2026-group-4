@@ -38,6 +38,7 @@ class ShopItem {
                 }
                 if (this.name === "Laser Sight") {
                     h.hasLaser = true; // 所有玩家获得激光
+                    h.swingSpeedMultiplier = 0.6; // 将摆动速度降为原来的 60%
                 }
             });
         }

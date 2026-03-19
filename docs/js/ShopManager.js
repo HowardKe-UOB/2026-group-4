@@ -31,7 +31,7 @@ class ShopManager {
             new ShopItem(
                 "Laser Sight",
                 175,
-                "Often miss? Buy Laser Sight now!\n[period: 1 level]",
+                "Often miss? Buy Laser Sight now!\nAdd aiming assistance, swing speed -40%.\n[period: 1 level]",
                 levelNum
             ),
             new ShopItem(
@@ -154,6 +154,9 @@ class ShopManager {
             push();
             imageMode(CENTER);
             let imgSize = 80;
+            if (item.name === "Submarine") {
+                imgSize = 110;  //专门增加潜水艇大小
+            }
             if (
                 item.name === "Strength Potion" &&
                 typeof potionImg !== "undefined" &&

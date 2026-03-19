@@ -11,6 +11,7 @@ class Hook extends GameObject {
 
         this.angle = 0;
         this.angleVel = 0.028;
+        this.swingSpeedMultiplier = 1;  // 初始速度倍率为 1
         this.length = 50;
         this.maxLength = 900;
 
@@ -20,7 +21,7 @@ class Hook extends GameObject {
 
     update() {
         if (this.state === HookState.IDLE_SWINGING) {
-            this.angle = (sin(frameCount * this.angleVel) * PI) / 3;
+            this.angle = (sin(frameCount * this.angleVel * this.swingSpeedMultiplier) * PI) / 3;
             this.position.x = this.origin.x + sin(this.angle) * this.length;
             this.position.y = this.origin.y + cos(this.angle) * this.length;
         } else if (this.state === HookState.MOVING_DOWN) {
