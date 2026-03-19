@@ -13,6 +13,8 @@ function isProdOrigin() {
 class HighScoreManager {
     constructor() {
         this.topScores = [];
+        this.isLoadingMore = false;
+        this.hasMoreScores = false;
         this.loadScores();
     }
 
@@ -78,9 +80,10 @@ class HighScoreManager {
         if (!cfg || !cfg.url || !cfg.anonKey || cfg.url.includes("YOUR_")) {
             return;
         }
+        this.hasMoreScores = false;
         try {
             const res = await fetch(
-                `${cfg.url}/rest/v1/scores?order=levels_completed.desc,score.desc&limit=50`,
+                `${cfg.url}/rest/v1/scores?order=levels_completed.desc,score.desc&limit=50&offset=0`,
                 {
                     headers: {
                         apikey: cfg.anonKey,
@@ -102,9 +105,55 @@ class HighScoreManager {
                     ),
             );
             this._sortScores();
+            this.hasMoreScores = rows.length >= 50;
             this.saveScores();
         } catch (e) {
             console.warn("Supabase fetch failed:", e);
+        }
+    }
+
+    async fetchMoreFromSupabase() {
+        if (!isProdOrigin() || this.isLoadingMore || !this.hasMoreScores) return;
+        const cfg =
+            typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
+        if (!cfg || !cfg.url || !cfg.anonKey || cfg.url.includes("YOUR_")) {
+            return;
+        }
+        this.isLoadingMore = true;
+        const offset = this.topScores.length;
+        try {
+            const res = await fetch(
+                `${cfg.url}/rest/v1/scores?order=levels_completed.desc,score.desc&limit=50&offset=${offset}`,
+                {
+                    headers: {
+                        apikey: cfg.anonKey,
+                        Authorization: `Bearer ${cfg.anonKey}`,
+                    },
+                },
+            );
+            if (!res.ok) {
+                this.isLoadingMore = false;
+                return;
+            }
+            const rows = await res.json();
+            const newEntries = rows.map(
+                (r) =>
+                    new ScoreEntry(
+                        r.player_name,
+                        r.score,
+                        r.levels_completed ?? 0,
+                        r.difficulty ?? "easy",
+                        r.player_mode ?? "single",
+                        r.catch_history ?? {},
+                    ),
+            );
+            this.topScores = this.topScores.concat(newEntries);
+            this.hasMoreScores = rows.length >= 50;
+            this.saveScores();
+        } catch (e) {
+            console.warn("Supabase fetch more failed:", e);
+        } finally {
+            this.isLoadingMore = false;
         }
     }
 

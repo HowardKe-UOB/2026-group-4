@@ -911,9 +911,22 @@ changeState(newState) {
         const scrollbarY = startY;
         const scrollbarH = listAreaH;
 
-        const totalH = this.highScoreManager.topScores.length * rowH;
+        const totalH =
+            (this.highScoreManager.topScores.length +
+                (this.highScoreManager.isLoadingMore ? 1 : 0)) *
+            rowH;
         const maxScroll = max(0, totalH - listAreaH);
         this.highScoreScrollY = constrain(this.highScoreScrollY, 0, maxScroll);
+
+        if (
+            isProdOrigin() &&
+            this.highScoreManager.hasMoreScores &&
+            !this.highScoreManager.isLoadingMore &&
+            maxScroll > 0 &&
+            this.highScoreScrollY >= maxScroll - 80
+        ) {
+            this.highScoreManager.fetchMoreFromSupabase();
+        }
 
         // 半透明遮罩，提升面板可读性，同时保留背景氛围
         fill(0, 25, 50, 70);
@@ -1009,6 +1022,22 @@ changeState(newState) {
                     : `🏆 ${entry.score}`;
             text(scoreText, rowX + rowW - 20, ry);
         }
+
+        if (this.highScoreManager.isLoadingMore) {
+            const loadingRowTop = startY + this.highScoreManager.topScores.length * rowH - this.highScoreScrollY;
+            const loadingRy = loadingRowTop + rowH / 2;
+            if (loadingRy >= startY - rowH / 2 && loadingRy <= startY + listAreaH + rowH / 2) {
+                fill(25, 70, 120, 200);
+                rect(rowX, loadingRowTop + 4, rowW, rowH - 8, 12);
+                fill(200, 230, 255);
+                textAlign(CENTER, CENTER);
+                textSize(14);
+                const dots = '.'.repeat((Math.floor(frameCount / 20) % 3) + 1);
+                text(`Loading${dots}`, rowX + rowW / 2, loadingRy);
+                textAlign(LEFT, CENTER);
+            }
+        }
+
         listUnclip();
         pop();
 
@@ -1043,7 +1072,15 @@ changeState(newState) {
         textAlign(CENTER, CENTER);
         fill(200, 235, 255);
         textSize(14);
-        text('Click row to view catch · Click outside to return', width / 2, height - 40);
+        let hint = 'Click row to view catch · Click outside to return';
+        if (
+            typeof isProdOrigin === 'function' &&
+            isProdOrigin() &&
+            this.highScoreManager.hasMoreScores
+        ) {
+            hint += ' · Scroll down to load more';
+        }
+        text(hint, width / 2, height - 40);
         pop();
 
         if (this.fishGalleryEntry) {
