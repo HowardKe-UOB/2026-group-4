@@ -29,7 +29,7 @@ class GameManager {
         this.lastGameFailed = false;
     }
 
-    // Fish gallery: fish1–fish64 from assets (fish1_1.png … fish64_1.png)
+    // Fish gallery: fish1–fish64 + Angler Fish
     static get FISH_GALLERY_TYPES() {
         const list = [];
         for (let i = 1; i <= 43; i++) {
@@ -48,6 +48,11 @@ class GameManager {
                 getImg: () => (typeof imgBigFishes !== 'undefined' && imgBigFishes[idx]) ? imgBigFishes[idx][0] : null,
             });
         }
+        list.push({
+            key: 'Angler Fish',
+            label: 'Angler Fish',
+            getImg: () => (typeof anglerFishImgs !== 'undefined' && anglerFishImgs.length > 0) ? anglerFishImgs[0] : null,
+        });
         return list;
     }
 
@@ -1112,7 +1117,8 @@ changeState(newState) {
         const cellW = 72;
         const cellH = 68;
         const panelW = cols * cellW + 48;
-        const panelH = 8 * cellH + 80;
+        const rows = Math.ceil(GameManager.FISH_GALLERY_TYPES.length / cols);
+        const panelH = rows * cellH + 80;
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2 - 20;
 
