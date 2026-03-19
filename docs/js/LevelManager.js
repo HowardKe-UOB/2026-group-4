@@ -18,9 +18,9 @@ class LevelManager {
         // 【新增】：困难模式下，目标分数提高，时间减少
         if (this.difficulty === Difficulty.HARD) {
             baseTarget = Math.floor(baseTarget * 1.3); // 分数要求提高 30%
-            this.timeLimit = Math.max(15, 25 - levelNum); // 困难模式时间更少，且随关卡递减
+            this.timeLimit = Math.min(35, 24 + levelNum); // 困难模式时间:25~35秒
         } else {
-            this.timeLimit = 30 + (levelNum > 1 ? 5 : 0); // 简单模式时间相对充裕
+            this.timeLimit = Math.min(40, 29 + levelNum); // 简单模式时间:30~40秒
         }
 
         // 双人模式目标分数 ×1.8：双钩抓取效率翻倍，需提高难度
@@ -324,15 +324,18 @@ class LevelManager {
                     returnedItem.itemName === "Treasure"
                 ) {
                     returnedItem.scoreValue = Math.floor(
-                        returnedItem.scoreValue * 1.35,
+                        returnedItem.scoreValue * 1.35
                     );
                 }
-                // 鱼骨收藏书：对鱼骨和石头同时生效，抓到也能随机获得金币
-                if (
-                    this.player.hasFishboneCollector &&
-                    ["FishBone", "Stone"].includes(returnedItem.itemName)
-                ) {
-                    returnedItem.scoreValue = Math.floor(random(20, 51));
+                // 鱼骨收藏书：对鱼骨获得20~50金币，对石头获得+100%金币
+                if (this.player.hasFishboneCollector){
+                    if(returnedItem.itemName === "FishBone"){
+                        returnedItem.scoreValue = Math.floor(random(20, 51));
+                    }else if(returnedItem.itemName === "Stone"){
+                        returnedItem.scoreValue = Math.floor(
+                            returnedItem.scoreValue * 2
+                        );
+                    }
                 }
                 // 播放抓中音效
                 if (typeof catchSfx !== "undefined" && catchSfx) {

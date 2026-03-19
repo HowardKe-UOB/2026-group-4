@@ -51,8 +51,8 @@ class BaseFish extends SeaItem {
 class SmallFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(40, 60);
-        // Score nerfed: 60–90 (was 30–150), keeps it a "filler" item
-        let calculatedScore = floor(map(randomSize, 40, 60, 60, 90));
+        // Score nerfed: 70–110 (was 30–150), keeps it a "filler" item
+        let calculatedScore = floor(map(randomSize, 40, 60, 70, 110));
         let calculatedWeight = map(randomSize, 40, 60, 2, 3);
 
         super(
@@ -116,7 +116,7 @@ class BigFish extends BaseFish {
 
 class FishBone extends SeaItem {
     constructor(x, y) {
-        super(x, y, "FishBone", 0, 1.5);
+        super(x, y, "FishBone", 1, 1.5);
         this.width = 70;
         this.height = 40;
         this.sprite = imgSkeleton;
@@ -203,7 +203,7 @@ class Pearl extends SeaItem {
 
 class Stone extends SeaItem {
     constructor(x, y) {
-        let val = floor(random(70, 110));
+        let val = floor(random(60, 90));
         let w = random(6, 12);
 
         super(x, y, "Stone", val, w);

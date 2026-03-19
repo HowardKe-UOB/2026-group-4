@@ -25,35 +25,35 @@ class ShopManager {
             new ShopItem(
                 "Strength Potion",
                 225,
-                "Pulls items 2x faster.\nperiod: 1 level",
+                "A potion can bestow you with magical power!\nPulls items 2x faster.\n[period: 1 level]",
                 levelNum
             ),
             new ShopItem(
                 "Laser Sight",
                 175,
-                "Often miss? Buy Laser Sight now!\nperiod: 1 level",
+                "Often miss? Buy Laser Sight now!\n[period: 1 level]",
                 levelNum
             ),
             new ShopItem(
                 "Sand Clock",
                 175,
-                "Get extra 10 seconds.\nperiod: 1 level",
+                "A fisher is never late!\nAdd 8~15 seconds based on level.\n[period: 1 level]",
                 levelNum
             ),
             new ShopItem(
                 "Submarine",
                 10,
-                "Explore the deep sea.\nPermanent upgrade",
+                "Prove to yourself that you have the strength\nand courage to explore the deep sea.\n[Permanent upgrade]",
                 levelNum
             ),
             new ShopItem("Four-Leaf Clover",
                 600,
-                "Treasures worth 35% more.\nPermanent upgrade.",
+                "You will encounter rarer treasure!\nTreasures worth 35% more.\n[Permanent upgrade]",
                 levelNum
             ),
             new ShopItem("Fishbone Collector",
-                300,
-                "Museums love old fishbones!\nFishbones now worth $20~$50.\nPermanent upgrade",
+                500,
+                "Museum love old fishbone and stone!\nFishbone:$20~$50, Stone value+100%.\n[Permanent upgrade]",
                 levelNum
             )
         ];
@@ -219,7 +219,7 @@ class ShopManager {
             textAlign(CENTER, CENTER);
             let infoY = height - 90;
 
-            // 商品名称 商品打折显示
+            // 商品名称 和 商品打折显示
             fill(60, 40, 20);
             textSize(16);
             textStyle(BOLD);
@@ -232,8 +232,8 @@ class ShopManager {
                 text(hoveredItem.name + " - $" + hoveredItem.costPrice, width / 2, infoY - 55);
             }
 
-            // 商品描述
-            textSize(14);
+            // 商品描述-字体太大会溢出区域
+            textSize(11);
             textStyle(NORMAL);
             fill(100, 80, 60);
             text(hoveredItem.description, width / 2, infoY - 20);

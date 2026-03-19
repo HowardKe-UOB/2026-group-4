@@ -42,9 +42,11 @@ class ShopItem {
             });
         }
 
-        // 沙漏增加时间逻辑（不依赖钩子，保持原样即可）
+        // 沙漏增加时间逻辑
         if (this.name === "Sand Clock") {
-            levelManager.timeLimit += 10;
+            // 计算要增加的时间：7 + 当前关卡数，最高+15秒。
+            let bonus = 7 + levelManager.levelNum;
+            levelManager.timeLimit += Math.min(15, bonus);
             levelManager.timeRemaining = levelManager.timeLimit;
         }
 
