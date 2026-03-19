@@ -781,71 +781,96 @@ class LevelManager {
         pop();
     }
 
-    // 深海黑暗遮罩：填满黑色，然后用 erase() 在光源位置"挖洞"
+    // 深海黑暗遮罩：填满黑色，然后用 destination-out 渐变在光源位置"挖洞"
     _updateDarknessLayer() {
         let dl = this.darknessLayer;
         dl.clear();
         dl.background(0, 0, 0, 215);
-        dl.erase();
-        dl.noStroke();
-        dl.fill(255);
+        let ctx = dl.drawingContext;
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
 
         for (let i = 0; i < this.hooks.length; i++) {
             let hook = this.hooks[i];
             let bx = this.boats[i].x;
-            // 从潜水艇底部发出光锥（与 image offset -40 对齐，底部约在 boats.y + 25）
             let by = this.boats[i].y + 25;
-            let coneLen = 620; // 探照深度
-            let spread = PI / 6; // ±30° 半角
-            let nearDist = 30; // 圆台顶端距潜水艇底部的距离
-            let topHalfW = 20; // 圆台顶端半宽
+            let coneLen = 620;
+            let spread = PI / 6;
+            let nearDist = 30;
+            let topHalfW = 20;
 
-            // 光锥方向单位向量 & 垂直向量
             let dx = sin(hook.angle);
             let dy = cos(hook.angle);
             let px = cos(hook.angle);
             let py = -sin(hook.angle);
 
-            // 圆台顶端中心
             let tx = bx + dx * nearDist;
             let ty = by + dy * nearDist;
 
             let a1 = hook.angle - spread;
             let a2 = hook.angle + spread;
 
-            // 圆台形光锥（梯形：顶端窄，底端宽；顶点顺时针排列避免自交叉）
-            dl.quad(
-                tx + px * topHalfW,
-                ty + py * topHalfW, // 顶端右
-                bx + sin(a2) * coneLen,
-                by + cos(a2) * coneLen, // 底端右
-                bx + sin(a1) * coneLen,
-                by + cos(a1) * coneLen, // 底端左
-                tx - px * topHalfW,
-                ty - py * topHalfW, // 顶端左
-            );
-            // 顶端小圆，平滑过渡
-            dl.ellipse(tx, ty, topHalfW * 2, topHalfW * 2);
-            // 潜水艇周围环境光
-            dl.ellipse(bx, by, 90, 90);
+            // 潜水艇周围柔和径向渐变光晕（主晕影效果）
+            let ambientR = 130;
+            let ambientGrad = ctx.createRadialGradient(bx, by, 0, bx, by, ambientR);
+            ambientGrad.addColorStop(0,    'rgba(0,0,0,1)');
+            ambientGrad.addColorStop(0.5,  'rgba(0,0,0,0.9)');
+            ambientGrad.addColorStop(0.82, 'rgba(0,0,0,0.45)');
+            ambientGrad.addColorStop(1,    'rgba(0,0,0,0)');
+            ctx.fillStyle = ambientGrad;
+            ctx.beginPath();
+            ctx.arc(bx, by, ambientR, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 光锥：梯形路径 + 沿锥长方向线性渐变（近强远弱）+ 模糊柔化侧边
+            let farCx = bx + dx * coneLen;
+            let farCy = by + dy * coneLen;
+            let coneGrad = ctx.createLinearGradient(bx, by, farCx, farCy);
+            coneGrad.addColorStop(0,    'rgba(0,0,0,0.85)');
+            coneGrad.addColorStop(0.55, 'rgba(0,0,0,0.6)');
+            coneGrad.addColorStop(1,    'rgba(0,0,0,0)');
+            ctx.filter = 'blur(18px)';
+            ctx.fillStyle = coneGrad;
+            ctx.beginPath();
+            ctx.moveTo(tx + px * topHalfW, ty + py * topHalfW);
+            ctx.lineTo(bx + Math.sin(a2) * coneLen, by + Math.cos(a2) * coneLen);
+            ctx.lineTo(bx + Math.sin(a1) * coneLen, by + Math.cos(a1) * coneLen);
+            ctx.lineTo(tx - px * topHalfW, ty - py * topHalfW);
+            ctx.closePath();
+            ctx.fill();
+            ctx.filter = 'none';
         }
 
-        // 鮟鱇鱼作为移动光源（随脉冲动态变化）
+        // 鮟鱇鱼：柔和径向发光（随脉冲动态变化）
         for (let item of this.activeItems) {
             if (item instanceof AnglerFish) {
                 let pulse = 0.15 * sin(frameCount * 0.05 + item.glowPulse);
                 let r = item.glowRadius * (1 + pulse);
-                dl.ellipse(item.position.x, item.position.y, r * 2, r * 2);
+                let grad = ctx.createRadialGradient(item.position.x, item.position.y, 0, item.position.x, item.position.y, r);
+                grad.addColorStop(0,   'rgba(0,0,0,0.85)');
+                grad.addColorStop(0.5, 'rgba(0,0,0,0.45)');
+                grad.addColorStop(1,   'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
+                ctx.fill();
             }
-            // 珍珠：柔和的蓝白光晕，在深海中若隐若现引导玩家寻宝
+            // 珍珠：柔和蓝白光晕
             if (item instanceof Pearl) {
                 let pulse = 0.25 * sin(frameCount * 0.06 + item.glowPhase);
                 let r = item.glowRadius * (1 + pulse);
-                dl.ellipse(item.position.x, item.position.y, r * 2, r * 2);
+                let grad = ctx.createRadialGradient(item.position.x, item.position.y, 0, item.position.x, item.position.y, r);
+                grad.addColorStop(0,   'rgba(0,0,0,0.85)');
+                grad.addColorStop(0.5, 'rgba(0,0,0,0.45)');
+                grad.addColorStop(1,   'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
-        dl.noErase();
+        ctx.restore();
     }
 
     // 代码绘制潜水艇（无 submarineImg 资源时的 fallback，中心点在 0,0）

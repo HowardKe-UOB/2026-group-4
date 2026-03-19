@@ -32,14 +32,20 @@ class AnglerFish extends BaseFish {
         push();
         translate(this.position.x, this.position.y);
 
-        // Visible ambient glow halo
+        // Visible ambient glow halo using native radial gradient for soft feathering
         let pulse = 0.15 * sin(frameCount * 0.05 + this.glowPulse);
         let r = this.glowRadius * (1 + pulse);
-        noStroke();
-        fill(255, 200, 50, 16);
-        ellipse(0, 0, r * 2.6, r * 2.6);
-        fill(255, 200, 50, 26);
-        ellipse(0, 0, r * 1.6, r * 1.6);
+        let ctx = drawingContext;
+        ctx.save();
+        let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
+        grad.addColorStop(0,   'rgba(255,200,50,0.22)');
+        grad.addColorStop(0.5, 'rgba(255,200,50,0.12)');
+        grad.addColorStop(1,   'rgba(255,200,50,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
 
         // Sprite or fallback shape (anglerfish images face right, so use +direction)
         scale(this.direction, 1);
