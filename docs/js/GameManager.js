@@ -24,6 +24,9 @@ class GameManager {
 
         // Fish gallery: ScoreEntry when a leaderboard row is clicked, null otherwise
         this.fishGalleryEntry = null;
+
+        // 游戏失败后进入排行榜时，用不同颜色高亮最新玩家
+        this.lastGameFailed = false;
     }
 
     // Fish gallery: fish1–fish64 from assets (fish1_1.png … fish64_1.png)
@@ -504,6 +507,7 @@ changeState(newState) {
                         this.changeState(GameState.SHOP);
                     } else if (result === 'FAIL') {
                         this._mergeFishCaught();
+                        this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
                         this.highScoreManager.checkNewHighScore(
                             this.player.totalScore,
@@ -975,7 +979,9 @@ changeState(newState) {
             const levelsCompleted =
                 entry.levelsCompleted != null ? entry.levelsCompleted : 0;
 
-            if (isCurrent) {
+            if (isCurrent && this.lastGameFailed) {
+                fill(200, 100, 60, 240);
+            } else if (isCurrent) {
                 fill(40, 160, 120, 230);
             } else {
                 fill(25, 70, 120, 200);
@@ -1242,6 +1248,7 @@ changeState(newState) {
                     if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
                         this.gamePaused = false;
                         this._mergeFishCaught();
+                        this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
                         this.highScoreManager.checkNewHighScore(
                             this.player.totalScore,
@@ -1298,6 +1305,7 @@ changeState(newState) {
                     mouseY >= panelY &&
                     mouseY <= panelY + panelH;
                 if (!inPanel) {
+                    this.lastGameFailed = false;
                     this.changeState(GameState.NAME_ENTRY);
                 } else if (this._leaderboardRowBounds) {
                     for (const rb of this._leaderboardRowBounds) {
