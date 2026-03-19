@@ -15,6 +15,7 @@ class HighScoreManager {
         this.topScores = [];
         this.isLoadingMore = false;
         this.hasMoreScores = false;
+        this.hasFetchedMore = false;
         this.loadScores();
     }
 
@@ -93,6 +94,7 @@ class HighScoreManager {
             );
             if (!res.ok) return;
             const rows = await res.json();
+            if (this.hasFetchedMore || this.topScores.length > 50) return;
             this.topScores = rows.map(
                 (r) =>
                     new ScoreEntry(
@@ -147,9 +149,12 @@ class HighScoreManager {
                         r.catch_history ?? {},
                     ),
             );
+            const prevLen = this.topScores.length;
             this.topScores = this.topScores.concat(newEntries);
             this.hasMoreScores = rows.length >= 50;
+            this.hasFetchedMore = true;
             this.saveScores();
+            this._scrollAfterLoadMore = prevLen > 0 ? prevLen * 58 : 0;
         } catch (e) {
             console.warn("Supabase fetch more failed:", e);
         } finally {

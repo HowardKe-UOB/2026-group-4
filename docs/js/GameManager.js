@@ -111,6 +111,7 @@ changeState(newState) {
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
             this.fishGalleryEntry = null;
+            this.highScoreManager.hasFetchedMore = false;
             this.highScoreManager.fetchFromSupabase();
         }
         if (newState === GameState.NAME_ENTRY) {
@@ -916,7 +917,20 @@ changeState(newState) {
                 (this.highScoreManager.isLoadingMore ? 1 : 0)) *
             rowH;
         const maxScroll = max(0, totalH - listAreaH);
-        this.highScoreScrollY = constrain(this.highScoreScrollY, 0, maxScroll);
+        if (this.highScoreManager._scrollAfterLoadMore != null) {
+            this.highScoreScrollY = constrain(
+                this.highScoreManager._scrollAfterLoadMore,
+                0,
+                maxScroll,
+            );
+            this.highScoreManager._scrollAfterLoadMore = null;
+        } else {
+            this.highScoreScrollY = constrain(
+                this.highScoreScrollY,
+                0,
+                maxScroll,
+            );
+        }
 
         if (
             isProdOrigin() &&
