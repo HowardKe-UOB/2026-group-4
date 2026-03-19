@@ -24,28 +24,109 @@ class GameManager {
 
         // Fish gallery: ScoreEntry when a leaderboard row is clicked, null otherwise
         this.fishGalleryEntry = null;
+
+        // 游戏失败后进入排行榜时，用不同颜色高亮最新玩家
+        this.lastGameFailed = false;
     }
 
-    // Fish gallery: fish1–fish64 from assets (fish1_1.png … fish64_1.png)
+    // Fish gallery: fish1–fish64 + Angler Fish
     static get FISH_GALLERY_TYPES() {
         const list = [];
         for (let i = 1; i <= 43; i++) {
             const idx = i - 1;
+            const names = GameManager.FISH_NAMES[`fish${i}`];
             list.push({
                 key: `fish${i}`,
-                label: `Fish ${i}`,
+                label: names ? names.en : `Fish ${i}`,
                 getImg: () => (typeof imgSmallFishes !== 'undefined' && imgSmallFishes[idx]) ? imgSmallFishes[idx][0] : null,
             });
         }
         for (let i = 44; i <= 64; i++) {
             const idx = i - 44;
+            const names = GameManager.FISH_NAMES[`fish${i}`];
             list.push({
                 key: `fish${i}`,
-                label: `Fish ${i}`,
+                label: names ? names.en : `Fish ${i}`,
                 getImg: () => (typeof imgBigFishes !== 'undefined' && imgBigFishes[idx]) ? imgBigFishes[idx][0] : null,
             });
         }
+        list.push({
+            key: 'Angler Fish',
+            label: 'Angler Fish',
+            getImg: () => (typeof anglerFishImgs !== 'undefined' && anglerFishImgs.length > 0) ? anglerFishImgs[0] : null,
+        });
         return list;
+    }
+
+    // Fish names: fish1–fish43 (by asset index), for hover tooltip in gallery
+    static get FISH_NAMES() {
+        return {
+            fish1: { en: 'European Anchovy', zh: '欧洲鳀鱼' },
+            fish2: { en: 'Neon Tetra', zh: '霓虹脂鲤 / 红绿灯鱼' },
+            fish3: { en: 'Ocellaris Clownfish', zh: '眼斑双锯鱼 / 小丑鱼' },
+            fish4: { en: 'Purple Firefish', zh: '紫雷达' },
+            fish5: { en: 'Green Chromis', zh: '青魔' },
+            fish6: { en: 'Yellowtail Damselfish', zh: '黄尾雀鲷' },
+            fish7: { en: 'Ribbon Eel', zh: '黑身管鼻鯙 / 彩带鳗' },
+            fish8: { en: 'Royal Gramma', zh: '皇家神仙' },
+            fish9: { en: 'Pilot Fish', zh: '领航鱼' },
+            fish10: { en: 'Antarctic Krill', zh: '南极磷虾' },
+            fish11: { en: 'Sea Goldie', zh: '海金鱼' },
+            fish12: { en: 'Blue Tang', zh: '副刺尾鱼 / 蓝吊' },
+            fish13: { en: 'Yellow Tang', zh: '黄高鳍刺尾鱼 / 黄三角' },
+            fish14: { en: 'Seahorse', zh: '海马' },
+            fish15: { en: 'Sea Urchin', zh: '海胆' },
+            fish16: { en: 'Lemonpeel Angelfish', zh: '柠檬神仙' },
+            fish17: { en: 'Asian Arowana', zh: '亚洲龙鱼 / 金龙鱼' },
+            fish18: { en: 'Common Squid', zh: '普通鱿鱼' },
+            fish19: { en: 'Channel Catfish', zh: '斑点叉尾鮰 / 鲶鱼' },
+            fish20: { en: 'Flounder', zh: '比目鱼' },
+            fish21: { en: 'Atlantic Mackerel', zh: '大西洋鲭鱼' },
+            fish22: { en: 'Red Snapper', zh: '红笛鲷' },
+            fish23: { en: 'Goldfish', zh: '金鱼' },
+            fish24: { en: 'Porcupinefish', zh: '密斑刺鲀' },
+            fish25: { en: 'Red Lionfish', zh: '红狮子鱼 / 蓑鲉' },
+            fish26: { en: 'Red-bellied Piranha', zh: '红腹食人鱼' },
+            fish27: { en: 'Swordfish', zh: '剑鱼' },
+            fish28: { en: 'Axolotl', zh: '美西螈 / 六角恐龙' },
+            fish29: { en: 'Common Octopus', zh: '普通章鱼' },
+            fish30: { en: 'Flying Fish', zh: '飞鱼' },
+            fish31: { en: 'Coral Grouper', zh: '豹纹鳃棘鲈 / 东星斑' },
+            fish32: { en: 'Green Pufferfish', zh: '绿河鲀' },
+            fish33: { en: 'Emperor Angelfish', zh: '主刺盖鱼 / 国王神仙' },
+            fish34: { en: 'Moorish Idol', zh: '镰鱼 / 角蝶' },
+            fish35: { en: 'Parrotfish', zh: '鹦嘴鱼' },
+            fish36: { en: 'Deep Sea Anglerfish', zh: '深海𩽾𩾌鱼' },
+            fish37: { en: 'Orange Roughy', zh: '长寿鱼 / 红胸燧鲷' },
+            fish38: { en: 'Footballfish', zh: '足球鱼' },
+            fish39: { en: 'Wrasse', zh: '隆头鱼' },
+            fish40: { en: 'Great Barracuda', zh: '大鳞魣 / 海狼鱼' },
+            fish41: { en: 'Yellow Boxfish', zh: '粒突箱鲀' },
+            fish42: { en: 'Golden Trevally', zh: '黄鹂无齿鲹' },
+            fish43: { en: 'Flame Angelfish', zh: '火焰神仙鱼' },
+            fish44: { en: 'Coelacanth', zh: '腔棘鱼 / 活化石' },
+            fish45: { en: 'Great White Shark', zh: '大白鲨' },
+            fish46: { en: 'Manta Ray', zh: '巨型鬼蝠魟 / 魔鬼鱼' },
+            fish47: { en: 'Laser Shark', zh: '镭射鲨鱼 / 机械改造鲨' },
+            fish48: { en: 'Arapaima', zh: '巨骨舌鱼 / 海象鱼' },
+            fish49: { en: 'Humphead Wrasse', zh: '苏眉鱼' },
+            fish50: { en: 'Ocean Sunfish', zh: '翻车鱼 / 曼波鱼' },
+            fish51: { en: 'Giant Mekong Catfish', zh: '湄公河巨鲶' },
+            fish52: { en: 'Purple Queen Anthias', zh: '紫皇后鱼' },
+            fish53: { en: 'Mahi-Mahi', zh: '鲯鳅 / 鬼头刀' },
+            fish54: { en: 'Leafy Seadragon', zh: '叶海龙' },
+            fish55: { en: 'Giant Trevally', zh: '珍鲹 / GT' },
+            fish56: { en: 'Goliath Grouper', zh: '伊氏石斑鱼' },
+            fish57: { en: 'Red Coelacanth', zh: '红色腔棘鱼' },
+            fish58: { en: 'Green Coelacanth', zh: '绿色腔棘鱼' },
+            fish59: { en: 'Hairy Angler', zh: '多毛鮟鱇' },
+            fish60: { en: 'Giant Pufferfish', zh: '巨型河鲀' },
+            fish61: { en: 'Bluefin Tuna', zh: '蓝鳍金枪鱼' },
+            fish62: { en: 'Fangtooth', zh: '尖牙鱼' },
+            fish63: { en: 'Lancetfish', zh: '帆蜥鱼' },
+            fish64: { en: 'Viperfish', zh: '毒蛇鱼' },
+            'Angler Fish': { en: 'Angler Fish', zh: '鮟鱇鱼' },
+        };
     }
 
     _mergeFishCaught() {
@@ -108,6 +189,7 @@ changeState(newState) {
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
             this.fishGalleryEntry = null;
+            this.highScoreManager.hasFetchedMore = false;
             this.highScoreManager.fetchFromSupabase();
         }
         if (newState === GameState.NAME_ENTRY) {
@@ -504,6 +586,7 @@ changeState(newState) {
                         this.changeState(GameState.SHOP);
                     } else if (result === 'FAIL') {
                         this._mergeFishCaught();
+                        this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
                         this.highScoreManager.checkNewHighScore(
                             this.player.totalScore,
@@ -617,7 +700,7 @@ changeState(newState) {
 
         // 居中面板
         const panelW = 520;
-        const panelH = 520;
+        const panelH = 680;
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2;
 
@@ -657,9 +740,28 @@ changeState(newState) {
         cy += lineH;
         text("the GOAL score.", lx, cy);
         cy += lineH;
-        text("Avoid stones & fish bones (0 pts).", lx, cy);
+        text("Stone: 70-110 pts. Fish bone: 0 pts", lx, cy);
         cy += lineH;
-        text("Shop between levels to buy power-ups!", lx, cy);
+        text("  (20-50 with Fishbone Collector).", lx, cy);
+        cy += lineH + 8;
+
+        // SHOP & DEEP SEA
+        fill(255, 210, 50);
+        textSize(11);
+        textStyle(BOLD);
+        text("SHOP & DEEP SEA", lx, cy);
+        cy += lineH;
+        fill(190, 230, 255);
+        textStyle(NORMAL);
+        text("Pass a level to enter the shop.", lx, cy);
+        cy += lineH;
+        text("Submarine: unlocks Deep Sea mode", lx, cy);
+        cy += lineH;
+        text("  (dark waters, high-value fish).", lx, cy);
+        cy += lineH;
+        text("Sharks in Deep Sea: steal your catch", lx, cy);
+        cy += lineH;
+        text("  while reeling up!", lx, cy);
         cy += lineH + 8;
 
         // 分割线
@@ -714,7 +816,9 @@ changeState(newState) {
         cy += lineH;
         text("  (rare, tiny hitbox!)", lx, cy);
         cy += lineH;
-        text("Bone / Stone: 0 pts", lx, cy);
+        text("Stone: 70-110 pts", lx, cy);
+        cy += lineH;
+        text("Fish bone: 0 pts (20-50 w/ Collector)", lx, cy);
         cy += lineH + 16;
 
         // 闪烁提示
@@ -886,9 +990,35 @@ changeState(newState) {
         const scrollbarY = startY;
         const scrollbarH = listAreaH;
 
-        const totalH = this.highScoreManager.topScores.length * rowH;
+        const totalH =
+            (this.highScoreManager.topScores.length +
+                (this.highScoreManager.isLoadingMore ? 1 : 0)) *
+            rowH;
         const maxScroll = max(0, totalH - listAreaH);
-        this.highScoreScrollY = constrain(this.highScoreScrollY, 0, maxScroll);
+        if (this.highScoreManager._scrollAfterLoadMore != null) {
+            this.highScoreScrollY = constrain(
+                this.highScoreManager._scrollAfterLoadMore,
+                0,
+                maxScroll,
+            );
+            this.highScoreManager._scrollAfterLoadMore = null;
+        } else {
+            this.highScoreScrollY = constrain(
+                this.highScoreScrollY,
+                0,
+                maxScroll,
+            );
+        }
+
+        if (
+            isProdOrigin() &&
+            this.highScoreManager.hasMoreScores &&
+            !this.highScoreManager.isLoadingMore &&
+            maxScroll > 0 &&
+            this.highScoreScrollY >= maxScroll - 80
+        ) {
+            this.highScoreManager.fetchMoreFromSupabase();
+        }
 
         // 半透明遮罩，提升面板可读性，同时保留背景氛围
         fill(0, 25, 50, 70);
@@ -954,7 +1084,9 @@ changeState(newState) {
             const levelsCompleted =
                 entry.levelsCompleted != null ? entry.levelsCompleted : 0;
 
-            if (isCurrent) {
+            if (isCurrent && this.lastGameFailed) {
+                fill(200, 100, 60, 240);
+            } else if (isCurrent) {
                 fill(40, 160, 120, 230);
             } else {
                 fill(25, 70, 120, 200);
@@ -982,6 +1114,22 @@ changeState(newState) {
                     : `🏆 ${entry.score}`;
             text(scoreText, rowX + rowW - 20, ry);
         }
+
+        if (this.highScoreManager.isLoadingMore) {
+            const loadingRowTop = startY + this.highScoreManager.topScores.length * rowH - this.highScoreScrollY;
+            const loadingRy = loadingRowTop + rowH / 2;
+            if (loadingRy >= startY - rowH / 2 && loadingRy <= startY + listAreaH + rowH / 2) {
+                fill(25, 70, 120, 200);
+                rect(rowX, loadingRowTop + 4, rowW, rowH - 8, 12);
+                fill(200, 230, 255);
+                textAlign(CENTER, CENTER);
+                textSize(14);
+                const dots = '.'.repeat((Math.floor(frameCount / 20) % 3) + 1);
+                text(`Loading${dots}`, rowX + rowW / 2, loadingRy);
+                textAlign(LEFT, CENTER);
+            }
+        }
+
         listUnclip();
         pop();
 
@@ -1016,7 +1164,15 @@ changeState(newState) {
         textAlign(CENTER, CENTER);
         fill(200, 235, 255);
         textSize(14);
-        text('Click row to view catch · Click outside to return', width / 2, height - 40);
+        let hint = 'Click row to view catch · Click outside to return';
+        if (
+            typeof isProdOrigin === 'function' &&
+            isProdOrigin() &&
+            this.highScoreManager.hasMoreScores
+        ) {
+            hint += ' · Scroll down to load more';
+        }
+        text(hint, width / 2, height - 40);
         pop();
 
         if (this.fishGalleryEntry) {
@@ -1034,7 +1190,8 @@ changeState(newState) {
         const cellW = 72;
         const cellH = 68;
         const panelW = cols * cellW + 48;
-        const panelH = 8 * cellH + 80;
+        const rows = Math.ceil(GameManager.FISH_GALLERY_TYPES.length / cols);
+        const panelH = rows * cellH + 80;
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2 - 20;
 
@@ -1062,6 +1219,11 @@ changeState(newState) {
         const startX = panelX + 24 + cellW / 2;
         const startY = panelY + 52 + cellH / 2;
 
+        let hoveredIndex = -1;
+        const cellPad = 4;
+        const cellRectW = cellW - 8;
+        const cellRectH = cellH - 8;
+
         for (let i = 0; i < types.length; i++) {
             const t = types[i];
             const count = catchHistory[t.key] || 0;
@@ -1071,9 +1233,20 @@ changeState(newState) {
             const cx = startX + col * cellW;
             const cy = startY + row * cellH;
 
+            const cellLeft = cx - cellW / 2 + cellPad;
+            const cellTop = cy - cellH / 2 + cellPad;
+            if (
+                mouseX >= cellLeft &&
+                mouseX <= cellLeft + cellRectW &&
+                mouseY >= cellTop &&
+                mouseY <= cellTop + cellRectH
+            ) {
+                hoveredIndex = i;
+            }
+
             if (caught) fill(25, 90, 70);
             else fill(40, 40, 55);
-            rect(cx - cellW / 2 + 4, cy - cellH / 2 + 4, cellW - 8, cellH - 8, 8);
+            rect(cellLeft, cellTop, cellRectW, cellRectH, 8);
 
             const img = t.getImg();
             if (img && img.width) {
@@ -1098,6 +1271,42 @@ changeState(newState) {
             } else {
                 fill(120, 120, 130);
                 text('?', cx, cy + 22);
+            }
+        }
+
+        // Hover tooltip: show English + Chinese names in small font
+        if (hoveredIndex >= 0) {
+            const t = types[hoveredIndex];
+            const names = GameManager.FISH_NAMES[t.key];
+            if (names) {
+                const col = hoveredIndex % cols;
+                const row = floor(hoveredIndex / cols);
+                const cx = startX + col * cellW;
+                const cy = startY + row * cellH;
+
+                textSize(10);
+                const tipW = max(textWidth(names.en), textWidth(names.zh)) + 16;
+                const tipH = 36;
+                let tipX = cx - tipW / 2;
+                let tipY = cy - cellH / 2 - tipH - 8;
+
+                if (tipX < panelX + 8) tipX = panelX + 8;
+                if (tipX + tipW > panelX + panelW - 8) tipX = panelX + panelW - tipW - 8;
+                if (tipY < panelY + 8) tipY = cy + cellH / 2 + 8;
+
+                fill(10, 35, 65, 235);
+                stroke(80, 160, 220);
+                strokeWeight(1);
+                rect(tipX, tipY, tipW, tipH, 6);
+                noStroke();
+
+                fill(255);
+                textSize(10);
+                textAlign(CENTER, CENTER);
+                text(names.en, tipX + tipW / 2, tipY + 10);
+                fill(200, 230, 255);
+                textSize(9);
+                text(names.zh, tipX + tipW / 2, tipY + 26);
             }
         }
 
@@ -1221,6 +1430,7 @@ changeState(newState) {
                     if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
                         this.gamePaused = false;
                         this._mergeFishCaught();
+                        this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
                         this.highScoreManager.checkNewHighScore(
                             this.player.totalScore,
@@ -1277,6 +1487,7 @@ changeState(newState) {
                     mouseY >= panelY &&
                     mouseY <= panelY + panelH;
                 if (!inPanel) {
+                    this.lastGameFailed = false;
                     this.changeState(GameState.NAME_ENTRY);
                 } else if (this._leaderboardRowBounds) {
                     for (const rb of this._leaderboardRowBounds) {

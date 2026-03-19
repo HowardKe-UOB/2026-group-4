@@ -934,7 +934,7 @@ class LevelManager {
 
     _drawHelpPanel(btnY) {
         const panelW = 400;
-        const panelH = 450;
+        const panelH = 600;
         const panelX = width - panelW - 15;
         const panelY = btnY - panelH - 15;
 
@@ -973,15 +973,29 @@ class LevelManager {
         cy += lineH;
         text("the GOAL score.", lx, cy);
         cy += lineH;
-
-        text("Avoid stones & fish bones (0 pts).", lx, cy);
+        text("Stone: 70-110 pts. Fish bone: 0 pts", lx, cy);
         cy += lineH;
+        text("  (20-50 with Fishbone Collector).", lx, cy);
+        cy += lineH + 6;
 
-        // 【修复】拆分过长的商店提示句
-        text("Shop between levels to buy", lx, cy);
+        // ── 商店与深海 ──
+        fill(255, 210, 50);
+        textSize(11);
+        textStyle(BOLD);
+        text("SHOP & DEEP SEA", lx, cy);
+        cy += lineH + 4;
+        fill(190, 230, 255);
+        textStyle(NORMAL);
+        text("Pass a level to enter the shop.", lx, cy);
         cy += lineH;
-        text("power-ups!", lx, cy);
-        cy += lineH + 10;
+        text("Submarine: unlocks Deep Sea mode", lx, cy);
+        cy += lineH;
+        text("  (dark waters, high-value fish).", lx, cy);
+        cy += lineH;
+        text("Sharks: steal your catch while", lx, cy);
+        cy += lineH;
+        text("  reeling up!", lx, cy);
+        cy += lineH + 8;
 
         // 分割线
         stroke(0, 120, 180, 180);
@@ -1034,13 +1048,15 @@ class LevelManager {
         fill(190, 230, 255);
         textStyle(NORMAL);
         // 【修复】左右排列太长会超出边界，改为分4行上下排列
-        text("Small Fish: 30-150 pts", lx, cy);
+        text("Small Fish: 60-90 pts", lx, cy);
         cy += lineH;
-        text("Big Fish: 250-600 pts", lx, cy);
+        text("Big Fish / Angler: 220-800 pts", lx, cy);
         cy += lineH;
-        text("Treasure: 100-500 pts", lx, cy);
+        text("Treasure: 190-280 pts", lx, cy);
         cy += lineH;
-        text("Bone/Stone: 0 pts", lx, cy);
+        text("Stone: 70-110 pts", lx, cy);
+        cy += lineH;
+        text("Fish bone: 0 pts (20-50 w/ Collector)", lx, cy);
 
         pop();
     }
