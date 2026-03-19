@@ -34,17 +34,19 @@ class GameManager {
         const list = [];
         for (let i = 1; i <= 43; i++) {
             const idx = i - 1;
+            const names = GameManager.FISH_NAMES[`fish${i}`];
             list.push({
                 key: `fish${i}`,
-                label: `Fish ${i}`,
+                label: names ? names.en : `Fish ${i}`,
                 getImg: () => (typeof imgSmallFishes !== 'undefined' && imgSmallFishes[idx]) ? imgSmallFishes[idx][0] : null,
             });
         }
         for (let i = 44; i <= 64; i++) {
             const idx = i - 44;
+            const names = GameManager.FISH_NAMES[`fish${i}`];
             list.push({
                 key: `fish${i}`,
-                label: `Fish ${i}`,
+                label: names ? names.en : `Fish ${i}`,
                 getImg: () => (typeof imgBigFishes !== 'undefined' && imgBigFishes[idx]) ? imgBigFishes[idx][0] : null,
             });
         }
@@ -54,6 +56,77 @@ class GameManager {
             getImg: () => (typeof anglerFishImgs !== 'undefined' && anglerFishImgs.length > 0) ? anglerFishImgs[0] : null,
         });
         return list;
+    }
+
+    // Fish names: fish1–fish43 (by asset index), for hover tooltip in gallery
+    static get FISH_NAMES() {
+        return {
+            fish1: { en: 'European Anchovy', zh: '欧洲鳀鱼' },
+            fish2: { en: 'Neon Tetra', zh: '霓虹脂鲤 / 红绿灯鱼' },
+            fish3: { en: 'Ocellaris Clownfish', zh: '眼斑双锯鱼 / 小丑鱼' },
+            fish4: { en: 'Purple Firefish', zh: '紫雷达' },
+            fish5: { en: 'Green Chromis', zh: '青魔' },
+            fish6: { en: 'Yellowtail Damselfish', zh: '黄尾雀鲷' },
+            fish7: { en: 'Ribbon Eel', zh: '黑身管鼻鯙 / 彩带鳗' },
+            fish8: { en: 'Royal Gramma', zh: '皇家神仙' },
+            fish9: { en: 'Pilot Fish', zh: '领航鱼' },
+            fish10: { en: 'Antarctic Krill', zh: '南极磷虾' },
+            fish11: { en: 'Sea Goldie', zh: '海金鱼' },
+            fish12: { en: 'Blue Tang', zh: '副刺尾鱼 / 蓝吊' },
+            fish13: { en: 'Yellow Tang', zh: '黄高鳍刺尾鱼 / 黄三角' },
+            fish14: { en: 'Seahorse', zh: '海马' },
+            fish15: { en: 'Sea Urchin', zh: '海胆' },
+            fish16: { en: 'Lemonpeel Angelfish', zh: '柠檬神仙' },
+            fish17: { en: 'Asian Arowana', zh: '亚洲龙鱼 / 金龙鱼' },
+            fish18: { en: 'Common Squid', zh: '普通鱿鱼' },
+            fish19: { en: 'Channel Catfish', zh: '斑点叉尾鮰 / 鲶鱼' },
+            fish20: { en: 'Flounder', zh: '比目鱼' },
+            fish21: { en: 'Atlantic Mackerel', zh: '大西洋鲭鱼' },
+            fish22: { en: 'Red Snapper', zh: '红笛鲷' },
+            fish23: { en: 'Goldfish', zh: '金鱼' },
+            fish24: { en: 'Porcupinefish', zh: '密斑刺鲀' },
+            fish25: { en: 'Red Lionfish', zh: '红狮子鱼 / 蓑鲉' },
+            fish26: { en: 'Red-bellied Piranha', zh: '红腹食人鱼' },
+            fish27: { en: 'Swordfish', zh: '剑鱼' },
+            fish28: { en: 'Axolotl', zh: '美西螈 / 六角恐龙' },
+            fish29: { en: 'Common Octopus', zh: '普通章鱼' },
+            fish30: { en: 'Flying Fish', zh: '飞鱼' },
+            fish31: { en: 'Coral Grouper', zh: '豹纹鳃棘鲈 / 东星斑' },
+            fish32: { en: 'Green Pufferfish', zh: '绿河鲀' },
+            fish33: { en: 'Emperor Angelfish', zh: '主刺盖鱼 / 国王神仙' },
+            fish34: { en: 'Moorish Idol', zh: '镰鱼 / 角蝶' },
+            fish35: { en: 'Parrotfish', zh: '鹦嘴鱼' },
+            fish36: { en: 'Deep Sea Anglerfish', zh: '深海𩽾𩾌鱼' },
+            fish37: { en: 'Orange Roughy', zh: '长寿鱼 / 红胸燧鲷' },
+            fish38: { en: 'Footballfish', zh: '足球鱼' },
+            fish39: { en: 'Wrasse', zh: '隆头鱼' },
+            fish40: { en: 'Great Barracuda', zh: '大鳞魣 / 海狼鱼' },
+            fish41: { en: 'Yellow Boxfish', zh: '粒突箱鲀' },
+            fish42: { en: 'Golden Trevally', zh: '黄鹂无齿鲹' },
+            fish43: { en: 'Flame Angelfish', zh: '火焰神仙鱼' },
+            fish44: { en: 'Coelacanth', zh: '腔棘鱼 / 活化石' },
+            fish45: { en: 'Great White Shark', zh: '大白鲨' },
+            fish46: { en: 'Manta Ray', zh: '巨型鬼蝠魟 / 魔鬼鱼' },
+            fish47: { en: 'Laser Shark', zh: '镭射鲨鱼 / 机械改造鲨' },
+            fish48: { en: 'Arapaima', zh: '巨骨舌鱼 / 海象鱼' },
+            fish49: { en: 'Humphead Wrasse', zh: '苏眉鱼' },
+            fish50: { en: 'Ocean Sunfish', zh: '翻车鱼 / 曼波鱼' },
+            fish51: { en: 'Giant Mekong Catfish', zh: '湄公河巨鲶' },
+            fish52: { en: 'Purple Queen Anthias', zh: '紫皇后鱼' },
+            fish53: { en: 'Mahi-Mahi', zh: '鲯鳅 / 鬼头刀' },
+            fish54: { en: 'Leafy Seadragon', zh: '叶海龙' },
+            fish55: { en: 'Giant Trevally', zh: '珍鲹 / GT' },
+            fish56: { en: 'Goliath Grouper', zh: '伊氏石斑鱼' },
+            fish57: { en: 'Red Coelacanth', zh: '红色腔棘鱼' },
+            fish58: { en: 'Green Coelacanth', zh: '绿色腔棘鱼' },
+            fish59: { en: 'Hairy Angler', zh: '多毛鮟鱇' },
+            fish60: { en: 'Giant Pufferfish', zh: '巨型河鲀' },
+            fish61: { en: 'Bluefin Tuna', zh: '蓝鳍金枪鱼' },
+            fish62: { en: 'Fangtooth', zh: '尖牙鱼' },
+            fish63: { en: 'Lancetfish', zh: '帆蜥鱼' },
+            fish64: { en: 'Viperfish', zh: '毒蛇鱼' },
+            'Angler Fish': { en: 'Angler Fish', zh: '鮟鱇鱼' },
+        };
     }
 
     _mergeFishCaught() {
@@ -1146,6 +1219,11 @@ changeState(newState) {
         const startX = panelX + 24 + cellW / 2;
         const startY = panelY + 52 + cellH / 2;
 
+        let hoveredIndex = -1;
+        const cellPad = 4;
+        const cellRectW = cellW - 8;
+        const cellRectH = cellH - 8;
+
         for (let i = 0; i < types.length; i++) {
             const t = types[i];
             const count = catchHistory[t.key] || 0;
@@ -1155,9 +1233,20 @@ changeState(newState) {
             const cx = startX + col * cellW;
             const cy = startY + row * cellH;
 
+            const cellLeft = cx - cellW / 2 + cellPad;
+            const cellTop = cy - cellH / 2 + cellPad;
+            if (
+                mouseX >= cellLeft &&
+                mouseX <= cellLeft + cellRectW &&
+                mouseY >= cellTop &&
+                mouseY <= cellTop + cellRectH
+            ) {
+                hoveredIndex = i;
+            }
+
             if (caught) fill(25, 90, 70);
             else fill(40, 40, 55);
-            rect(cx - cellW / 2 + 4, cy - cellH / 2 + 4, cellW - 8, cellH - 8, 8);
+            rect(cellLeft, cellTop, cellRectW, cellRectH, 8);
 
             const img = t.getImg();
             if (img && img.width) {
@@ -1182,6 +1271,42 @@ changeState(newState) {
             } else {
                 fill(120, 120, 130);
                 text('?', cx, cy + 22);
+            }
+        }
+
+        // Hover tooltip: show English + Chinese names in small font
+        if (hoveredIndex >= 0) {
+            const t = types[hoveredIndex];
+            const names = GameManager.FISH_NAMES[t.key];
+            if (names) {
+                const col = hoveredIndex % cols;
+                const row = floor(hoveredIndex / cols);
+                const cx = startX + col * cellW;
+                const cy = startY + row * cellH;
+
+                textSize(10);
+                const tipW = max(textWidth(names.en), textWidth(names.zh)) + 16;
+                const tipH = 36;
+                let tipX = cx - tipW / 2;
+                let tipY = cy - cellH / 2 - tipH - 8;
+
+                if (tipX < panelX + 8) tipX = panelX + 8;
+                if (tipX + tipW > panelX + panelW - 8) tipX = panelX + panelW - tipW - 8;
+                if (tipY < panelY + 8) tipY = cy + cellH / 2 + 8;
+
+                fill(10, 35, 65, 235);
+                stroke(80, 160, 220);
+                strokeWeight(1);
+                rect(tipX, tipY, tipW, tipH, 6);
+                noStroke();
+
+                fill(255);
+                textSize(10);
+                textAlign(CENTER, CENTER);
+                text(names.en, tipX + tipW / 2, tipY + 10);
+                fill(200, 230, 255);
+                textSize(9);
+                text(names.zh, tipX + tipW / 2, tipY + 26);
             }
         }
 
