@@ -269,7 +269,7 @@ class KoiFish extends BaseFish {
         let val = random([777, 888]);
         // 随机从屏幕左边(-100)或右边(width+100)生成
         let spawnX = random() > 0.5 ? -100 : width + 100;
-        super(spawnX , y, "KoiFish", val, 3, 70);  // 体积，重量略大于小鱼
+        super(spawnX , y, "KoiFish", val, 3, 60);  // 体积，重量设定
 
         this.playedOutSfx = false;  // 退场音效判定
 

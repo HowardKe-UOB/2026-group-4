@@ -88,7 +88,12 @@ class LevelManager {
         this.fishCaught = {};
         this.spawnItems();
         this.floatingScores = [];
-        this.koiSpawned = false; // 【新增】：初始化标记位，防止逻辑混乱
+        this.koiSpawned = false;
+
+        // 每关将有小概率自然生成一条锦鲤
+        this.hasRandomKoi = random() < 0.1; // 10% 的几率生成
+        this.randomKoiTime = random(8, 16);  // 8~16秒随机出现
+        this.randomKoiSpawned = false;       // 标记自然生成的锦鲤是否已出现
 
         // UI颜色缓存
         this.cPrimary = color(0, 200, 150);
@@ -119,7 +124,7 @@ class LevelManager {
         // ═══════════════════════════════════════════════════════════
         const SAFE_MARGIN = 40;
         const LAYER_SHALLOW = { minY: 320, maxY: 380 }; // 浅层：小鱼活动区
-        const LAYER_MID = { minY: 350, maxY: 500 }; // 中层：大鱼 + 障碍物
+        const LAYER_MID = { minY: 360, maxY: 500 }; // 中层：大鱼 + 障碍物
         const LAYER_DEEP = { minY: 480, maxY: height - 20 }; // 深层：宝箱 + 珍珠 + 石头
 
         // 分类独立上限，不再使用全局 MAX_ITEMS 硬性总上限
@@ -486,6 +491,22 @@ class LevelManager {
             this.player.hasLuckyCoin = false; // 消耗掉道具
             if (koiInSfx && !koiInSfx.isPlaying()) {
                 koiInSfx.play();  // 入场音效
+            }
+        }
+
+        // 只有当玩家本关没有购买 Lucky Coin 时，才有小概率随机生成锦鲤
+        if (this.hasRandomKoi && !this.randomKoiSpawned && timePassed >= this.randomKoiTime) {
+            if (!this.player.hasLuckyCoin) { 
+                let randomKoi = new KoiFish(random(375, 475));
+                this.activeItems.push(randomKoi);
+                this.randomKoiSpawned = true;
+                
+                if (koiInSfx && !koiInSfx.isPlaying()) {
+                    koiInSfx.play();
+                }
+            } else {
+                // 如果买了道具，就直接废弃本关的随机锦鲤机会
+                this.randomKoiSpawned = true; 
             }
         }
 
