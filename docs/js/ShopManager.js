@@ -241,10 +241,16 @@ class ShopManager {
             textStyle(BOLD);
             if(hoveredItem.isDiscounted){
                 fill(255, 50, 50);
-                textSize(16);
                 textStyle(BOLD);
+                // Fishbone Collector 打折时名称较长，缩小字体避免溢出
+                if (hoveredItem.name === "Fishbone Collector") {
+                    textSize(11);
+                } else {
+                    textSize(16);
+                }
                 text(hoveredItem.name + " - $" + hoveredItem.costPrice + " 50%OFF!", width / 2, infoY - 55);
             }else{
+                textSize(16);
                 text(hoveredItem.name + " - $" + hoveredItem.costPrice, width / 2, infoY - 55);
             }
 
