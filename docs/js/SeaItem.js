@@ -159,7 +159,7 @@ class Treasure extends SeaItem {
 class Pearl extends SeaItem {
     constructor(x, y) {
         // 高分值，极轻，但碰撞体积极小
-        let val = floor(random(400, 600));
+        let val = 1000;
         super(x, y, "Pearl", val, 1.5);
         this.width = 22;
         this.height = 22;
@@ -174,12 +174,22 @@ class Pearl extends SeaItem {
         push();
         translate(this.position.x, this.position.y);
 
-        // 外层光晕（脉冲呼吸效果）
+        // 外层光晕（径向渐变，与鮟鱇鱼同款柔和射灯效果）
         let pulse = 0.2 * sin(frameCount * 0.06 + this.glowPhase);
-        let glowSize = this.width * (1.8 + pulse);
-        noStroke();
-        fill(220, 230, 255, 40);
-        ellipse(0, 0, glowSize, glowSize);
+        let r = this.glowRadius * (1 + pulse * 0.5);
+        {
+            let ctx = drawingContext;
+            ctx.save();
+            let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
+            grad.addColorStop(0,   'rgba(220,230,255,0.38)');
+            grad.addColorStop(0.5, 'rgba(200,215,255,0.16)');
+            grad.addColorStop(1,   'rgba(180,200,255,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
 
         imageMode(CENTER);
         if (this.sprite) {
@@ -294,24 +304,108 @@ class KoiFish extends BaseFish {
             }
         }
     }
+
     // 重写绘制逻辑：加入动画和翻转
     draw() {
         push();
         translate(this.position.x, this.position.y);
-        // 如果鱼默认是朝右的，当它向左游(direction === -1)时，水平翻转
         if (this.direction === -1) {
             scale(-1, 1);
         }
         imageMode(CENTER);
-        // 实现 2 帧动画的切换 (每 15 帧换一次图)
         if (typeof koiFishImgs !== "undefined" && koiFishImgs.length === 2) {
             let frame = Math.floor(frameCount / 15) % 2;
             image(koiFishImgs[frame], 0, 0, this.width, this.height);
         } else {
-            // 兜底方案：如果没有图片，画个金色的椭圆
             fill(255, 215, 0);
             ellipse(0, 0, this.width, this.height * 0.5);
         }
+        pop();
+        this.drawScoreText();
+    }
+}
+
+// 游动的贝壳：继承 BaseFish 复用 swim() 逻辑，高价值可见目标
+class SwimmingPearlShell extends BaseFish {
+    constructor(x, y) {
+        super(x, y, "Moving Shell", 1000, 2.5, 42); // 缩小体积：60 → 42
+        this.speed = random(2.5, 3.8);
+        // 动画帧序列：1-2-3-4-3-2-1（ping-pong 循环）
+        this._framePingPong = [0, 1, 2, 3, 2, 1];
+        this._frameInterval = 8; // 每 8 帧切换一次图
+        // 深海模式发光参数（与 Pearl 保持一致风格）
+        this.glowPhase = random(TWO_PI);
+        this.glowRadius = 55;
+    }
+
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+
+        // 深海光晕（径向渐变，与鮟鱇鱼同款柔和射灯效果）
+        let pulse = 0.2 * sin(frameCount * 0.06 + this.glowPhase);
+        let r = this.glowRadius * (1 + pulse * 0.5);
+        {
+            let ctx = drawingContext;
+            ctx.save();
+            let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
+            grad.addColorStop(0,   'rgba(200,240,255,0.32)');
+            grad.addColorStop(0.5, 'rgba(180,230,255,0.14)');
+            grad.addColorStop(1,   'rgba(160,220,255,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        if (this.direction === -1) {
+            scale(-1, 1);
+        }
+
+        imageMode(CENTER);
+
+        const hasImgs = typeof pearlShellImgs !== "undefined" &&
+                        pearlShellImgs.length > 0 &&
+                        pearlShellImgs[0];
+
+        if (hasImgs) {
+            let seqIndex = Math.floor(frameCount / this._frameInterval) %
+                           this._framePingPong.length;
+            let frameIdx = this._framePingPong[seqIndex];
+            let img = pearlShellImgs[frameIdx];
+            if (img) image(img, 0, 0, this.width, this.height);
+        } else {
+            // Fallback：代码绘制打开的贝壳 + 发光珍珠
+            noStroke();
+
+            // 下半贝壳
+            fill(220, 190, 150);
+            arc(0, 5, this.width, this.height * 0.7, 0, PI);
+
+            // 上半贝壳（向上打开）
+            fill(240, 210, 170);
+            arc(0, -8, this.width, this.height * 0.65, PI, TWO_PI);
+
+            // 贝壳纹路
+            stroke(180, 150, 110, 160);
+            strokeWeight(1);
+            for (let i = -1; i <= 1; i++) {
+                line(i * 10, -18, i * 12, 10);
+            }
+            noStroke();
+
+            // 珍珠光晕
+            fill(220, 230, 255, 60);
+            ellipse(0, 0, 22 + pulse * 8, 22 + pulse * 8);
+
+            // 珍珠主体
+            fill(240, 245, 255);
+            ellipse(0, 0, 14, 14);
+            fill(255, 255, 255, 200);
+            ellipse(-2, -3, 5, 4);
+        }
+
         pop();
         this.drawScoreText();
     }

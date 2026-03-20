@@ -252,6 +252,23 @@ class LevelManager {
             }
         }
 
+        // ─── 第四阶段 B：生成游动贝壳（50% 概率，中深水区） ───
+        if (random() < 0.5) {
+            let attempts = 0;
+            while (attempts < 30) {
+                let sx = random(SAFE_MARGIN + 30, width - SAFE_MARGIN - 30);
+                let sy = random(LAYER_MID.minY, LAYER_DEEP.maxY - 40);
+                let shell = new SwimmingPearlShell(sx, sy);
+
+                if (!checkOverlap(shell, dynamicItems, 50)) {
+                    this.activeItems.push(shell);
+                    dynamicItems.push(shell);
+                    break;
+                }
+                attempts++;
+            }
+        }
+
         // ─── 第五阶段：生成大鱼/鮟鱇鱼（独立配额，严格限制在中深水区） ───
         for (let i = 0; i < bigFishCount; i++) {
             let attempts = 0;
@@ -885,6 +902,18 @@ class LevelManager {
                 ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
                 ctx.fill();
             }
+            if (item instanceof SwimmingPearlShell) {
+                let pulse = 0.2 * sin(frameCount * 0.06 + item.glowPhase);
+                let r = item.glowRadius * (1 + pulse);
+                let grad = ctx.createRadialGradient(item.position.x, item.position.y, 0, item.position.x, item.position.y, r);
+                grad.addColorStop(0,   'rgba(0,0,0,0.8)');
+                grad.addColorStop(0.5, 'rgba(0,0,0,0.4)');
+                grad.addColorStop(1,   'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
         ctx.restore();
@@ -1097,6 +1126,8 @@ class LevelManager {
         text("Treasure: 190-280 pts", lx, cy);
         cy += lineH;
         text("Stone: 70-110 pts", lx, cy);
+        cy += lineH;
+        text("Pearl / Moving Shell: 1000 pts", lx, cy);
         cy += lineH;
         text("Fish bone: 0 pts (20-50 w/ Collector)", lx, cy);
 

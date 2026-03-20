@@ -40,6 +40,7 @@ let newhookImg;
 let submarineImg2;
 let newhook2Img;
 let pearlImg;
+let pearlShellImgs = [];
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
 // Press Start 2P加单引号，让浏览器解析
 const pixelFont = "'Press Start 2P'";
@@ -101,6 +102,9 @@ function preload() {
     imgSkeleton = loadImage("assets/Skeleton.png");
     treasureChest = loadImage("assets/Treasure_Chest.png");
     pearlImg = loadImage("assets/pearl.png");
+    for (let i = 1; i <= 4; i++) {
+        pearlShellImgs.push(loadImage(`assets/shell_${i}.png`));
+    }
     nameEntryBgImg = loadImage("assets/deepsea_prospector.png");
     modeSelectBgImg = loadImage("assets/choose_fishing_challenge.png");
     levelFailedImg = loadImage("assets/levelfailed.png");

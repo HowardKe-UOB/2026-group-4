@@ -1031,7 +1031,7 @@ changeState(newState) {
         cy += lineH;
         text("Treasure: 190-280 pts", lx, cy);
         cy += lineH;
-        text("Pearl: 500-800 pts", lx, cy);
+        text("Pearl / Moving Shell: 1000 pts", lx, cy);
         cy += lineH;
         text("  (rare, tiny hitbox!)", lx, cy);
         cy += lineH;
