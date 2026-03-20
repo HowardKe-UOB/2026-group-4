@@ -12,6 +12,7 @@ let cloverImg;
 let fishboneCollectorImg;
 let luckyCoinImg; 
 let koiFishImgs = [];
+let clubcardImg;
 let shopBgImg;
 let titleBgm;
 let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
@@ -53,17 +54,18 @@ function preload() {
     clockImg = loadImage("assets/SandClock.png");
     cloverImg = loadImage("assets/Clover.png");
     fishboneCollectorImg = loadImage("assets/FishboneCollector.png");
-    luckyCoinImg = loadImage('assets/Lucky.png');
-    koiFishImgs.push(loadImage('assets/koifish1.png'));
-    koiFishImgs.push(loadImage('assets/koifish2.png'));
-    koiInSfx = loadSound('assets/KoiIn.mp3');
-    koiOutSfx = loadSound('assets/KoiOut.mp3');
+    luckyCoinImg = loadImage("assets/Lucky.png");
+    koiFishImgs.push(loadImage("assets/koifish1.png"));
+    koiFishImgs.push(loadImage("assets/koifish2.png"));
+    koiInSfx = loadSound("assets/KoiIn.mp3");
+    koiOutSfx = loadSound("assets/KoiOut.mp3");
+    clubcardImg = loadImage("assets/ClubCard.png");
     shopBgImg = loadImage("assets/Shop.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
     boatImg = loadImage("assets/boat.png");
     boatImg2 = loadImage("assets/boat2.png");
-    // 【新增】潜水艇图片（文件不存在时自动使用代码绘制的 fallback）
+    // 潜水艇图片（文件不存在时自动使用代码绘制的 fallback）
     submarineImg = loadImage("assets/submarineImg.png");
     submarineImg2 = loadImage('assets/submarineImg2.png');
     for (let i = 1; i <= 4; i++) {

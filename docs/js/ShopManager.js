@@ -1,6 +1,6 @@
 class ShopManager {
     constructor() {
-        this.resetShop();
+        this.resetShop(1, null);  // 初始化时，因为还没有获取到玩家，传 null 进去
 
         this.goldBoxX = 260;
         this.goldBoxY = 70;
@@ -16,51 +16,57 @@ class ShopManager {
             { x: width / 2 - 120, y: height / 2 - 140 }, // Clover
             { x: width / 2, y: height / 2 - 140 }, // Fishbone Collector
             { x: width / 2 + 180, y: height / 2 + 110 }, // Lucky Coin
+            { x: width / 2 + 120, y: height / 2 - 140 } // Club Card
         ];
 
         this.hitRadius = 60; // 判定范围
     }
 
-    resetShop(levelNum = 1) {
+    resetShop(levelNum = 1, player = null) {
         this.availableItems = [
             new ShopItem(
                 "Strength Potion",
                 225,
                 "A potion can bestow you with magical power!\nPulls items 2x faster.\n[period: 1 level]",
-                levelNum
+                levelNum, player
             ),
             new ShopItem(
                 "Laser Sight",
                 175,
                 "Often miss? Buy Laser Sight now!\nAdd aiming assistance, swing speed -40%.\n[period: 1 level]",
-                levelNum
+                levelNum, player
             ),
             new ShopItem(
                 "Sand Clock",
                 175,
                 "A fisher is never late!\nAdd 8~15 seconds based on level.\n[period: 1 level]",
-                levelNum
+                levelNum, player
             ),
             new ShopItem(
                 "Submarine",
                 10,
                 "Prove to yourself that you have the strength\nand courage to explore the deep sea.\n[Permanent upgrade]",
-                levelNum
+                levelNum, player
             ),
             new ShopItem("Four-Leaf Clover",
-                600,
+                500,
                 "You will encounter rarer treasure!\nTreasures worth 35% more.\n[Permanent upgrade]",
-                levelNum
+                levelNum, player
             ),
             new ShopItem("Fishbone Collector",
-                500,
+                400,
                 "Museum love old fishbone and stone!\nFishbone:$20~$50, Stone value+100%.\n[Permanent upgrade]",
-                levelNum
+                levelNum, player
             ),
             new ShopItem("Lucky Coin",
                 300,
                 "A rare Koi Fish will appear\nat 10s in the next level!\n[period: 1 level]",
-                levelNum
+                levelNum, player
+            ),
+            new ShopItem("Club Card", 
+                10, 
+                "Exclusive member benefits!\nGet 10%~30% off all items.\n[Permanent upgrade]",
+                levelNum, player
             )
         ];
     }
@@ -209,13 +215,21 @@ class ShopManager {
             ) {
                 image(luckyCoinImg, pos.x, pos.y, imgSize, imgSize);
             }
+            else if (
+                item.name === "Club Card" && 
+                typeof clubcardImg !== "undefined" && 
+                clubcardImg
+            ) {
+                image(clubcardImg, pos.x, pos.y, imgSize, imgSize);
+            }
             pop();
 
             let isSold =
                 item.purchased ||
                 (item.name === "Submarine" && player.hasSubmarine) ||
                 (item.name === "Four-Leaf Clover" && player.hasClover) ||
-                (item.name === "Fishbone Collector" && player.hasFishboneCollector);
+                (item.name === "Fishbone Collector" && player.hasFishboneCollector) ||
+                (item.name === "Club Card" && player.hasClubCard);
             if (isSold) {
                 push();
                 fill(0, 0, 0, 180);
@@ -243,8 +257,8 @@ class ShopManager {
                 fill(255, 50, 50);
                 textStyle(BOLD);
                 // Fishbone Collector 打折时名称较长，缩小字体避免溢出
-                if (hoveredItem.name === "Fishbone Collector") {
-                    textSize(11);
+                if (hoveredItem.name === "Fishbone Collector" || hoveredItem.name === "Four-Leaf Clover") {
+                    textSize(14);
                 } else {
                     textSize(16);
                 }
@@ -260,15 +274,18 @@ class ShopManager {
             fill(100, 80, 60);
             text(hoveredItem.description, width / 2, infoY - 20);
 
+            // 如果触发了会员卡折扣，显示橘色提示文字
+            let promptY = infoY + 20;
+            if (hoveredItem.clubDiscountText !== "") {
+                fill(230, 120, 0); // 橘色
+                textSize(12);
+                text(hoveredItem.clubDiscountText, width / 2, infoY + 10);
+                promptY += 10; // 把购买提示稍微往下一点，防止重叠
+            }
+
             // 购买提示
             textSize(16);
             textStyle(NORMAL);
-            let promptY = infoY + 20;
-
-            // 【旧版】双人模式：用两人合计判断是否够钱
-            // let canAfford = playerMode === PlayerMode.TWO_PLAYER
-            //     ? (player.p1Score + player.p2Score >= hoveredItem.costPrice)
-            //     : (player.totalScore >= hoveredItem.costPrice);
 
             // 双人模式：现在只看共享的 totalScore 是否够钱
             let canAfford = player.totalScore >= hoveredItem.costPrice;
@@ -277,7 +294,8 @@ class ShopManager {
                 hoveredItem.purchased ||
                 (hoveredItem.name === "Submarine" && player.hasSubmarine) ||
                 (hoveredItem.name === "Four-Leaf Clover" && player.hasClover) ||
-                (hoveredItem.name === "Fishbone Collector" && player.hasFishboneCollector);
+                (hoveredItem.name === "Fishbone Collector" && player.hasFishboneCollector) ||
+                (hoveredItem.name === "Club Card" && player.hasClubCard);
 
             if (alreadyOwned) {
                 fill(150, 0, 0);
@@ -289,17 +307,6 @@ class ShopManager {
                 // 因为是共享钱包，提示统一改为 Click to buy 即可
                 fill(35, 140, 35);
                 text("Click to buy", width / 2, promptY);
-                // 【旧版】双人模式提示从谁扣款
-                // if (playerMode === PlayerMode.TWO_PLAYER) {
-                //     fill(35, 140, 35);
-                //     if (player.p1Score >= hoveredItem.costPrice) {
-                //         text("Click to buy (P1 pays)", width / 2, promptY);
-                //     } else {
-                //         text("Click to buy (P1+" + (hoveredItem.costPrice - player.p1Score) + " from P2)", width / 2, promptY);
-                //     }
-                // } else {
-                //     fill(35, 140, 35);
-                //     text("Click to buy", width / 2, promptY);
             }
             pop();
         }
@@ -331,7 +338,8 @@ class ShopManager {
                     item.purchased ||
                     (item.name === "Submarine" && player.hasSubmarine) ||
                     (item.name === "Four-Leaf Clover" && player.hasClover) ||
-                    (item.name === "Fishbone Collector" && player.hasFishboneCollector);
+                    (item.name === "Fishbone Collector" && player.hasFishboneCollector) ||
+                    (item.name === "Club Card" && player.hasClubCard);
 
                 if (!alreadyOwned && canAfford) {
                     // 双人：优先扣 P1，不足从 P2 补；单人：原逻辑
@@ -345,6 +353,19 @@ class ShopManager {
                         if (item.name === "Submarine") {
                             player.hasSubmarine = true;
                         }
+                        // 购买会员卡后，立即标记玩家拥有会员卡
+                        else if (item.name === "Club Card") {
+                            player.hasClubCard = true;
+                            
+                            // 让当前店里的其他商品立即享受折扣
+                            this.availableItems.forEach(shopItem => {
+                                if (shopItem !== item && !shopItem.purchased) {
+                                    // 立即重新计算该商品的折扣价
+                                    shopItem.applyClubCardDiscount(player);
+                                }
+                            });
+                        }
+
                         if (buySfx && buySfx.isPlaying()) {
                             buySfx.stop();
                         }

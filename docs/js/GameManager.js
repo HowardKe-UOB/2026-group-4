@@ -173,6 +173,7 @@ class GameManager {
         this.player.hasSubmarine = false;  // 避免沿用上一局的潜水艇
         this.player.hasClover = false;  // 避免沿用上一局的四叶草
         this.player.hasFishboneCollector = false;   // 避免沿用上一局的鱼骨收藏书
+        this.player.hasClubCard = false;  // 避免沿用上一局的会员卡
         this.gameSessionFishCaught = {};
         this.levelNum = 1;
         const buttonOverlay = document.getElementById('button-overlay');
@@ -606,7 +607,7 @@ changeState(newState) {
                     let result = this.levelManager.update();
                     if (result === 'PASS') {
                         this._mergeFishCaught();
-                        this.shopManager.resetShop(this.levelNum);
+                        this.shopManager.resetShop(this.levelNum, this.player);
                         this.changeState(GameState.SHOP);
                     } else if (result === 'FAIL') {
                         this._mergeFishCaught();
@@ -1734,7 +1735,7 @@ changeState(newState) {
                     this.levelNum++;
                     this.startLevel();
                     this.player.consumeItems(this.levelManager);
-                    this.shopManager.resetShop(this.levelNum);
+                    this.shopManager.resetShop(this.levelNum, this.player);
                 }
                 break;
             }

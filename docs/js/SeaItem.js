@@ -155,7 +155,7 @@ class Treasure extends SeaItem {
     }
 }
 
-// ─── 珍珠：深海底层稀有高价值物品，极小体积，极难抓取 ───
+// 珍珠：深海底层稀有高价值物品，极小体积，极难抓取
 class Pearl extends SeaItem {
     constructor(x, y) {
         // 高分值，极轻，但碰撞体积极小
@@ -259,7 +259,7 @@ class KoiFish extends BaseFish {
         let val = random([777, 888]);
         // 随机从屏幕左边(-100)或右边(width+100)生成
         let spawnX = random() > 0.5 ? -100 : width + 100;
-        super(spawnX , y, "KoiFish", val, 4, 70);  // 体积，重量略大于小鱼
+        super(spawnX , y, "KoiFish", val, 3, 70);  // 体积，重量略大于小鱼
 
         this.playedOutSfx = false;  // 退场音效判定
 
@@ -272,7 +272,7 @@ class KoiFish extends BaseFish {
             this.height = targetHeight;
         }
 
-        this.speed = 3; // 移速较快
+        this.speed = 2.33; // 移速较快
         this.direction = spawnX < 0 ? 1 : -1; // 在左边就向右游，在右边就向左游
     }
 

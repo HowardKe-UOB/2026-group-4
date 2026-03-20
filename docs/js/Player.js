@@ -9,6 +9,7 @@ class Player {
         this.hasClover = false;
         this.hasFishboneCollector = false;
         this.hasLuckyCoin = false;
+        this.hasClubCard = false;
     }
 
     addScore(amount) {
@@ -40,23 +41,6 @@ class Player {
     // 双人购买逻辑：改为只扣除共享总金额 (totalScore)，P1和P2的历史记录不减少
     purchaseItemTwoPlayer(shopItem) {
         return this.purchaseItem(shopItem);
-        // 旧版双人购买逻辑，先扣p1，再扣p2
-        // const cost = shopItem.costPrice;
-        // if (this.p1Score + this.p2Score < cost) {
-        //     return false; // 两人合计仍不够
-        // }
-        // if (this.p1Score >= cost) {
-        //     // P1 余额充足，全从 P1 扣
-        //     this.p1Score -= cost;
-        // } else {
-        //     // P1 余额不足，先清空 P1，剩余从 P2 扣
-        //     let remainder = cost - this.p1Score;
-        //     this.p1Score = 0;
-        //     this.p2Score -= remainder;
-        // }
-        // this.totalScore -= cost;
-        // this.inventory.push(shopItem);
-        // return true;
     }
 
     consumeItems(levelManager) {
