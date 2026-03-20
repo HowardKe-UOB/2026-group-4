@@ -975,7 +975,7 @@ class LevelManager {
     }
 
     _drawHelpPanel(btnY) {
-        const panelW = 400;
+        const panelW = 430;
         const panelH = 600;
         const panelX = width - panelW - 15;
         const panelY = btnY - panelH - 15;
