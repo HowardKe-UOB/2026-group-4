@@ -15,6 +15,7 @@ class ShopManager {
             { x: width / 2 + 300, y: height / 2 + 110 }, // Submarine
             { x: width / 2 - 120, y: height / 2 - 140 }, // Clover
             { x: width / 2, y: height / 2 - 140 }, // Fishbone Collector
+            { x: width / 2 + 180, y: height / 2 + 110 }, // Lucky Coin
         ];
 
         this.hitRadius = 60; // 判定范围
@@ -54,6 +55,11 @@ class ShopManager {
             new ShopItem("Fishbone Collector",
                 500,
                 "Museum love old fishbone and stone!\nFishbone:$20~$50, Stone value+100%.\n[Permanent upgrade]",
+                levelNum
+            ),
+            new ShopItem("Lucky Coin",
+                10,
+                "A rare Koi Fish will appear\nat 10s in the next level!\n[period: 1 level]",
                 levelNum
             )
         ];
@@ -195,6 +201,13 @@ class ShopManager {
                 fishboneCollectorImg
             ) {
                 image(fishboneCollectorImg, pos.x, pos.y, imgSize, imgSize);
+            }
+            else if (
+                item.name === "Lucky Coin" && 
+                typeof luckyCoinImg !== "undefined" && 
+                luckyCoinImg
+            ) {
+                image(luckyCoinImg, pos.x, pos.y, imgSize, imgSize);
             }
             pop();
 

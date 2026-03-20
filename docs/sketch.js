@@ -10,6 +10,8 @@ let laserImg;
 let clockImg;
 let cloverImg;
 let fishboneCollectorImg;
+let luckyCoinImg; 
+let koiFishImgs = [];
 let shopBgImg;
 let titleBgm;
 let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
@@ -50,6 +52,9 @@ function preload() {
     clockImg = loadImage("assets/SandClock.png");
     cloverImg = loadImage("assets/Clover.png");
     fishboneCollectorImg = loadImage("assets/FishboneCollector.png");
+    luckyCoinImg = loadImage('assets/Lucky.png');
+    koiFishImgs.push(loadImage('assets/koifish1.png'));
+    koiFishImgs.push(loadImage('assets/koifish2.png'));
     shopBgImg = loadImage("assets/Shop.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");

@@ -8,6 +8,7 @@ class Player {
         this.hasSubmarine = false;
         this.hasClover = false;
         this.hasFishboneCollector = false;
+        this.hasLuckyCoin = false;
     }
 
     addScore(amount) {

@@ -65,5 +65,10 @@ class ShopItem {
         if (this.name === "Fishbone Collector") {
             levelManager.player.hasFishboneCollector = true;
         }
+
+        // 【新增】：幸运金币效果，确保关卡管理器能识别到
+        if (this.name === "Lucky Coin") {
+            levelManager.player.hasLuckyCoin = true; 
+        }
     }
 }

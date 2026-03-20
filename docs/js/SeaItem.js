@@ -158,8 +158,8 @@ class Treasure extends SeaItem {
 // ─── 珍珠：深海底层稀有高价值物品，极小体积，极难抓取 ───
 class Pearl extends SeaItem {
     constructor(x, y) {
-        // 高分值（500-800），极轻（容易拉上来），但碰撞体积极小
-        let val = floor(random(500, 800));
+        // 高分值，极轻，但碰撞体积极小
+        let val = floor(random(400, 600));
         super(x, y, "Pearl", val, 1.5);
         this.width = 22;
         this.height = 22;
@@ -247,6 +247,55 @@ class Stone extends SeaItem {
             );
         }
 
+        pop();
+        this.drawScoreText();
+    }
+}
+
+// 后期可选：锦鲤移出屏幕后删除
+class KoiFish extends BaseFish {
+    constructor(y) {
+        // 参数
+        let val = random([777, 888]);
+        // 随机从屏幕左边(-100)或右边(width+100)生成
+        let spawnX = random() > 0.5 ? -100 : width + 100;
+        super(spawnX , y, "KoiFish", val, 4, 70);  // 体积，重量略大于小鱼
+
+        if (typeof koiFishImgs !== "undefined" && koiFishImgs.length > 0 && koiFishImgs[0]) {
+            let img = koiFishImgs[0];
+            let targetWidth = 70; 
+            let targetHeight = targetWidth * (img.height / img.width);
+            // 重新赋值高宽
+            this.width = targetWidth;
+            this.height = targetHeight;
+        }
+
+        this.speed = 3; // 移速较快
+        this.direction = spawnX < 0 ? 1 : -1; // 在左边就向右游，在右边就向左游
+    }
+
+    // 重写游动逻辑：一直往前游，不碰壁回头
+    swim() {
+        this.position.x += this.speed * this.direction;
+    }
+    // 重写绘制逻辑：加入动画和翻转
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+        // 如果鱼默认是朝右的，当它向左游(direction === -1)时，水平翻转
+        if (this.direction === -1) {
+            scale(-1, 1);
+        }
+        imageMode(CENTER);
+        // 实现 2 帧动画的切换 (每 15 帧换一次图)
+        if (typeof koiFishImgs !== "undefined" && koiFishImgs.length === 2) {
+            let frame = Math.floor(frameCount / 15) % 2;
+            image(koiFishImgs[frame], 0, 0, this.width, this.height);
+        } else {
+            // 兜底方案：如果没有图片，画个金色的椭圆
+            fill(255, 215, 0);
+            ellipse(0, 0, this.width, this.height * 0.5);
+        }
         pop();
         this.drawScoreText();
     }

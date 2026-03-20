@@ -458,9 +458,20 @@ class LevelManager {
                 if (shark.done) this.sharks.splice(i, 1);
             }
         }
+        // 锦鲤
+        let timePassed = this.timeLimit - this.timeRemaining;
+        // 关卡内10s后生成锦鲤
+        if (this.player.hasLuckyCoin && timePassed >= 10 && !this.koiSpawned) {
+            let koi = new KoiFish(random(350, 450));  // 生成高度350~450，中浅层区
+            this.activeItems.push(koi);
+            this.koiSpawned = true; // 标记本关已生成
+            this.player.hasLuckyCoin = false; // 消耗掉道具
+            // 后期增加：相关音效
+        }
 
         return this.checkWinCondition();
     }
+    
 
     checkWinCondition() {
         if (this.timeRemaining <= 0) {
