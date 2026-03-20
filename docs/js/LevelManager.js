@@ -88,6 +88,7 @@ class LevelManager {
         this.fishCaught = {};
         this.spawnItems();
         this.floatingScores = [];
+        this.koiSpawned = false; // 【新增】：初始化标记位，防止逻辑混乱
 
         // UI颜色缓存
         this.cPrimary = color(0, 200, 150);
@@ -462,11 +463,13 @@ class LevelManager {
         let timePassed = this.timeLimit - this.timeRemaining;
         // 关卡内10s后生成锦鲤
         if (this.player.hasLuckyCoin && timePassed >= 10 && !this.koiSpawned) {
-            let koi = new KoiFish(random(350, 450));  // 生成高度350~450，中浅层区
+            let koi = new KoiFish(random(375, 475));  // 生成高度，中浅层区
             this.activeItems.push(koi);
             this.koiSpawned = true; // 标记本关已生成
             this.player.hasLuckyCoin = false; // 消耗掉道具
-            // 后期增加：相关音效
+            if (koiInSfx && !koiInSfx.isPlaying()) {
+                koiInSfx.play();  // 入场音效
+            }
         }
 
         return this.checkWinCondition();

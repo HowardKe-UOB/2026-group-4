@@ -16,6 +16,7 @@ let shopBgImg;
 let titleBgm;
 let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
 let buySfx;
+let koiInSfx, koiOutSfx;  // 锦鲤音效
 let catchSfx;    // 抓鱼抓中音效
 let ballCatchSfx; // 钩子碰到鱼的音效
 let sharkStolenSfx; // 鲨鱼偷走物品的音效
@@ -55,6 +56,8 @@ function preload() {
     luckyCoinImg = loadImage('assets/Lucky.png');
     koiFishImgs.push(loadImage('assets/koifish1.png'));
     koiFishImgs.push(loadImage('assets/koifish2.png'));
+    koiInSfx = loadSound('assets/KoiIn.mp3');
+    koiOutSfx = loadSound('assets/KoiOut.mp3');
     shopBgImg = loadImage("assets/Shop.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");

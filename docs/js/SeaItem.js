@@ -261,6 +261,8 @@ class KoiFish extends BaseFish {
         let spawnX = random() > 0.5 ? -100 : width + 100;
         super(spawnX , y, "KoiFish", val, 4, 70);  // 体积，重量略大于小鱼
 
+        this.playedOutSfx = false;  // 退场音效判定
+
         if (typeof koiFishImgs !== "undefined" && koiFishImgs.length > 0 && koiFishImgs[0]) {
             let img = koiFishImgs[0];
             let targetWidth = 70; 
@@ -274,9 +276,23 @@ class KoiFish extends BaseFish {
         this.direction = spawnX < 0 ? 1 : -1; // 在左边就向右游，在右边就向左游
     }
 
+    update() {
+        this.swim();
+    }
+
     // 重写游动逻辑：一直往前游，不碰壁回头
     swim() {
         this.position.x += this.speed * this.direction;
+        // 退场音效
+        if (!this.playedOutSfx) {
+            if ((this.direction === 1 && this.position.x > width) || 
+                (this.direction === -1 && this.position.x < 0)) {
+                if (koiOutSfx && !koiOutSfx.isPlaying()){
+                    koiOutSfx.play();
+                } 
+                this.playedOutSfx = true;
+            }
+        }
     }
     // 重写绘制逻辑：加入动画和翻转
     draw() {

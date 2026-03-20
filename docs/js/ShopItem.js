@@ -8,8 +8,8 @@ class ShopItem {
         // 涨价系数
         let inflationRate = 0.10; // 常规商品每关涨价系数
         
-        if (this.name === "Laser Sight") {
-            inflationRate = 0;    // Laser不涨价
+        if (this.name === "Laser Sight" || this.name === "Lucky Coin") {
+            inflationRate = 0;    // Laser，幸运金币不涨价
         } else if (this.name === "Submarine") {
             inflationRate = 0.03; // 潜水艇涨价系数
         } else if (this.name === "Four-Leaf Clover" || this.name === "Fishbone Collector") {

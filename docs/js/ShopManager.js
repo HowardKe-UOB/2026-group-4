@@ -58,7 +58,7 @@ class ShopManager {
                 levelNum
             ),
             new ShopItem("Lucky Coin",
-                10,
+                300,
                 "A rare Koi Fish will appear\nat 10s in the next level!\n[period: 1 level]",
                 levelNum
             )
