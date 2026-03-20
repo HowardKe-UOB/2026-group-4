@@ -983,8 +983,8 @@ changeState(newState) {
         const rowH = 58;
         const startY = panelY + 70;
         const listAreaH = panelH - (startY - panelY) - 20;
-        const rowW = panelW - 80;
-        const rowX = panelX + 28;
+        const rowW = panelW - 64;
+        const rowX = panelX + 16;
         const scrollbarW = 12;
         const scrollbarX = panelX + panelW - scrollbarW - 20;
         const scrollbarY = startY;
@@ -1095,19 +1095,19 @@ changeState(newState) {
 
             fill(255);
             textAlign(LEFT, CENTER);
-            textSize(18);
-            text(i + 1, rowX + 24, ry);
+            textSize(13);
+            text(i + 1, rowX + 10, ry);
 
-            this.drawScoreAvatar(rowX + 58, ry, entry.playerName);
+            this.drawScoreAvatar(rowX + 42, ry, entry.playerName);
 
-            this.drawModeIcon(rowX + 90, ry, entry.difficulty, entry.playerMode);
+            this.drawModeIcon(rowX + 72, ry, entry.difficulty, entry.playerMode);
 
-            textSize(16);
-            text(entry.playerName, rowX + 118, ry);
+            textSize(14);
+            text(entry.playerName, rowX + 98, ry);
 
             textAlign(RIGHT, CENTER);
             fill(255, 215, 0);
-            textSize(16);
+            textSize(14);
             const scoreText =
                 levelsCompleted > 0
                     ? `🏆 ${entry.score}  Lv.${levelsCompleted}`
@@ -1322,10 +1322,10 @@ changeState(newState) {
         push();
         noStroke();
         fill(255, 230, 180);
-        ellipse(cx, cy, 30, 30);
+        ellipse(cx, cy, 22, 22);
         fill(25, 70, 120);
         textAlign(CENTER, CENTER);
-        textSize(14);
+        textSize(11);
         text((name.charAt(0) || '?').toUpperCase(), cx, cy + 1);
         pop();
     }
@@ -1336,9 +1336,9 @@ changeState(newState) {
         const isEasy = (difficulty || "easy").toString().toLowerCase() === "easy";
         const isTwo = (playerMode || "single").toString().toLowerCase().includes("two");
         fill(isEasy ? 60 : 220, isEasy ? 200 : 60, isEasy ? 80 : 60);
-        const r = 7;
-        ellipse(cx - (isTwo ? 6 : 0), cy, r * 2, r * 2);
-        if (isTwo) ellipse(cx + 6, cy, r * 2, r * 2);
+        const r = 5;
+        ellipse(cx - (isTwo ? 5 : 0), cy, r * 2, r * 2);
+        if (isTwo) ellipse(cx + 5, cy, r * 2, r * 2);
         pop();
     }
 
