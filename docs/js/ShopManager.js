@@ -64,7 +64,7 @@ class ShopManager {
                 levelNum, player
             ),
             new ShopItem("Club Card", 
-                10, 
+                500, 
                 "Exclusive member benefits!\nGet 10%~30% off all items.\n[Permanent upgrade]",
                 levelNum, player
             )
