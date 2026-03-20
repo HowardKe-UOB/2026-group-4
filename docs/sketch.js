@@ -143,6 +143,8 @@ function setup() {
     if (pauseMenuBgImg) makeWhiteTransparent(pauseMenuBgImg);
 
     gameManager = new GameManager();
+    gameManager._applyVolume();
+    gameManager.changeState(GameState.NAME_ENTRY);
     wireModeButtons();
 }
 

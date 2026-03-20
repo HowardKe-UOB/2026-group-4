@@ -27,6 +27,27 @@ class GameManager {
 
         // 游戏失败后进入排行榜时，用不同颜色高亮最新玩家
         this.lastGameFailed = false;
+
+        // 设置（从 localStorage 恢复）
+        this.settingsOpen = false;
+        const savedVol = parseFloat(localStorage.getItem('ds_volume'));
+        const savedBright = parseFloat(localStorage.getItem('ds_brightness'));
+        this.volumeLevel = isNaN(savedVol) ? 0.8 : constrain(savedVol, 0, 1);
+        this.brightnessLevel = isNaN(savedBright) ? 1 : constrain(savedBright, 0, 1);
+        this._settingsVolumeDragging = false;
+        this._settingsBrightnessDragging = false;
+    }
+
+    _applyVolume() {
+        const v = this.volumeLevel;
+        if (typeof titleBgm !== 'undefined' && titleBgm) titleBgm.setVolume(v);
+        if (typeof shopBgm !== 'undefined' && shopBgm) shopBgm.setVolume(v);
+        if (typeof gameplayBgm !== 'undefined' && gameplayBgm) gameplayBgm.setVolume(v);
+        try { localStorage.setItem('ds_volume', String(v)); } catch (_) {}
+    }
+
+    _saveBrightness() {
+        try { localStorage.setItem('ds_brightness', String(this.brightnessLevel)); } catch (_) {}
     }
 
     // Fish gallery: fish1–fish64 + Angler Fish
@@ -216,6 +237,7 @@ changeState(newState) {
                 titleBgm &&
                 !titleBgm.isPlaying()
             ) {
+                this._applyVolume();
                 titleBgm.loop();
             }
         } else if (this.currentState === GameState.PLAYING) {
@@ -234,6 +256,7 @@ changeState(newState) {
                 gameplayBgm &&
                 !gameplayBgm.isPlaying()
             ) {
+                this._applyVolume();
                 gameplayBgm.loop();
             }
         } else {
@@ -252,6 +275,7 @@ changeState(newState) {
                 shopBgm &&
                 !shopBgm.isPlaying()
             ) {
+                this._applyVolume();
                 shopBgm.loop();
             }
         } else if (this.currentState === GameState.PLAYING) {
@@ -612,6 +636,170 @@ changeState(newState) {
                 this.drawHighScore();
                 break;
         }
+
+        // 设置按钮（难度选择、模式选择不显示）
+        const settingsStates = [
+            GameState.NAME_ENTRY,
+            GameState.HOW_TO_PLAY,
+            GameState.PLAYING,
+            GameState.SHOP,
+            GameState.LEVEL_RESULT,
+            GameState.HIGH_SCORE,
+        ];
+        if (settingsStates.includes(this.currentState)) {
+            this.drawSettingsButton();
+        }
+
+        // 设置面板（覆盖在最上层）
+        if (this.settingsOpen) {
+            this.drawSettingsPanel();
+        }
+
+        // 亮度遮罩（根据 brightnessLevel 调节）
+        if (this.brightnessLevel < 1) {
+            push();
+            noStroke();
+            fill(0, 0, 0, (1 - this.brightnessLevel) * 200);
+            rect(0, 0, width, height);
+            pop();
+        }
+    }
+
+    drawSettingsButton() {
+        const settingsSize = 48;
+        const settingsX = 36;
+        const settingsY = height - 36 - settingsSize / 2;
+        push();
+        noSmooth();
+        noStroke();
+        fill(255, 230, 180);
+        textSize(32);
+        textAlign(CENTER, CENTER);
+        text('⚙', settingsX + settingsSize / 2, height - 36);
+        pop();
+        this._settingsButtonBounds = { x: settingsX, y: settingsY, w: settingsSize, h: settingsSize };
+
+        const hovered =
+            this._settingsButtonBounds &&
+            mouseX >= this._settingsButtonBounds.x &&
+            mouseX <= this._settingsButtonBounds.x + this._settingsButtonBounds.w &&
+            mouseY >= this._settingsButtonBounds.y &&
+            mouseY <= this._settingsButtonBounds.y + this._settingsButtonBounds.h;
+        if (hovered) {
+            push();
+            textSize(10);
+            const tip = 'Settings';
+            const tipW = textWidth(tip) + 12;
+            const tipH = 20;
+            const tipX = settingsX + settingsSize / 2;
+            const tipY = height - 36 - 28;
+            fill(10, 35, 65, 235);
+            stroke(80, 160, 220);
+            strokeWeight(1);
+            rect(tipX - tipW / 2, tipY - tipH - 4, tipW, tipH, 4);
+            noStroke();
+            fill(200, 235, 255);
+            textAlign(CENTER, CENTER);
+            text(tip, tipX, tipY - tipH / 2 - 4);
+            pop();
+        }
+    }
+
+    drawSettingsPanel() {
+        push();
+        noSmooth();
+        rectMode(CORNER);
+
+        // 半透明背景遮罩
+        fill(0, 0, 0, 150);
+        rect(0, 0, width, height);
+
+        const panelW = 380;
+        const panelH = 260;
+        const panelX = (width - panelW) / 2;
+        const panelY = (height - panelH) / 2;
+
+        // 像素风面板：外阴影 + 主体 + 粗边框
+        fill(0, 0, 0, 180);
+        rect(panelX + 6, panelY + 6, panelW, panelH, 8);
+        fill(15, 45, 85, 250);
+        rect(panelX, panelY, panelW, panelH, 8);
+        stroke(0, 0, 0);
+        strokeWeight(4);
+        noFill();
+        rect(panelX, panelY, panelW, panelH, 8);
+        stroke(80, 160, 220);
+        strokeWeight(2);
+        rect(panelX + 4, panelY + 4, panelW - 8, panelH - 8, 6);
+        noStroke();
+
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+        fill(255, 220, 100);
+        textSize(16);
+        textAlign(CENTER, TOP);
+        text('SETTINGS', panelX + panelW / 2, panelY + 18);
+
+        const barW = 260;
+        const barH = 20;
+        const barX = panelX + (panelW - barW) / 2;
+        const barY1 = panelY + 75;
+        const barY2 = panelY + 140;
+
+        // 音量条
+        fill(200, 230, 255);
+        textSize(10);
+        textAlign(LEFT, CENTER);
+        text('VOLUME', panelX + 40, barY1 - 25);
+        fill(30, 60, 90);
+        rect(barX, barY1, barW, barH, 4);
+        fill(80, 160, 220);
+        rect(barX, barY1, barW * this.volumeLevel, barH, 4);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        noFill();
+        rect(barX, barY1, barW, barH, 4);
+        noStroke();
+        fill(255, 230, 180);
+        const thumb1X = barX + barW * this.volumeLevel - 8;
+        rect(thumb1X, barY1 - 4, 16, barH + 8, 4);
+        this._settingsVolumeBar = { x: barX, y: barY1, w: barW, h: barH };
+
+        // 亮度条
+        fill(200, 230, 255);
+        text('BRIGHTNESS', panelX + 40, barY2 - 25);
+        fill(30, 60, 90);
+        rect(barX, barY2, barW, barH, 4);
+        fill(255, 220, 100);
+        rect(barX, barY2, barW * this.brightnessLevel, barH, 4);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        noFill();
+        rect(barX, barY2, barW, barH, 4);
+        noStroke();
+        fill(255, 230, 180);
+        const thumb2X = barX + barW * this.brightnessLevel - 8;
+        rect(thumb2X, barY2 - 4, 16, barH + 8, 4);
+        this._settingsBrightnessBar = { x: barX, y: barY2, w: barW, h: barH };
+
+        // 关闭按钮
+        const closeBtnW = 100;
+        const closeBtnH = 36;
+        const closeBtnX = panelX + (panelW - closeBtnW) / 2;
+        const closeBtnY = panelY + panelH - 55;
+        fill(60, 120, 80);
+        rect(closeBtnX, closeBtnY, closeBtnW, closeBtnH, 4);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        noFill();
+        rect(closeBtnX, closeBtnY, closeBtnW, closeBtnH, 4);
+        noStroke();
+        fill(255);
+        textSize(10);
+        textAlign(CENTER, CENTER);
+        text('CLOSE', closeBtnX + closeBtnW / 2, closeBtnY + closeBtnH / 2 + 1);
+        this._settingsCloseBounds = { x: closeBtnX, y: closeBtnY, w: closeBtnW, h: closeBtnH };
+
+        pop();
     }
 
     drawNameEntry() {
@@ -655,7 +843,7 @@ changeState(newState) {
         textSize(16);
         text('Press ENTER to cast off', width / 2, boxY + 75);
 
-        // 右下角小奖杯，点击进入高分榜
+        // 右下角小奖杯，点击进入高分榜（设置按钮由 drawSettingsButton 统一绘制）
         const trophySize = 28;
         const trophyX = width - 36;
         const trophyY = height - 36;
@@ -663,6 +851,36 @@ changeState(newState) {
         text('🏆', trophyX, trophyY);
         this._trophyButtonBounds = { cx: trophyX, cy: trophyY, w: 44, h: 44 };
         pop();
+
+        // Hover 提示：奖杯（仅 NAME_ENTRY 有奖杯）
+        const trophyHover =
+            this._trophyButtonBounds &&
+            this.isPointInRect(
+                mouseX,
+                mouseY,
+                this._trophyButtonBounds.cx,
+                this._trophyButtonBounds.cy,
+                this._trophyButtonBounds.w,
+                this._trophyButtonBounds.h,
+            );
+        if (trophyHover) {
+            push();
+            textSize(10);
+            const tip = 'Leaderboard';
+            const tipW = textWidth(tip) + 12;
+            const tipH = 20;
+            const tipX = trophyX;
+            const tipY = height - 36 - 28;
+            fill(10, 35, 65, 235);
+            stroke(80, 160, 220);
+            strokeWeight(1);
+            rect(tipX - tipW / 2, tipY - tipH - 4, tipW, tipH, 4);
+            noStroke();
+            fill(200, 235, 255);
+            textAlign(CENTER, CENTER);
+            text(tip, tipX, tipY - tipH / 2 - 4);
+            pop();
+        }
     }
 
     drawDifficultySelect() {
@@ -1344,6 +1562,57 @@ changeState(newState) {
 
     // Interaction Handling
     handleMousePress() {
+        const settingsStates = [
+            GameState.NAME_ENTRY,
+            GameState.HOW_TO_PLAY,
+            GameState.PLAYING,
+            GameState.SHOP,
+            GameState.LEVEL_RESULT,
+            GameState.HIGH_SCORE,
+        ];
+
+        if (settingsStates.includes(this.currentState)) {
+            if (this.settingsOpen) {
+                if (
+                    this._settingsCloseBounds &&
+                    mouseX >= this._settingsCloseBounds.x &&
+                    mouseX <= this._settingsCloseBounds.x + this._settingsCloseBounds.w &&
+                    mouseY >= this._settingsCloseBounds.y &&
+                    mouseY <= this._settingsCloseBounds.y + this._settingsCloseBounds.h
+                ) {
+                    this.settingsOpen = false;
+                    return;
+                }
+                if (this._settingsVolumeBar) {
+                    const b = this._settingsVolumeBar;
+                    if (mouseX >= b.x && mouseX <= b.x + b.w && mouseY >= b.y - 8 && mouseY <= b.y + b.h + 8) {
+                        this._settingsVolumeDragging = true;
+                        this.volumeLevel = constrain((mouseX - b.x) / b.w, 0, 1);
+                        this._applyVolume();
+                    }
+                }
+                if (this._settingsBrightnessBar && !this._settingsVolumeDragging) {
+                    const b2 = this._settingsBrightnessBar;
+                    if (mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y - 8 && mouseY <= b2.y + b2.h + 8) {
+                        this._settingsBrightnessDragging = true;
+                        this.brightnessLevel = constrain((mouseX - b2.x) / b2.w, 0, 1);
+                        this._saveBrightness();
+                    }
+                }
+                return;
+            }
+            if (
+                this._settingsButtonBounds &&
+                mouseX >= this._settingsButtonBounds.x &&
+                mouseX <= this._settingsButtonBounds.x + this._settingsButtonBounds.w &&
+                mouseY >= this._settingsButtonBounds.y &&
+                mouseY <= this._settingsButtonBounds.y + this._settingsButtonBounds.h
+            ) {
+                this.settingsOpen = true;
+                return;
+            }
+        }
+
         switch (this.currentState) {
             case GameState.NAME_ENTRY:
                 if (
@@ -1545,6 +1814,20 @@ changeState(newState) {
     }
 
     handleMouseDragged() {
+        if (this.settingsOpen) {
+            if (this._settingsVolumeDragging && this._settingsVolumeBar) {
+                const b = this._settingsVolumeBar;
+                this.volumeLevel = constrain((mouseX - b.x) / b.w, 0, 1);
+                this._applyVolume();
+                return;
+            }
+            if (this._settingsBrightnessDragging && this._settingsBrightnessBar) {
+                const b = this._settingsBrightnessBar;
+                this.brightnessLevel = constrain((mouseX - b.x) / b.w, 0, 1);
+                this._saveBrightness();
+                return;
+            }
+        }
         if (
             this.currentState !== GameState.HIGH_SCORE ||
             !this.highScoreScrollDragging ||
@@ -1561,6 +1844,8 @@ changeState(newState) {
 
     handleMouseReleased() {
         this.highScoreScrollDragging = false;
+        this._settingsVolumeDragging = false;
+        this._settingsBrightnessDragging = false;
     }
 
     handleKeyPress(key, keyCode) {
