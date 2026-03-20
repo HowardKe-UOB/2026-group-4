@@ -60,7 +60,7 @@ function preload() {
     koiFishImgs.push(loadImage("assets/koifish2.png"));
     koiInSfx = loadSound("assets/KoiIn.mp3");
     koiOutSfx = loadSound("assets/KoiOut.mp3");
-    clubcardImg = loadImage("assets/ClubCard.png");
+    clubcardImg = loadImage("assets/clubcard.png");
     shopBgImg = loadImage("assets/Shop.png");
     titleBgm = loadSound("assets/Ocean.mp3");
     shopBgm = loadSound("assets/ShopGen3.mp3");
