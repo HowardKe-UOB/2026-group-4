@@ -1582,6 +1582,7 @@ changeState(newState) {
                     mouseY <= this._settingsCloseBounds.y + this._settingsCloseBounds.h
                 ) {
                     this.settingsOpen = false;
+                    if (this.currentState === GameState.PLAYING) this.gamePaused = false;
                     return;
                 }
                 if (this._settingsVolumeBar) {
@@ -1610,6 +1611,7 @@ changeState(newState) {
                 mouseY <= this._settingsButtonBounds.y + this._settingsButtonBounds.h
             ) {
                 this.settingsOpen = true;
+                if (this.currentState === GameState.PLAYING) this.gamePaused = true;
                 return;
             }
         }
