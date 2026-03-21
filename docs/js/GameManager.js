@@ -76,6 +76,11 @@ class GameManager {
             label: 'Angler Fish',
             getImg: () => (typeof anglerFishImgs !== 'undefined' && anglerFishImgs.length > 0) ? anglerFishImgs[0] : null,
         });
+        list.push({
+            key: 'KoiFish',
+            label: 'Koi Fish',
+            getImg: () => (typeof koiFishImgs !== 'undefined' && koiFishImgs.length > 0 && koiFishImgs[0]) ? koiFishImgs[0] : null,
+        });
         return list;
     }
 
@@ -147,6 +152,7 @@ class GameManager {
             fish63: { en: 'Lancetfish', zh: '帆蜥鱼' },
             fish64: { en: 'Viperfish', zh: '毒蛇鱼' },
             'Angler Fish': { en: 'Angler Fish', zh: '鮟鱇鱼' },
+            'KoiFish': { en: 'Koi Fish', zh: '锦鲤' },
         };
     }
 
@@ -668,7 +674,7 @@ changeState(newState) {
 
     drawSettingsButton() {
         const settingsSize = 48;
-        const settingsX = 36;
+        const settingsX = 16;
         const settingsY = height - 36 - settingsSize / 2;
         push();
         noSmooth();
