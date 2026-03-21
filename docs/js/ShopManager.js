@@ -60,7 +60,7 @@ class ShopManager {
             ),
             new ShopItem("Lucky Coin",
                 300,
-                "A rare Koi Fish will appear\nat 10s in the next level!\n[period: 1 level]",
+                "A rare Koi Fish will appear\nat 10s in the next level!\nSpecial sound effects included!\n[period: 1 level]",
                 levelNum, player
             ),
             new ShopItem("Club Card", 
@@ -268,8 +268,8 @@ class ShopManager {
                 text(hoveredItem.name + " - $" + hoveredItem.costPrice, width / 2, infoY - 55);
             }
 
-            // 商品描述-字体太大会溢出区域
-            textSize(11);
+            // 商品描述-字体缩小避免溢出
+            textSize(9);
             textStyle(NORMAL);
             fill(100, 80, 60);
             text(hoveredItem.description, width / 2, infoY - 20);
