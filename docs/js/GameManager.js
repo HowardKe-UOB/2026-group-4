@@ -1742,8 +1742,6 @@ changeState(newState) {
                 if (shopResult === 'NEXT_LEVEL') {
                     this.levelNum++;
                     this.startLevel();
-                    this.player.consumeItems(this.levelManager);
-                    this.shopManager.resetShop(this.levelNum, this.player);
                 }
                 break;
             }
