@@ -294,6 +294,18 @@ changeState(newState) {
                 shopBgm.stop();
             }
         }
+
+        // iPad Magic Keyboard: focus canvas when entering keyboard-driven states
+        const keyboardStates = [
+            GameState.NAME_ENTRY,
+            GameState.DIFFICULTY_SELECT,
+            GameState.PLAYER_MODE_SELECT,
+            GameState.PLAYING,
+        ];
+        if (keyboardStates.includes(newState)) {
+            const c = document.querySelector('#game-container canvas');
+            if (c) c.focus();
+        }
     }
 
     // 名字重复检测：优先 fetch 远程，失败则用 localStorage

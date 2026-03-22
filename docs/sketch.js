@@ -141,6 +141,8 @@ function makeBlackTransparent(img, threshold = 40) {
 function setup() {
     const canvas = createCanvas(1280, 720);
     canvas.parent("game-container");
+    // iPad Magic Keyboard: make canvas focusable so physical keyboard events are received
+    canvas.elt.setAttribute("tabindex", "0");
 
     if (potionImg) makeBlackTransparent(potionImg);
     //if (laserImg) makeBlackTransparent(laserImg);
@@ -311,6 +313,14 @@ function draw() {
 }
 
 function mousePressed() {
+    // Refocus canvas on tap (helps iPad Magic Keyboard when focus is lost)
+    if (gameManager) {
+        const keyboardStates = [GameState.NAME_ENTRY, GameState.DIFFICULTY_SELECT, GameState.PLAYER_MODE_SELECT, GameState.PLAYING];
+        if (keyboardStates.includes(gameManager.currentState)) {
+            const c = document.querySelector("#game-container canvas");
+            if (c) c.focus();
+        }
+    }
     userStartAudio();
     if (gameManager) gameManager.handleMousePress();
 }
