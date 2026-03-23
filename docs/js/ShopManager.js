@@ -125,24 +125,28 @@ class ShopManager {
         }
         pop();
 
+        const mx = this.scaledMouseX ?? (typeof mouseX !== "undefined" ? mouseX : 0);
+        const my = this.scaledMouseY ?? (typeof mouseY !== "undefined" ? mouseY : 0);
+
         // Next Level button 检测区域
         let isNextHovered =
-            abs(mouseX - this.nextLevelBoxX) < 80 &&
-            abs(mouseY - this.nextLevelBoxY) < 35;
+            abs(mx - this.nextLevelBoxX) < 100 &&
+            abs(my - this.nextLevelBoxY) < 35;
         // 高亮区域
         if (isNextHovered) {
             noStroke();
             fill(255, 255, 255, 120);
             rectMode(CENTER);
-            rect(this.nextLevelBoxX, this.nextLevelBoxY, 160, 70, 10);
+            rect(this.nextLevelBoxX, this.nextLevelBoxY, 220, 70, 10);
         }
         push();
         fill(isNextHovered ? 0 : 255);
         textAlign(CENTER, CENTER);
-        textSize(15);
+        textSize(12);
+        textLeading(25);
         textStyle(BOLD);
         textFont(pixelFont);
-        text("Next Level", this.nextLevelBoxX, this.nextLevelBoxY);
+        text("Ready to Level\n" + (levelNum + 1), this.nextLevelBoxX, this.nextLevelBoxY);
         textStyle(NORMAL);
         pop();
 
@@ -153,7 +157,7 @@ class ShopManager {
             let item = this.availableItems[i];
             let pos = this.itemPositions[i];
 
-            let d = dist(mouseX, mouseY, pos.x, pos.y);
+            let d = dist(mx, my, pos.x, pos.y);
             let isHovered = d < this.hitRadius;
 
             if (isHovered) {
@@ -314,10 +318,9 @@ class ShopManager {
 
     // playerMode 参数：用于双人模式下的差异化扣款逻辑
     handleMousePress(player, playerMode = PlayerMode.SINGLE) {
-        if (
-            abs(mouseX - this.nextLevelBoxX) < 80 &&
-            abs(mouseY - this.nextLevelBoxY) < 35
-        ) {
+        const mx = this.scaledMouseX ?? (typeof mouseX !== "undefined" ? mouseX : 0);
+        const my = this.scaledMouseY ?? (typeof mouseY !== "undefined" ? mouseY : 0);
+        if (abs(mx - this.nextLevelBoxX) < 100 && abs(my - this.nextLevelBoxY) < 35) {
             return "NEXT_LEVEL";
         }
 
@@ -325,7 +328,7 @@ class ShopManager {
             let item = this.availableItems[i];
             let pos = this.itemPositions[i];
 
-            let d = dist(mouseX, mouseY, pos.x, pos.y);
+            let d = dist(mx, my, pos.x, pos.y);
             if (d < this.hitRadius) {
                 // 单人，双人模式都由totalScore判断
                 let canAfford = player.totalScore >= item.costPrice;
