@@ -208,7 +208,8 @@ class GameManager {
 
         // 如果上面 ShopItem 报错，下面这行就永远跑不到
         this.player.consumeItems(this.levelManager);
-        this.changeState(GameState.PLAYING);
+        // 🌟 改为触发过场动画：屏幕渐黑后再进入游戏
+        triggerTransition(GameState.PLAYING);
     }
 
 changeState(newState) {
@@ -1887,7 +1888,8 @@ changeState(newState) {
                 break;
             }
             case GameState.LEVEL_PASS_CELEBRATION:
-                this.changeState(GameState.SHOP);
+                // 🌟 改为触发过场动画：屏幕渐黑后再进入商城
+                triggerTransition(GameState.SHOP); 
                 break;
             case GameState.LEVEL_RESULT:
                 this.changeState(GameState.HIGH_SCORE);

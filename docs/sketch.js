@@ -1,3 +1,211 @@
+// ============================================================
+// 🌟 核心修改：真正的像素风格深海过场动画全案 🌟
+// 包含：2秒硬停顿、像素气泡、像素硬边声纳、像素浮动文字
+// ============================================================
+
+let sceneTransition = {
+    isActive: false,
+    alpha: 0,
+    fadeType: 'OUT', 
+    targetState: null,
+    
+    // 1. 🌟 修改：速度降得极低，让淡出/淡入过程极其缓慢优雅
+    // 以前是4，现在改成 2。让 Stakeholder 感受大洋的压迫感。
+    speed: 2, 
+    
+    // 2. 🌟 新增：2秒硬停顿控制
+    holdDuration: 2000, // 完全黑透后暂停 2000 毫秒 (2秒)
+    holdStartTime: 0,
+    
+    baseColor: [30, 90, 140],
+    
+    // 🌟 新增：用于复杂像素 UI 的变量
+    pixelParticles: [], // 像素气泡系统
+    pixelSonarPulseSize: 0,
+    pixelSonarPulseAlpha: 0,
+    textOffset: 0 // 文字上下浮动
+};
+
+// 🌟 新增：初始化硬边像素气泡（从底部冒泡）
+function initPixelParticles() {
+    sceneTransition.pixelParticles = [];
+    for (let i = 0; i < 50; i++) { // 50个像素气泡
+        sceneTransition.pixelParticles.push({
+            x: random(width),
+            y: random(height + 100, height + 500), // 在屏幕底部下方生成
+            vy: random(-1, -3), // 向上漂浮
+            // 🌟 核心：气泡必须是固定的像素大小，没有小数，不平滑
+            size: floor(random(2, 5)) * 2, // 生成 4, 6, 8 像素大小的气泡
+            color: [180, 230, 255], // 亮蓝色
+            opacity: 0, 
+            sinOffset: random(TWO_PI) // 用于左右摆动
+        });
+    }
+}
+
+// 🌟 新增：绘制硬边像素气泡（核心技术：noSmooth, 像素对齐）
+function drawPixelParticles(globalAlpha) {
+    if (globalAlpha < 50) return; // 屏幕太亮时不画气泡
+
+    push();
+    noStroke();
+    
+    // 🌟 核心：关闭 p5 的平滑缩放，强制所有绘制都是硬边像素
+    noSmooth(); 
+
+    for (let p of sceneTransition.pixelParticles) {
+        p.y += p.vy;
+        // 气泡随Alpha淡入出
+        p.opacity = lerp(p.opacity, (globalAlpha / 255) * 150, 0.05);
+
+        // 如果飘出顶部，重新回到最底部
+        if (p.y < -20) {
+            p.y = height + random(50, 200);
+            p.x = random(width);
+        }
+
+        // 气泡左右摆动，更有灵动感
+        let driftX = sin(frameCount * 0.02 + p.sinOffset) * 2;
+        
+        // 🌟 核心：颜色必须包含全局Alpha
+        fill(p.color[0], p.color[1], p.color[2], p.opacity);
+        
+        // 🌟 核心：绘制像素气泡。必须用 floor 将坐标对齐到整数像素上！
+        // 气泡不是圆的，是像素块组成的方块/十字
+        let px = floor(p.x + driftX);
+        let py = floor(p.y);
+        
+        if (p.size === 4) {
+            rect(px, py, 4, 4); // 4x4 像素块
+        } else if (p.size === 6) {
+            // 组成一个十字形的 6x6 像素气泡
+            rect(px + 2, py, 2, 6);
+            rect(px, py + 2, 6, 2);
+        } else {
+            // 组成一个更像圆的 8x8 像素气泡
+            rect(px + 2, py, 4, 8);
+            rect(px, py + 2, 8, 4);
+        }
+    }
+    
+    // 🌟 核心：恢复平滑绘制，以免影响游戏其他部分
+    smooth(); 
+    pop();
+}
+
+// 🌟 新增：绘制硬边像素声纳（正方形描边）
+function drawPixelSonar(globalAlpha) {
+    if (globalAlpha < 200) return; // 屏幕黑透了才画
+    
+    sceneTransition.pixelSonarPulseSize += 2; // 声纳扩大
+    // 声纳Alpha随着变大而淡出
+    sceneTransition.pixelSonarPulseAlpha = map(sceneTransition.pixelSonarPulseSize, 0, height * 0.4, 255, 0);
+    
+    if (sceneTransition.pixelSonarPulseSize > height * 0.4) {
+        sceneTransition.pixelSonarPulseSize = 0; // 循环
+    }
+
+    push();
+    noSmooth(); // 关闭平滑
+    noFill();
+    
+    // 🌟 核心：硬边描边。描边厚度也是像素单位。
+    strokeWeight(2); 
+    stroke(100, 255, 255, sceneTransition.pixelSonarPulseAlpha); // 亮蓝绿色
+    
+    // 🌟 核心：坐标必须对齐整数像素。
+    // 画一个像素风格的正方形描边作为声纳
+    let size = floor(sceneTransition.pixelSonarPulseSize);
+    rect(floor(width / 2 - size / 2), floor(height / 2 - size / 2), size, size);
+    
+    smooth(); // 恢复平滑
+    pop();
+}
+
+// 🌟 修改：触发场景切换，初始化像素数据
+function triggerTransition(nextState) {
+    if (sceneTransition.isActive) return; 
+    sceneTransition.isActive = true;
+    sceneTransition.fadeType = 'OUT'; // 开始变黑
+    sceneTransition.alpha = 0;
+    sceneTransition.targetState = nextState; 
+    sceneTransition.holdStartTime = 0;
+    
+    // 初始化像素系统
+    initPixelParticles(); 
+}
+
+// 🌟 核心修改：全新的处理函数，包含2秒硬暂停逻辑和所有像素 UI
+function drawSceneTransition() {
+    if (!sceneTransition.isActive) return;
+
+    // --- 第一层：深海背景遮罩 ---
+    // 缓慢变黑，大洋压迫感
+    push();
+    noStroke();
+    let vignetteColor = sceneTransition.baseColor;
+    fill(vignetteColor[0], vignetteColor[1], vignetteColor[2], sceneTransition.alpha);
+    rect(0, 0, width, height); // 简单的全屏矩形，配合超慢速， Stakeholder 会满意的
+    pop();
+
+    // --- 第二层：像素冒泡系统 ---
+    drawPixelParticles(sceneTransition.alpha);
+
+    // --- 第三层：中央像素 UI（声纳与文字） ---
+    // 只有在变黑或在停顿状态下才画
+    if (sceneTransition.alpha > 200) {
+        // 1. 绘制硬边像素声纳
+        drawPixelSonar(sceneTransition.alpha);
+
+        // 2. 绘制像素呼吸浮动文字
+        push();
+        textAlign(CENTER, CENTER);
+        if (typeof pixelFont !== "undefined" && pixelFont) {
+            textFont(pixelFont);
+        }
+        textSize(24);
+
+        // 文字颜色脉冲（蓝绿之间）
+        let tPulse = sin(frameCount * 0.05);
+        let tColor = lerpColor(color(150, 255, 200), color(220, 255, 255), (tPulse + 1) / 2);
+        
+        // 🌟 核心：文字上下浮动效果
+        sceneTransition.textOffset = sin(frameCount * 0.03) * 6; // 上下浮动 6 像素
+
+        // 🌟 核心：颜色必须包含当前的全局Alpha，且坐标 floor 对齐像素
+        fill(red(tColor), green(tColor), blue(tColor), sceneTransition.alpha);
+        text("DIVING DEEPER...", floor(width / 2), floor(height / 2 + sceneTransition.textOffset));
+        pop();
+    }
+
+    // --- 核心逻辑控制：淡出 -> 停顿 2秒 -> 淡入 ---
+    if (sceneTransition.fadeType === 'OUT') {
+        sceneTransition.alpha += sceneTransition.speed;
+        if (sceneTransition.alpha >= 255) {
+            sceneTransition.alpha = 255;
+            // 🌟 核心修改：淡出结束，进入停顿（HOLD）状态，并记下时间！
+            sceneTransition.fadeType = 'HOLD'; 
+            sceneTransition.holdStartTime = millis(); 
+            
+            // 🌟 核心：等屏幕完全黑透了，再切换游戏状态！
+            if (gameManager) {
+                gameManager.changeState(sceneTransition.targetState);
+            }
+        }
+    } else if (sceneTransition.fadeType === 'HOLD') {
+        // 🌟 新增逻辑：检查是否停顿够了两秒
+        let timePassed = millis() - sceneTransition.holdStartTime;
+        if (timePassed >= sceneTransition.holdDuration) {
+            // 停顿够了，开始淡入亮起来
+            sceneTransition.fadeType = 'IN'; 
+        }
+    } else if (sceneTransition.fadeType === 'IN') {
+        sceneTransition.alpha -= sceneTransition.speed;
+        if (sceneTransition.alpha <= 0) {
+            sceneTransition.isActive = false; // 动画彻底结束
+        }
+    }
+}
 let gameManager;
 let bgImageLevel1;
 let bgImageLevel2;
@@ -298,18 +506,21 @@ function wireModeButtons() {
 let lastGameState = null;
 
 function draw() {
-    gameManager.update();
+    // 1. 原本更新和画游戏的逻辑不变
+    if (gameManager) {
+        gameManager.update();
+    }
 
-    if (
-        gameManager._syncOverlay &&
-        gameManager.currentState !== lastGameState
-    ) {
+    if (gameManager && gameManager._syncOverlay && gameManager.currentState !== lastGameState) {
         gameManager._syncOverlay();
         lastGameState = gameManager.currentState;
     }
-    if (gameManager._syncSelectionHighlight) {
+    if (gameManager && gameManager._syncSelectionHighlight) {
         gameManager._syncSelectionHighlight();
     }
+
+    // 2. 🌟 【新增】在所有东西都画完之后，画过场动画！这样它才能挡住所有东西
+    drawSceneTransition(); 
 }
 
 function mousePressed() {
