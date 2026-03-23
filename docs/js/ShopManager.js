@@ -146,7 +146,7 @@ class ShopManager {
         textLeading(25);
         textStyle(BOLD);
         textFont(pixelFont);
-        text("Ready to Level\n" + (levelNum + 1), this.nextLevelBoxX, this.nextLevelBoxY);
+        text("Next Level", this.nextLevelBoxX, this.nextLevelBoxY);
         textStyle(NORMAL);
         pop();
 
