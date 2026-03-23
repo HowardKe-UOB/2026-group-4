@@ -44,7 +44,7 @@ class ShopManager {
             ),
             new ShopItem(
                 "Submarine",
-                10,
+                1000,
                 "Prove to yourself that you have the strength\nand courage to explore the deep sea.\n[Permanent upgrade]",
                 levelNum, player
             ),

@@ -7,27 +7,61 @@ class LevelManager {
         // 深海场景判定：玩家购买潜水艇后解锁深海
         this.isDeepSea = this.player.hasSubmarine;
 
-        // 1. 目标分数计算逻辑
+        // 目标分数计算逻辑【旧版】
         // 非线性增长曲线: 75n² + 125n + 50
         // 单人参考值 (EASY): L1=250, L2=600, L3=1100, L4=1750, L5=2550
         // 双人参考值 (×1.8): L1=450, L2=1080, L3=1980, L4=3150, L5=4590
         // 困难参考值 (×1.3): L1=325, L2=780,  L3=1430, L4=2275, L5=3315
-        let n = levelNum;
-        let baseTarget = 75 * n * n + 125 * n + 50;
+        // let n = levelNum;
+        // let baseTarget = 75 * n * n + 125 * n + 50;
 
-        // 【新增】：困难模式下，目标分数提高，时间减少
-        if (this.difficulty === Difficulty.HARD) {
-            baseTarget = Math.floor(baseTarget * 1.3); // 分数要求提高 30%
-            this.timeLimit = Math.min(35, 24 + levelNum); // 困难模式时间:25~35秒
-        } else {
-            this.timeLimit = Math.min(40, 29 + levelNum); // 简单模式时间:30~40秒
+        let n = levelNum;
+
+        // 核心基准定义
+        const goldFishEff = 26.67; // 微调效率常数，使第一关更接近 400 分
+        let totalTarget = 0;
+
+        // 累加计算目标分 (1 到 n 关的增量之和)
+        for (let i = 1; i <= n; i++) {
+            // A. 确定该关卡的“标准时间” (计算分数专用，不读取沙漏修改后的值)
+            let stdTime = 0;
+            if (this.difficulty === Difficulty.HARD) {
+                stdTime = Math.min(35, 24 + i); // 困难模式 25~35s
+            } else {
+                stdTime = Math.min(40, 29 + i); // 简单模式 30~40s
+            }
+
+            // B. 获取封顶关卡数 (用于系数计算，最高到 10)
+            let factorLevel = Math.min(i, 10);
+
+            // C. 计算技能系数 (0.5 -> 0.8 封顶)
+            let skillFactor = 0.5 + (factorLevel - 1) * (0.3 / 9);
+
+            // D. 计算物资密度/成长补偿 (1.0 -> 1.18 封顶)
+            let growthFactor = 1 + (factorLevel - 1) * 0.02;
+
+            // E. 累加本关增量
+            let increment = stdTime * goldFishEff * skillFactor * growthFactor;
+            totalTarget += increment;
         }
 
-        // 双人模式目标分数 ×1.8：双钩抓取效率翻倍，需提高难度
-        this.targetScore =
-            this.playerMode === PlayerMode.TWO_PLAYER
-                ? Math.floor(baseTarget * 1.8)
-                : baseTarget;
+        // 难度与游玩人数修正
+        if (this.difficulty === Difficulty.HARD) {
+            totalTarget *= 1.25; // 困难模式整体要求提高 25%
+        }
+        if (this.playerMode === PlayerMode.TWO_PLAYER) {
+            totalTarget *= 1.75; // 双人模式倍率
+        }
+
+        // 最终赋值 (10 的倍数)
+        this.targetScore = Math.floor(totalTarget / 10) * 10;
+
+        // 设定实际关卡时间 (这部分会被沙漏道具在外部修改，但不影响上面已算好的分数)
+        if (this.difficulty === Difficulty.HARD) {
+            this.timeLimit = Math.min(35, 24 + n);// 困难模式时间:25~35秒
+        } else {
+            this.timeLimit = Math.min(40, 29 + n);// 简单模式时间:30~40秒
+        }
         this.timeRemaining = this.timeLimit;
 
         this.boats = [];
