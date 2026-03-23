@@ -37,8 +37,8 @@ class LevelManager {
             // C. 计算技能系数 (0.5 -> 0.8 封顶)
             let skillFactor = 0.5 + (factorLevel - 1) * (0.3 / 9);
 
-            // D. 计算物资密度/成长补偿 (1.0 -> 1.18 封顶)
-            let growthFactor = 1 + (factorLevel - 1) * 0.02;
+            // D. 计算物资密度/成长补偿 (1.0 -> 1.45 封顶)
+            let growthFactor = 1 + (factorLevel - 1) * 0.05;
 
             // E. 累加本关增量
             let increment = stdTime * goldFishEff * skillFactor * growthFactor;
