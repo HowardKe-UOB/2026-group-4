@@ -630,7 +630,7 @@ changeState(newState) {
                     if (result === 'PASS') {
                         this._mergeFishCaught();
                         this.shopManager.resetShop(this.levelNum, this.player);
-                        this.changeState(GameState.SHOP);
+                        this.changeState(GameState.LEVEL_PASS_CELEBRATION);
                     } else if (result === 'FAIL') {
                         this._mergeFishCaught();
                         this.lastGameFailed = true;
@@ -652,6 +652,9 @@ changeState(newState) {
             case GameState.SHOP:
                 this.drawShop();
                 break;
+            case GameState.LEVEL_PASS_CELEBRATION:
+                this.drawLevelPassCelebration();
+                break;
             case GameState.LEVEL_RESULT:
                 this.drawLevelResult();
                 break;
@@ -666,6 +669,7 @@ changeState(newState) {
             GameState.HOW_TO_PLAY,
             GameState.PLAYING,
             GameState.SHOP,
+            GameState.LEVEL_PASS_CELEBRATION,
             GameState.LEVEL_RESULT,
             GameState.HIGH_SCORE,
         ];
@@ -1209,6 +1213,101 @@ changeState(newState) {
         }
     }
 
+    _getCelebrationRankInfo() {
+        const levelsCompleted = this.levelNum;
+        const score = this.player.totalScore;
+        const name = this.player.name || 'Anon';
+        const currentEntry = new ScoreEntry(
+            name,
+            score,
+            levelsCompleted,
+            this.currentDifficulty,
+            this.currentPlayerMode,
+            this.gameSessionFishCaught || {},
+        );
+        const combined = [...this.highScoreManager.topScores, currentEntry];
+        combined.sort((a, b) => {
+            if (b.levelsCompleted !== a.levelsCompleted) return b.levelsCompleted - a.levelsCompleted;
+            return b.score - a.score;
+        });
+        const myIndex = combined.findIndex(
+            (e) => e.playerName === name && e.score === score && e.levelsCompleted === levelsCompleted,
+        );
+        const rank = myIndex >= 0 ? myIndex + 1 : combined.length;
+        const nextEntry = myIndex > 0 ? combined[myIndex - 1] : null;
+        return { rank, currentEntry, nextEntry, nextRank: rank - 1 };
+    }
+
+    drawLevelPassCelebration() {
+        push();
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+        rectMode(CORNER);
+        noSmooth();
+
+        fill(0, 0, 0, 200);
+        rect(0, 0, width, height);
+
+        const panelW = 540;
+        const panelH = 420;
+        const panelX = (width - panelW) / 2;
+        const panelY = (height - panelH) / 2 - 20;
+
+        noStroke();
+        fill(0, 0, 0, 80);
+        rect(panelX + 6, panelY + 6, panelW, panelH, 12);
+        fill(8, 35, 65, 235);
+        rect(panelX, panelY, panelW, panelH, 12);
+        stroke(60, 160, 220);
+        strokeWeight(4);
+        noFill();
+        rect(panelX, panelY, panelW, panelH, 12);
+        noStroke();
+
+        const pulse = 0.03 * sin(frameCount * 0.08);
+        const scaleFactor = 1 + pulse;
+        push();
+        translate(width / 2, panelY + 72);
+        scale(scaleFactor);
+        fill(255, 220, 80);
+        textSize(14);
+        textAlign(CENTER, CENTER);
+        this._drawPixelTextOutline('CONGRATS! YOU ADVANCED!', 0, 0);
+        fill(255, 240, 140);
+        text('CONGRATS! YOU ADVANCED!', 0, 0);
+        pop();
+
+        const rankInfo = this._getCelebrationRankInfo();
+        let cy = panelY + 120;
+        const lineH = 36;
+
+        fill(200, 235, 255);
+        textSize(14);
+        textAlign(CENTER, CENTER);
+        text(`Your Rank: #${rankInfo.rank}`, width / 2, cy);
+        cy += lineH;
+        textSize(12);
+        text(`${this.player.name || 'Anon'}  Score: ${this.player.totalScore}  Lv.${this.levelNum}`, width / 2, cy);
+
+        if (rankInfo.nextEntry) {
+            cy += lineH + 14;
+            fill(140, 180, 220);
+            textSize(10);
+            text('Next up:', width / 2, cy);
+            cy += lineH;
+            fill(180, 210, 245);
+            textSize(11);
+            text(`#${rankInfo.nextRank}  ${rankInfo.nextEntry.playerName}  Score: ${rankInfo.nextEntry.score}  Lv.${rankInfo.nextEntry.levelsCompleted ?? 0}`, width / 2, cy);
+        }
+
+        cy = panelY + panelH - 50;
+        fill(180, 220, 255);
+        textSize(8);
+        textAlign(CENTER, CENTER);
+        text('Click anywhere to continue', width / 2, cy);
+
+        pop();
+    }
+
     drawHighScore() {
         push();
         rectMode(CORNER);
@@ -1286,6 +1385,7 @@ changeState(newState) {
         rect(panelX, panelY, panelW, panelH, 16);
         noStroke();
 
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
         fill(255);
         textAlign(CENTER, CENTER);
         textSize(24);
@@ -1347,14 +1447,20 @@ changeState(newState) {
             fill(255);
             textAlign(LEFT, CENTER);
             textSize(13);
-            text(i + 1, rowX + 10, ry);
+            const rankStr = String(i + 1);
+            const rankPad = 10;
+            text(rankStr, rowX + rankPad, ry);
+            const rankW = textWidth(rankStr);
+            const contentStartX = rowX + rankPad + rankW + 10;
 
-            this.drawScoreAvatar(rowX + 42, ry, entry.playerName);
+            const avatarX = contentStartX + 11;
+            const modeIconX = contentStartX + 11 + 22 + 8;
+            const nameX = contentStartX + 11 + 22 + 8 + 18 + 6;
 
-            this.drawModeIcon(rowX + 72, ry, entry.difficulty, entry.playerMode);
-
+            this.drawScoreAvatar(avatarX, ry, entry.playerName);
+            this.drawModeIcon(modeIconX, ry, entry.difficulty, entry.playerMode);
             textSize(14);
-            text(entry.playerName, rowX + 98, ry);
+            text(entry.playerName, nameX, ry);
 
             textAlign(RIGHT, CENTER);
             fill(255, 215, 0);
@@ -1600,6 +1706,7 @@ changeState(newState) {
             GameState.HOW_TO_PLAY,
             GameState.PLAYING,
             GameState.SHOP,
+            GameState.LEVEL_PASS_CELEBRATION,
             GameState.LEVEL_RESULT,
             GameState.HIGH_SCORE,
         ];
@@ -1779,6 +1886,9 @@ changeState(newState) {
                 }
                 break;
             }
+            case GameState.LEVEL_PASS_CELEBRATION:
+                this.changeState(GameState.SHOP);
+                break;
             case GameState.LEVEL_RESULT:
                 this.changeState(GameState.HIGH_SCORE);
                 break;
