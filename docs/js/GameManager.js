@@ -36,6 +36,9 @@ class GameManager {
         this.brightnessLevel = isNaN(savedBright) ? 1 : constrain(savedBright, 0, 1);
         this._settingsVolumeDragging = false;
         this._settingsBrightnessDragging = false;
+        this.scaledMouseX = 0;
+        this.scaledMouseY = 0;
+        this.nameInputFocused = false;
     }
 
     _applyVolume() {
@@ -221,9 +224,10 @@ changeState(newState) {
             this.highScoreManager.fetchFromSupabase();
         }
         if (newState === GameState.NAME_ENTRY) {
-            this.inputText = '';  // 返回名字输入时清空，不显示上一盘的名字
+            this.inputText = '';
             this.nameExistsCheck = null;
             this.lastCheckedName = '';
+            this.nameInputFocused = false;
         }
         if (
             newState === GameState.DIFFICULTY_SELECT ||
@@ -839,13 +843,22 @@ changeState(newState) {
         fill(255, 255, 255, 80);
         rect(width / 2, boxY - 2, 256, 46, 6);
         textSize(20);
+        const showCursor = frameCount % 60 < 30;
         if (this.inputText) {
             fill(240, 248, 255);
-            text(
-                this.inputText + (frameCount % 60 < 30 ? '|' : ''),
-                width / 2,
-                boxY,
-            );
+            text(this.inputText, width / 2, boxY);
+            if (showCursor) {
+                fill(0, 220, 255);
+                const txtW = textWidth(this.inputText);
+                const pipeW = textWidth('|');
+                const cursorX = width / 2 + txtW / 2 + pipeW / 2 + 2;
+                text('|', cursorX, boxY);
+            }
+        } else if (this.nameInputFocused) {
+            if (showCursor) {
+                fill(0, 220, 255);
+                text('|', width / 2, boxY);
+            }
         } else {
             fill(180, 180, 200, 180);
             text('enter your name', width / 2, boxY);
@@ -872,11 +885,12 @@ changeState(newState) {
         pop();
 
         // Hover 提示：奖杯（仅 NAME_ENTRY 有奖杯）
+        const mx = this.scaledMouseX ?? 0, my = this.scaledMouseY ?? 0;
         const trophyHover =
             this._trophyButtonBounds &&
             this.isPointInRect(
-                mouseX,
-                mouseY,
+                mx,
+                my,
                 this._trophyButtonBounds.cx,
                 this._trophyButtonBounds.cy,
                 this._trophyButtonBounds.w,
@@ -1635,12 +1649,13 @@ changeState(newState) {
         }
 
         switch (this.currentState) {
-            case GameState.NAME_ENTRY:
+            case GameState.NAME_ENTRY: {
+                const mx = this.scaledMouseX ?? 0, my = this.scaledMouseY ?? 0;
                 if (
                     this._trophyButtonBounds &&
                     this.isPointInRect(
-                        mouseX,
-                        mouseY,
+                        mx,
+                        my,
                         this._trophyButtonBounds.cx,
                         this._trophyButtonBounds.cy,
                         this._trophyButtonBounds.w,
@@ -1648,8 +1663,13 @@ changeState(newState) {
                     )
                 ) {
                     this.changeState(GameState.HIGH_SCORE);
+                    break;
+                }
+                if (this.isPointInRect(mx, my, width / 2, height / 2 + 25, 260, 50)) {
+                    this.nameInputFocused = true;
                 }
                 break;
+            }
             case GameState.DIFFICULTY_SELECT:
                 if (
                     this.isPointInRect(
@@ -1944,6 +1964,7 @@ changeState(newState) {
 
         // --- 3. 姓名输入界面逻辑 (保持不变) ---
         if (this.currentState === GameState.NAME_ENTRY) {
+            this.nameInputFocused = true;
             if (keyCode === BACKSPACE) {
                 this.inputText = this.inputText.substring(
                     0,

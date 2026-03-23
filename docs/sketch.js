@@ -320,6 +320,9 @@ function mousePressed() {
             const c = document.querySelector("#game-container canvas");
             if (c) c.focus();
         }
+        // 确保点击坐标正确传递（支持点击输入框聚焦等）
+        gameManager.scaledMouseX = typeof mouseX !== "undefined" ? mouseX : 0;
+        gameManager.scaledMouseY = typeof mouseY !== "undefined" ? mouseY : 0;
     }
     userStartAudio();
     if (gameManager) gameManager.handleMousePress();
