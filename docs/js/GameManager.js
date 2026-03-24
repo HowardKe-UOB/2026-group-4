@@ -375,7 +375,28 @@ changeState(newState) {
         imageMode(CENTER);
         image(img, width / 2, height / 2, dw, dh);
     }
+    // 🌟 新增：只画左下角的返回箭头
+    // 🌟 修改：放大返回图片，扩大点击范围
+    _drawMenuBackButton() {
+        push();
+        imageMode(CORNER);
+        rectMode(CORNER);
 
+        // 🌟 把尺寸调大！你可以随意修改这两个数字，直到看起来舒服为止
+        const btnW = 170;
+        const btnH = 60;// 图片高度
+        const btnX = 20; // 距离左边框的距离
+        const btnY = height - 20 - btnH; // 距离下边框的距离
+
+        if (typeof backImg !== 'undefined' && backImg) {
+            image(backImg, btnX, btnY, btnW, btnH);
+        } else {   
+        }
+
+        // 把新的大尺寸记录下来，点击判定范围也会跟着变大！
+        this._menuBackBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
+        pop();
+    }
     // 海洋主题菜单背景：渐变 + 气泡 + 波浪底
     drawOceanMenuBackground() {
         push();
@@ -661,6 +682,9 @@ changeState(newState) {
             case GameState.HIGH_SCORE:
                 this.drawHighScore();
                 break;
+            case GameState.NEXT_LEVEL_TARGET:
+                this.drawNextLevelTarget();
+                break;
         }
 
         // 设置按钮（难度选择、模式选择不显示）
@@ -926,6 +950,8 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
+        // 🌟 新增下面这一行
+        this._drawMenuBackButton();
     }
 
     drawPlayerModeSelect() {
@@ -934,14 +960,8 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
-    }
-
-    drawPlayerModeSelect() {
-        if (typeof modeSelectBgImg !== 'undefined' && modeSelectBgImg) {
-            this.drawCoverBackground(modeSelectBgImg);
-        } else {
-            this.drawOceanMenuBackground();
-        }
+        // 🌟 新增下面这一行
+        this._drawMenuBackButton();
     }
 
     drawHowToPlay() {
@@ -1244,7 +1264,14 @@ changeState(newState) {
         rectMode(CORNER);
         noSmooth();
 
-        fill(0, 0, 0, 200);
+        // 1. 画你的海底背景图
+        if (typeof passcelebrationImg !== 'undefined' && passcelebrationImg) {
+            imageMode(CORNER);
+            image(passcelebrationImg, 0, 0, width, height);
+        }
+
+        // 🌟 修改一：把全屏黑色遮罩的透明度从 200 降到了 80！这样背景瞬间就亮了！
+        fill(0, 0, 0, 80); 
         rect(0, 0, width, height);
 
         const panelW = 540;
@@ -1252,62 +1279,171 @@ changeState(newState) {
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2 - 20;
 
+        // 画中间的深色蓝框
         noStroke();
         fill(0, 0, 0, 80);
         rect(panelX + 6, panelY + 6, panelW, panelH, 12);
-        fill(8, 35, 65, 235);
+        fill(8, 35, 65, 235); // 框内底色
         rect(panelX, panelY, panelW, panelH, 12);
-        stroke(60, 160, 220);
+        stroke(60, 160, 220); // 亮蓝色描边
         strokeWeight(4);
         noFill();
         rect(panelX, panelY, panelW, panelH, 12);
         noStroke();
 
+        // ===== 从这里开始替换 =====
+
+        // 顶部大字：CONGRATS! YOU ADVANCED! (保持金色闪烁)
         const pulse = 0.03 * sin(frameCount * 0.08);
         const scaleFactor = 1 + pulse;
         push();
-        translate(width / 2, panelY + 72);
+        translate(width / 2, panelY + 70); 
         scale(scaleFactor);
         fill(255, 220, 80);
-        textSize(14);
+        // 🌟 修改：第一行大字调大（原来是14，现在改到了22）
+        textSize(22); 
         textAlign(CENTER, CENTER);
         this._drawPixelTextOutline('CONGRATS! YOU ADVANCED!', 0, 0);
         fill(255, 240, 140);
         text('CONGRATS! YOU ADVANCED!', 0, 0);
         pop();
-
+        
         const rankInfo = this._getCelebrationRankInfo();
-        let cy = panelY + 120;
-        const lineH = 36;
+        let cy = panelY + 135; 
+        // 🌟 修改：字变大了，行距也稍微加宽一点防重叠（原来是36，现在改到了42）
+        const lineH = 42; 
 
-        fill(200, 235, 255);
-        textSize(14);
+        // 1. 你的排名：【亮青色】
+        fill(0, 230, 255); 
+        // 🌟 修改：第二行调大（原来是14，现在改到了18）
+        textSize(18); 
         textAlign(CENTER, CENTER);
         text(`Your Rank: #${rankInfo.rank}`, width / 2, cy);
         cy += lineH;
-        textSize(12);
+        
+        // 2. 你的分数：【亮绿色】
+        fill(120, 255, 120); 
+        // 🌟 修改：第三行调大（原来是12，现在改到了16）
+        textSize(16); 
         text(`${this.player.name || 'Anon'}  Score: ${this.player.totalScore}  Lv.${this.levelNum}`, width / 2, cy);
 
         if (rankInfo.nextEntry) {
-            cy += lineH + 14;
-            fill(140, 180, 220);
-            textSize(10);
+            cy += lineH + 10;
+            // 3. Next Up 提示词：【橙黄色】
+            fill(255, 180, 50); 
+            textSize(12); // 原来是10，顺便稍微大一点点
             text('Next up:', width / 2, cy);
-            cy += lineH;
-            fill(180, 210, 245);
-            textSize(11);
+            cy += lineH - 8;
+            
+            // 4. 对手的排名和分数：【粉红色】
+            fill(255, 150, 180); 
+            // 🌟 修改：第五行调大（原来是11，现在改到了15）
+            textSize(15); 
             text(`#${rankInfo.nextRank}  ${rankInfo.nextEntry.playerName}  Score: ${rankInfo.nextEntry.score}  Lv.${rankInfo.nextEntry.levelsCompleted ?? 0}`, width / 2, cy);
         }
 
-        cy = panelY + panelH - 50;
-        fill(180, 220, 255);
-        textSize(8);
+        // 5. 底部点击提示：带呼吸闪烁效果的【浅绿色】
+        cy = panelY + panelH - 45;
+        fill(180, 255, 180, (sin(frameCount * 0.1) * 127 + 128)); 
+        // 这里也稍微调大了一点（原来是8，改到了11），免得太小看不清
+        textSize(11); 
         textAlign(CENTER, CENTER);
         text('Click anywhere to continue', width / 2, cy);
+        pop();
+    }
+    // 🌟 黄金矿工风格：下一关目标展示页
+    drawNextLevelTarget() {
+        push();
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+        rectMode(CORNER);
+        noSmooth();
+
+        // 🌟 1. 先把你的专属 NEXTLEVEL 背景图画在最底层铺满全屏
+        if (typeof nextLevelBgImg !== 'undefined' && nextLevelBgImg) {
+            imageMode(CORNER);
+            image(nextLevelBgImg, 0, 0, width, height);
+        } else {
+            // 如果图片没加载出来，给个深蓝底色保底
+            fill(8, 28, 55);
+            rect(0, 0, width, height);
+        }
+
+        // 🌟 2. 盖上一层半透明黑色滤镜（重要！让图片变暗，确保上面绿色的目标分数能看清）
+        // 如果你觉得图片太亮，把 160 改大（比如 200）；如果觉得太暗，把 160 改小（比如 100）。
+        fill(0, 0, 0, 160); 
+        rect(0, 0, width, height);
+
+        // 2. 居中面板 (参考黄金矿工，做得稍微扁宽一点)
+        const panelW = 460;
+        const panelH = 300;
+        const panelX = (width - panelW) / 2;
+        const panelY = (height - panelH) / 2;
+
+        noStroke();
+        fill(0, 0, 0, 80); 
+        rect(panelX + 6, panelY + 6, panelW, panelH, 12);
+        fill(20, 40, 70, 240); // 深蓝底色
+        rect(panelX, panelY, panelW, panelH, 12);
+        
+        // 🌟 重点：黄金矿工风格的橙金色发光描边！
+        stroke(0, 230, 255);
+        strokeWeight(4);
+        noFill();
+        rect(panelX, panelY, panelW, panelH, 12);
+        noStroke();
+
+        let cy = panelY + 50;
+        
+        // 🌟 标题：第几关
+        fill(255, 220, 80);
+        textSize(24);
+        textAlign(CENTER, CENTER);
+        text(`LEVEL ${this.levelNum}`, width / 2, cy);
+        cy += 50;
+
+        // 🌟 目标分数提示文本
+        fill(255, 120, 0);
+        textSize(16);
+        text("TARGET SCORE:", width / 2, cy);
+        cy += 55;
+
+        // 🌟 超大荧光绿目标分数（灵魂所在！）
+        // ⚠️ 注意：这里我暂定了一个公式(关卡数*1500)，你需要替换成你游戏真实的过关分数变量
+        // 🌟 获取真实目标分数（完美同步 LevelManager 的算法）
+        let n = this.levelNum;
+        const goldFishEff = 26.67; 
+        let totalTarget = 0;
+
+        for (let i = 1; i <= n; i++) {
+            let stdTime = (this.currentDifficulty === Difficulty.HARD) ? Math.min(35, 24 + i) : Math.min(40, 29 + i);
+            let factorLevel = Math.min(i, 10);
+            let skillFactor = 0.5 + (factorLevel - 1) * (0.4 / 9);
+            let growthFactor = 1 + (factorLevel - 1) * 0.05;
+            totalTarget += stdTime * goldFishEff * skillFactor * growthFactor;
+        }
+
+        if (this.currentDifficulty === Difficulty.HARD) totalTarget *= 1.20;
+        if (this.currentPlayerMode === PlayerMode.TWO_PLAYER) totalTarget *= 1.75;
+
+        let targetScore = Math.floor(totalTarget / 10) * 10; 
+        fill(255, 100, 200)
+        textSize(56); 
+        text(`${targetScore}`, width / 2, cy);
+        cy += 65;
+
+        // 当前分数提示
+        fill(150, 200, 255);
+        textSize(12);
+        text(`Current Score: ${this.player.totalScore}`, width / 2, cy);
+
+        // 闪烁的点击提示
+        cy = panelY + panelH - 25;
+        fill(180, 255, 180, (sin(frameCount * 0.1) * 127 + 128));
+        textSize(10);
+        text('Click anywhere to start level', width / 2, cy);
 
         pop();
     }
-
     drawHighScore() {
         push();
         rectMode(CORNER);
@@ -1778,6 +1914,12 @@ changeState(newState) {
                 break;
             }
             case GameState.DIFFICULTY_SELECT:
+                if (this._menuBackBtnBounds && 
+                    mouseX >= this._menuBackBtnBounds.x && mouseX <= this._menuBackBtnBounds.x + this._menuBackBtnBounds.w && 
+                    mouseY >= this._menuBackBtnBounds.y && mouseY <= this._menuBackBtnBounds.y + this._menuBackBtnBounds.h) {
+                    this.changeState(GameState.NAME_ENTRY); // 退回到输入名字
+                    break;
+                }
                 if (
                     this.isPointInRect(
                         mouseX,
@@ -1805,6 +1947,12 @@ changeState(newState) {
                 }
                 break;
             case GameState.PLAYER_MODE_SELECT:
+                if (this._menuBackBtnBounds && 
+                    mouseX >= this._menuBackBtnBounds.x && mouseX <= this._menuBackBtnBounds.x + this._menuBackBtnBounds.w && 
+                    mouseY >= this._menuBackBtnBounds.y && mouseY <= this._menuBackBtnBounds.y + this._menuBackBtnBounds.h) {
+                    this.changeState(GameState.DIFFICULTY_SELECT); // 退回到选择难度
+                    break;
+                }
                 if (
                     this.isPointInRect(
                         mouseX,
@@ -1880,10 +2028,15 @@ changeState(newState) {
                 let shopResult = this.shopManager.handleMousePress(this.player, this.currentPlayerMode);
                 if (shopResult === 'NEXT_LEVEL') {
                     this.levelNum++;
-                    this.startLevel();
-                    this.player.consumeItems(this.levelManager);
-                    this.shopManager.resetShop(this.levelNum, this.player);
+                    // 🌟 重点：这里不要直接调用 startLevel，而是切到目标展示页
+                    this.changeState(GameState.NEXT_LEVEL_TARGET); 
                 }
+                break;
+            }
+            case GameState.NEXT_LEVEL_TARGET: {
+                this.startLevel();
+                this.player.consumeItems(this.levelManager);
+                this.shopManager.resetShop(this.levelNum, this.player);
                 break;
             }
             case GameState.LEVEL_PASS_CELEBRATION:
