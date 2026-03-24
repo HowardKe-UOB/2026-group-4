@@ -273,7 +273,7 @@ class ShopManager {
             }
 
             // 商品描述-字体缩小避免溢出
-            textSize(9);
+            textSize(10);
             textStyle(NORMAL);
             fill(100, 80, 60);
             text(hoveredItem.description, width / 2, infoY - 20);
