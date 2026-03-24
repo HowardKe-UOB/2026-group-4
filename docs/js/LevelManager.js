@@ -957,6 +957,18 @@ class LevelManager {
                 ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
                 ctx.fill();
             }
+            if (item instanceof KoiFish) {
+                let pulse = 0.15 * sin(frameCount * 0.05 + item.glowPhase);
+                let r = item.glowRadius * (1 + pulse);
+                let grad = ctx.createRadialGradient(item.position.x, item.position.y, 0, item.position.x, item.position.y, r);
+                grad.addColorStop(0,   'rgba(0,0,0,0.85)');
+                grad.addColorStop(0.5, 'rgba(0,0,0,0.45)');
+                grad.addColorStop(1,   'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
             if (item instanceof SwimmingPearlShell) {
                 let pulse = 0.2 * sin(frameCount * 0.06 + item.glowPhase);
                 let r = item.glowRadius * (1 + pulse);

@@ -284,6 +284,9 @@ class KoiFish extends BaseFish {
 
         this.speed = 2.33; // 移速较快
         this.direction = spawnX < 0 ? 1 : -1; // 在左边就向右游，在右边就向左游
+
+        this.glowPhase = random(TWO_PI);
+        this.glowRadius = 60;
     }
 
     update() {
@@ -309,6 +312,22 @@ class KoiFish extends BaseFish {
     draw() {
         push();
         translate(this.position.x, this.position.y);
+
+        // 金色径向发光光晕（与 AnglerFish 同款效果）
+        let pulse = 0.15 * sin(frameCount * 0.05 + this.glowPhase);
+        let r = this.glowRadius * (1 + pulse);
+        let ctx = drawingContext;
+        ctx.save();
+        let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
+        grad.addColorStop(0,   'rgba(255,200,50,0.28)');
+        grad.addColorStop(0.5, 'rgba(255,200,50,0.13)');
+        grad.addColorStop(1,   'rgba(255,200,50,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
         if (this.direction === -1) {
             scale(-1, 1);
         }

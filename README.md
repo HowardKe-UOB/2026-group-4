@@ -56,7 +56,6 @@ _Figure 2: Group 4 development team members._
 | **Jianxing Li** | ue25937@bristol.ac.uk | [UoB26Git](https://github.com/UoB26Git)                   | -    |
 | **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/Howard Ke)                 | -    |
 | **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | -    |
-| -               | -                     | -                                                         | -    |
 
 </div>
 
