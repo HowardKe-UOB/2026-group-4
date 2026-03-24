@@ -34,8 +34,8 @@ class LevelManager {
             // B. 获取封顶关卡数 (用于系数计算，最高到 10)
             let factorLevel = Math.min(i, 10);
 
-            // C. 计算技能系数 (0.5 -> 0.8 封顶)
-            let skillFactor = 0.5 + (factorLevel - 1) * (0.3 / 9);
+            // C. 计算技能系数 (0.5 -> 0.9 封顶)
+            let skillFactor = 0.5 + (factorLevel - 1) * (0.4 / 9);
 
             // D. 计算物资密度/成长补偿 (1.0 -> 1.45 封顶)
             let growthFactor = 1 + (factorLevel - 1) * 0.05;
@@ -47,7 +47,7 @@ class LevelManager {
 
         // 难度与游玩人数修正
         if (this.difficulty === Difficulty.HARD) {
-            totalTarget *= 1.25; // 困难模式整体要求提高 25%
+            totalTarget *= 1.20; // 困难模式整体要求提高 20%
         }
         if (this.playerMode === PlayerMode.TWO_PLAYER) {
             totalTarget *= 1.75; // 双人模式倍率

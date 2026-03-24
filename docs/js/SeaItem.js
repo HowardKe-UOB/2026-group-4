@@ -133,7 +133,7 @@ class FishBone extends SeaItem {
 class Treasure extends SeaItem {
     constructor(x, y) {
         let val = floor(random(300, 380));
-        super(x, y, "Treasure", val, 3.5);
+        super(x, y, "Treasure", val, 4);
         this.width = 80;
         this.height = 60;
 

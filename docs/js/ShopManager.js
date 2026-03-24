@@ -27,7 +27,7 @@ class ShopManager {
             new ShopItem(
                 "Strength Potion",
                 225,
-                "A potion can bestow you with magical power!\nPulls items 2x faster.\n[period: 1 level]",
+                "A potion can bestow you with magical power!\nPulls items 1.5x faster.\n[period: 1 level]",
                 levelNum, player
             ),
             new ShopItem(
@@ -130,19 +130,19 @@ class ShopManager {
 
         // Next Level button 检测区域
         let isNextHovered =
-            abs(mx - this.nextLevelBoxX) < 100 &&
+            abs(mx - this.nextLevelBoxX) < 80 &&
             abs(my - this.nextLevelBoxY) < 35;
         // 高亮区域
         if (isNextHovered) {
             noStroke();
             fill(255, 255, 255, 120);
             rectMode(CENTER);
-            rect(this.nextLevelBoxX, this.nextLevelBoxY, 220, 70, 10);
+            rect(this.nextLevelBoxX, this.nextLevelBoxY, 160, 70, 10);
         }
         push();
         fill(isNextHovered ? 0 : 255);
         textAlign(CENTER, CENTER);
-        textSize(12);
+        textSize(14);
         textLeading(25);
         textStyle(BOLD);
         textFont(pixelFont);
