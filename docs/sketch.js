@@ -157,6 +157,7 @@ function setup() {
 
     gameManager = new GameManager();
     gameManager._applyVolume();
+    gameManager._applySfxVolume();
     gameManager.changeState(GameState.NAME_ENTRY);
     wireModeButtons();
 }

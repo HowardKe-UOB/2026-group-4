@@ -31,10 +31,13 @@ class GameManager {
         // 设置（从 localStorage 恢复）
         this.settingsOpen = false;
         const savedVol = parseFloat(localStorage.getItem('ds_volume'));
+        const savedSfx = parseFloat(localStorage.getItem('ds_sfx_volume'));
         const savedBright = parseFloat(localStorage.getItem('ds_brightness'));
         this.volumeLevel = isNaN(savedVol) ? 0.8 : constrain(savedVol, 0, 1);
+        this.sfxVolumeLevel = isNaN(savedSfx) ? 0.8 : constrain(savedSfx, 0, 1);
         this.brightnessLevel = isNaN(savedBright) ? 1 : constrain(savedBright, 0, 1);
         this._settingsVolumeDragging = false;
+        this._settingsSfxVolumeDragging = false;
         this._settingsBrightnessDragging = false;
         this.scaledMouseX = 0;
         this.scaledMouseY = 0;
@@ -54,6 +57,18 @@ class GameManager {
         if (typeof shopBgm !== 'undefined' && shopBgm) shopBgm.setVolume(v);
         if (typeof gameplayBgm !== 'undefined' && gameplayBgm) gameplayBgm.setVolume(v);
         try { localStorage.setItem('ds_volume', String(v)); } catch (_) {}
+    }
+
+    _applySfxVolume() {
+        const v = this.sfxVolumeLevel;
+        if (typeof koiInSfx !== 'undefined' && koiInSfx) koiInSfx.setVolume(v);
+        if (typeof koiOutSfx !== 'undefined' && koiOutSfx) koiOutSfx.setVolume(v);
+        if (typeof buySfx !== 'undefined' && buySfx) buySfx.setVolume(v);
+        if (typeof catchSfx !== 'undefined' && catchSfx) catchSfx.setVolume(v);
+        if (typeof ballCatchSfx !== 'undefined' && ballCatchSfx) ballCatchSfx.setVolume(v);
+        if (typeof sharkStolenSfx !== 'undefined' && sharkStolenSfx)
+            sharkStolenSfx.setVolume(v);
+        try { localStorage.setItem('ds_sfx_volume', String(v)); } catch (_) {}
     }
 
     _saveBrightness() {
@@ -811,7 +826,7 @@ changeState(newState) {
         rect(0, 0, width, height);
 
         const panelW = 380;
-        const panelH = 260;
+        const panelH = 325;
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2;
 
@@ -838,14 +853,15 @@ changeState(newState) {
         const barW = 260;
         const barH = 20;
         const barX = panelX + (panelW - barW) / 2;
-        const barY1 = panelY + 75;
-        const barY2 = panelY + 140;
+        const barY1 = panelY + 68;
+        const barY2 = barY1 + 65;
+        const barY3 = barY2 + 65;
 
-        // 音量条
+        // 背景音乐
         fill(200, 230, 255);
         textSize(10);
         textAlign(LEFT, CENTER);
-        text('VOLUME', panelX + 40, barY1 - 25);
+        text('MUSIC', panelX + 40, barY1 - 25);
         fill(30, 60, 90);
         rect(barX, barY1, barW, barH, 4);
         fill(80, 160, 220);
@@ -860,22 +876,39 @@ changeState(newState) {
         rect(thumb1X, barY1 - 4, 16, barH + 8, 4);
         this._settingsVolumeBar = { x: barX, y: barY1, w: barW, h: barH };
 
-        // 亮度条
+        // 音效（非 BGM）
         fill(200, 230, 255);
-        text('BRIGHTNESS', panelX + 40, barY2 - 25);
+        text('SFX', panelX + 40, barY2 - 25);
         fill(30, 60, 90);
         rect(barX, barY2, barW, barH, 4);
-        fill(255, 220, 100);
-        rect(barX, barY2, barW * this.brightnessLevel, barH, 4);
+        fill(120, 200, 160);
+        rect(barX, barY2, barW * this.sfxVolumeLevel, barH, 4);
         stroke(0, 0, 0);
         strokeWeight(2);
         noFill();
         rect(barX, barY2, barW, barH, 4);
         noStroke();
         fill(255, 230, 180);
+        const thumbSfxX = barX + barW * this.sfxVolumeLevel - 8;
+        rect(thumbSfxX, barY2 - 4, 16, barH + 8, 4);
+        this._settingsSfxVolumeBar = { x: barX, y: barY2, w: barW, h: barH };
+
+        // 亮度条
+        fill(200, 230, 255);
+        text('BRIGHTNESS', panelX + 40, barY3 - 25);
+        fill(30, 60, 90);
+        rect(barX, barY3, barW, barH, 4);
+        fill(255, 220, 100);
+        rect(barX, barY3, barW * this.brightnessLevel, barH, 4);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        noFill();
+        rect(barX, barY3, barW, barH, 4);
+        noStroke();
+        fill(255, 230, 180);
         const thumb2X = barX + barW * this.brightnessLevel - 8;
-        rect(thumb2X, barY2 - 4, 16, barH + 8, 4);
-        this._settingsBrightnessBar = { x: barX, y: barY2, w: barW, h: barH };
+        rect(thumb2X, barY3 - 4, 16, barH + 8, 4);
+        this._settingsBrightnessBar = { x: barX, y: barY3, w: barW, h: barH };
 
         // 关闭按钮
         const closeBtnW = 100;
@@ -1913,7 +1946,19 @@ changeState(newState) {
                         this._applyVolume();
                     }
                 }
-                if (this._settingsBrightnessBar && !this._settingsVolumeDragging) {
+                if (!this._settingsVolumeDragging && this._settingsSfxVolumeBar) {
+                    const bs = this._settingsSfxVolumeBar;
+                    if (mouseX >= bs.x && mouseX <= bs.x + bs.w && mouseY >= bs.y - 8 && mouseY <= bs.y + bs.h + 8) {
+                        this._settingsSfxVolumeDragging = true;
+                        this.sfxVolumeLevel = constrain((mouseX - bs.x) / bs.w, 0, 1);
+                        this._applySfxVolume();
+                    }
+                }
+                if (
+                    this._settingsBrightnessBar &&
+                    !this._settingsVolumeDragging &&
+                    !this._settingsSfxVolumeDragging
+                ) {
                     const b2 = this._settingsBrightnessBar;
                     if (mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y - 8 && mouseY <= b2.y + b2.h + 8) {
                         this._settingsBrightnessDragging = true;
@@ -2173,6 +2218,12 @@ changeState(newState) {
                 this._applyVolume();
                 return;
             }
+            if (this._settingsSfxVolumeDragging && this._settingsSfxVolumeBar) {
+                const bs = this._settingsSfxVolumeBar;
+                this.sfxVolumeLevel = constrain((mouseX - bs.x) / bs.w, 0, 1);
+                this._applySfxVolume();
+                return;
+            }
             if (this._settingsBrightnessDragging && this._settingsBrightnessBar) {
                 const b = this._settingsBrightnessBar;
                 this.brightnessLevel = constrain((mouseX - b.x) / b.w, 0, 1);
@@ -2197,6 +2248,7 @@ changeState(newState) {
     handleMouseReleased() {
         this.highScoreScrollDragging = false;
         this._settingsVolumeDragging = false;
+        this._settingsSfxVolumeDragging = false;
         this._settingsBrightnessDragging = false;
     }
 
