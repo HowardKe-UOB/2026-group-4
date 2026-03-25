@@ -41,15 +41,20 @@ let submarineImg2;
 let newhook2Img;
 let pearlImg;
 let pearlShellImgs = [];
+let passcelebrationImg;
+let nextlevelImg;
+let backImg;
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
 // Press Start 2P加单引号，让浏览器解析
 const pixelFont = "'Press Start 2P'";
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
-    bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); // 确保文件名和后缀绝对一致！
-
+    bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); 
+    passcelebrationImg = loadImage('assets/passcelebration.jpg');
+    nextLevelBgImg = loadImage('assets/nextlevel.jpg');
     bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 【修复】此文件不存在，使用 ocean_bg2 代替 // 需要新增此资源或使用现有的ocean_bg2作为深海
+    backImg = loadImage('assets/back.png');
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     clockImg = loadImage("assets/SandClock.png");
@@ -200,15 +205,6 @@ function wireModeButtons() {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.TWO_PLAYER;
         gameManager.startGame();
-    });
-
-    document.getElementById("back-btn").addEventListener("click", () => {
-        userStartAudio();
-        if (gameManager.currentState === GameState.DIFFICULTY_SELECT) {
-            gameManager.changeState(GameState.NAME_ENTRY);
-        } else if (gameManager.currentState === GameState.PLAYER_MODE_SELECT) {
-            gameManager.changeState(GameState.DIFFICULTY_SELECT);
-        }
     });
 
     function syncOverlay() {
