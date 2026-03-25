@@ -47,7 +47,7 @@ class LevelManager {
 
         // 难度与游玩人数修正
         if (this.difficulty === Difficulty.HARD) {
-            totalTarget *= 1.20; // 困难模式整体要求提高 20%
+            totalTarget *= 1.2; // 困难模式整体要求提高 20%
         }
         if (this.playerMode === PlayerMode.TWO_PLAYER) {
             totalTarget *= 1.75; // 双人模式倍率
@@ -58,9 +58,9 @@ class LevelManager {
 
         // 设定实际关卡时间 (这部分会被沙漏道具在外部修改，但不影响上面已算好的分数)
         if (this.difficulty === Difficulty.HARD) {
-            this.timeLimit = Math.min(35, 24 + n);// 困难模式时间:25~35秒
+            this.timeLimit = Math.min(35, 24 + n); // 困难模式时间:25~35秒
         } else {
-            this.timeLimit = Math.min(40, 29 + n);// 简单模式时间:30~40秒
+            this.timeLimit = Math.min(40, 29 + n); // 简单模式时间:30~40秒
         }
         this.timeRemaining = this.timeLimit;
 
@@ -126,8 +126,8 @@ class LevelManager {
 
         // 每关将有小概率自然生成一条锦鲤
         this.hasRandomKoi = random() < 0.1; // 10% 的几率生成
-        this.randomKoiTime = random(8, 16);  // 8~16秒随机出现
-        this.randomKoiSpawned = false;       // 标记自然生成的锦鲤是否已出现
+        this.randomKoiTime = random(8, 16); // 8~16秒随机出现
+        this.randomKoiSpawned = false; // 标记自然生成的锦鲤是否已出现
 
         // UI颜色缓存
         this.cPrimary = color(0, 200, 150);
@@ -381,16 +381,16 @@ class LevelManager {
                     returnedItem.itemName === "Treasure"
                 ) {
                     returnedItem.scoreValue = Math.floor(
-                        returnedItem.scoreValue * 1.35
+                        returnedItem.scoreValue * 1.35,
                     );
                 }
                 // 鱼骨收藏书：对鱼骨获得20~50金币，对石头获得+100%金币
-                if (this.player.hasFishboneCollector){
-                    if(returnedItem.itemName === "FishBone"){
-                        returnedItem.scoreValue = Math.floor(random(20, 51));
-                    }else if(returnedItem.itemName === "Stone"){
+                if (this.player.hasFishboneCollector) {
+                    if (returnedItem.itemName === "FishBone") {
+                        returnedItem.scoreValue = Math.floor(random(20, 31)); // 原本上限是 51
+                    } else if (returnedItem.itemName === "Stone") {
                         returnedItem.scoreValue = Math.floor(
-                            returnedItem.scoreValue * 2
+                            returnedItem.scoreValue * 2,
                         );
                     }
                 }
@@ -519,34 +519,37 @@ class LevelManager {
         let timePassed = this.timeLimit - this.timeRemaining;
         // 关卡内10s后生成锦鲤
         if (this.player.hasLuckyCoin && timePassed >= 10 && !this.koiSpawned) {
-            let koi = new KoiFish(random(375, 475));  // 生成高度，中浅层区
+            let koi = new KoiFish(random(375, 475)); // 生成高度，中浅层区
             this.activeItems.push(koi);
             this.koiSpawned = true; // 标记本关已生成
             this.player.hasLuckyCoin = false; // 消耗掉道具
             if (koiInSfx && !koiInSfx.isPlaying()) {
-                koiInSfx.play();  // 入场音效
+                koiInSfx.play(); // 入场音效
             }
         }
 
         // 只有当玩家本关没有购买 Lucky Coin 时，才有小概率随机生成锦鲤
-        if (this.hasRandomKoi && !this.randomKoiSpawned && timePassed >= this.randomKoiTime) {
-            if (!this.player.hasLuckyCoin) { 
+        if (
+            this.hasRandomKoi &&
+            !this.randomKoiSpawned &&
+            timePassed >= this.randomKoiTime
+        ) {
+            if (!this.player.hasLuckyCoin) {
                 let randomKoi = new KoiFish(random(375, 475));
                 this.activeItems.push(randomKoi);
                 this.randomKoiSpawned = true;
-                
+
                 if (koiInSfx && !koiInSfx.isPlaying()) {
                     koiInSfx.play();
                 }
             } else {
                 // 如果买了道具，就直接废弃本关的随机锦鲤机会
-                this.randomKoiSpawned = true; 
+                this.randomKoiSpawned = true;
             }
         }
 
         return this.checkWinCondition();
     }
-    
 
     checkWinCondition() {
         if (this.timeRemaining <= 0) {
@@ -877,7 +880,7 @@ class LevelManager {
         dl.background(0, 0, 0, 215);
         let ctx = dl.drawingContext;
         ctx.save();
-        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalCompositeOperation = "destination-out";
 
         for (let i = 0; i < this.hooks.length; i++) {
             let hook = this.hooks[i];
@@ -901,11 +904,18 @@ class LevelManager {
 
             // 潜水艇周围柔和径向渐变光晕（主晕影效果）
             let ambientR = 130;
-            let ambientGrad = ctx.createRadialGradient(bx, by, 0, bx, by, ambientR);
-            ambientGrad.addColorStop(0,    'rgba(0,0,0,1)');
-            ambientGrad.addColorStop(0.5,  'rgba(0,0,0,0.9)');
-            ambientGrad.addColorStop(0.82, 'rgba(0,0,0,0.45)');
-            ambientGrad.addColorStop(1,    'rgba(0,0,0,0)');
+            let ambientGrad = ctx.createRadialGradient(
+                bx,
+                by,
+                0,
+                bx,
+                by,
+                ambientR,
+            );
+            ambientGrad.addColorStop(0, "rgba(0,0,0,1)");
+            ambientGrad.addColorStop(0.5, "rgba(0,0,0,0.9)");
+            ambientGrad.addColorStop(0.82, "rgba(0,0,0,0.45)");
+            ambientGrad.addColorStop(1, "rgba(0,0,0,0)");
             ctx.fillStyle = ambientGrad;
             ctx.beginPath();
             ctx.arc(bx, by, ambientR, 0, Math.PI * 2);
@@ -915,19 +925,25 @@ class LevelManager {
             let farCx = bx + dx * coneLen;
             let farCy = by + dy * coneLen;
             let coneGrad = ctx.createLinearGradient(bx, by, farCx, farCy);
-            coneGrad.addColorStop(0,    'rgba(0,0,0,0.85)');
-            coneGrad.addColorStop(0.55, 'rgba(0,0,0,0.6)');
-            coneGrad.addColorStop(1,    'rgba(0,0,0,0)');
-            ctx.filter = 'blur(18px)';
+            coneGrad.addColorStop(0, "rgba(0,0,0,0.85)");
+            coneGrad.addColorStop(0.55, "rgba(0,0,0,0.6)");
+            coneGrad.addColorStop(1, "rgba(0,0,0,0)");
+            ctx.filter = "blur(18px)";
             ctx.fillStyle = coneGrad;
             ctx.beginPath();
             ctx.moveTo(tx + px * topHalfW, ty + py * topHalfW);
-            ctx.lineTo(bx + Math.sin(a2) * coneLen, by + Math.cos(a2) * coneLen);
-            ctx.lineTo(bx + Math.sin(a1) * coneLen, by + Math.cos(a1) * coneLen);
+            ctx.lineTo(
+                bx + Math.sin(a2) * coneLen,
+                by + Math.cos(a2) * coneLen,
+            );
+            ctx.lineTo(
+                bx + Math.sin(a1) * coneLen,
+                by + Math.cos(a1) * coneLen,
+            );
             ctx.lineTo(tx - px * topHalfW, ty - py * topHalfW);
             ctx.closePath();
             ctx.fill();
-            ctx.filter = 'none';
+            ctx.filter = "none";
         }
 
         // 鮟鱇鱼：柔和径向发光（随脉冲动态变化）
@@ -935,10 +951,17 @@ class LevelManager {
             if (item instanceof AnglerFish) {
                 let pulse = 0.15 * sin(frameCount * 0.05 + item.glowPulse);
                 let r = item.glowRadius * (1 + pulse);
-                let grad = ctx.createRadialGradient(item.position.x, item.position.y, 0, item.position.x, item.position.y, r);
-                grad.addColorStop(0,   'rgba(0,0,0,0.85)');
-                grad.addColorStop(0.5, 'rgba(0,0,0,0.45)');
-                grad.addColorStop(1,   'rgba(0,0,0,0)');
+                let grad = ctx.createRadialGradient(
+                    item.position.x,
+                    item.position.y,
+                    0,
+                    item.position.x,
+                    item.position.y,
+                    r,
+                );
+                grad.addColorStop(0, "rgba(0,0,0,0.85)");
+                grad.addColorStop(0.5, "rgba(0,0,0,0.45)");
+                grad.addColorStop(1, "rgba(0,0,0,0)");
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
@@ -948,10 +971,17 @@ class LevelManager {
             if (item instanceof Pearl) {
                 let pulse = 0.25 * sin(frameCount * 0.06 + item.glowPhase);
                 let r = item.glowRadius * (1 + pulse);
-                let grad = ctx.createRadialGradient(item.position.x, item.position.y, 0, item.position.x, item.position.y, r);
-                grad.addColorStop(0,   'rgba(0,0,0,0.85)');
-                grad.addColorStop(0.5, 'rgba(0,0,0,0.45)');
-                grad.addColorStop(1,   'rgba(0,0,0,0)');
+                let grad = ctx.createRadialGradient(
+                    item.position.x,
+                    item.position.y,
+                    0,
+                    item.position.x,
+                    item.position.y,
+                    r,
+                );
+                grad.addColorStop(0, "rgba(0,0,0,0.85)");
+                grad.addColorStop(0.5, "rgba(0,0,0,0.45)");
+                grad.addColorStop(1, "rgba(0,0,0,0)");
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);
@@ -972,10 +1002,17 @@ class LevelManager {
             if (item instanceof SwimmingPearlShell) {
                 let pulse = 0.2 * sin(frameCount * 0.06 + item.glowPhase);
                 let r = item.glowRadius * (1 + pulse);
-                let grad = ctx.createRadialGradient(item.position.x, item.position.y, 0, item.position.x, item.position.y, r);
-                grad.addColorStop(0,   'rgba(0,0,0,0.8)');
-                grad.addColorStop(0.5, 'rgba(0,0,0,0.4)');
-                grad.addColorStop(1,   'rgba(0,0,0,0)');
+                let grad = ctx.createRadialGradient(
+                    item.position.x,
+                    item.position.y,
+                    0,
+                    item.position.x,
+                    item.position.y,
+                    r,
+                );
+                grad.addColorStop(0, "rgba(0,0,0,0.8)");
+                grad.addColorStop(0.5, "rgba(0,0,0,0.4)");
+                grad.addColorStop(1, "rgba(0,0,0,0)");
                 ctx.fillStyle = grad;
                 ctx.beginPath();
                 ctx.arc(item.position.x, item.position.y, r, 0, Math.PI * 2);

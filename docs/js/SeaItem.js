@@ -52,7 +52,7 @@ class SmallFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(40, 60);
         // Score nerfed: 70–110 (was 30–150), keeps it a "filler" item
-        let calculatedScore = floor(map(randomSize, 40, 60, 90, 130));
+        let calculatedScore = floor(map(randomSize, 40, 60, 75, 115));
         let calculatedWeight = map(randomSize, 40, 60, 1.5, 2.5);
 
         super(
@@ -88,7 +88,7 @@ class BigFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(110, 150);
         // Score nerfed (was 250–600), high-risk high-reward
-        let calculatedScore = floor(map(randomSize, 110, 150, 240, 340));
+        let calculatedScore = floor(map(randomSize, 110, 150, 190, 240)); // 原本是 240, 340
         let calculatedWeight = map(randomSize, 110, 150, 3, 4);
 
         super(x, y, "Big Fish", calculatedScore, calculatedWeight, randomSize);
@@ -181,9 +181,9 @@ class Pearl extends SeaItem {
             let ctx = drawingContext;
             ctx.save();
             let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
-            grad.addColorStop(0,   'rgba(220,230,255,0.38)');
-            grad.addColorStop(0.5, 'rgba(200,215,255,0.16)');
-            grad.addColorStop(1,   'rgba(180,200,255,0)');
+            grad.addColorStop(0, "rgba(220,230,255,0.38)");
+            grad.addColorStop(0.5, "rgba(200,215,255,0.16)");
+            grad.addColorStop(1, "rgba(180,200,255,0)");
             ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
@@ -269,13 +269,17 @@ class KoiFish extends BaseFish {
         let val = random([777, 888]);
         // 随机从屏幕左边(-100)或右边(width+100)生成
         let spawnX = random() > 0.5 ? -100 : width + 100;
-        super(spawnX , y, "KoiFish", val, 2.33, 60);  // 体积，重量设定
+        super(spawnX, y, "KoiFish", val, 2.33, 60); // 体积，重量设定
 
-        this.playedOutSfx = false;  // 退场音效判定
+        this.playedOutSfx = false; // 退场音效判定
 
-        if (typeof koiFishImgs !== "undefined" && koiFishImgs.length > 0 && koiFishImgs[0]) {
+        if (
+            typeof koiFishImgs !== "undefined" &&
+            koiFishImgs.length > 0 &&
+            koiFishImgs[0]
+        ) {
             let img = koiFishImgs[0];
-            let targetWidth = 70; 
+            let targetWidth = 70;
             let targetHeight = targetWidth * (img.height / img.width);
             // 重新赋值高宽
             this.width = targetWidth;
@@ -298,11 +302,13 @@ class KoiFish extends BaseFish {
         this.position.x += this.speed * this.direction;
         // 退场音效
         if (!this.playedOutSfx) {
-            if ((this.direction === 1 && this.position.x > width) || 
-                (this.direction === -1 && this.position.x < 0)) {
-                if (koiOutSfx && !koiOutSfx.isPlaying()){
+            if (
+                (this.direction === 1 && this.position.x > width) ||
+                (this.direction === -1 && this.position.x < 0)
+            ) {
+                if (koiOutSfx && !koiOutSfx.isPlaying()) {
                     koiOutSfx.play();
-                } 
+                }
                 this.playedOutSfx = true;
             }
         }
@@ -319,9 +325,9 @@ class KoiFish extends BaseFish {
         let ctx = drawingContext;
         ctx.save();
         let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
-        grad.addColorStop(0,   'rgba(255,200,50,0.28)');
-        grad.addColorStop(0.5, 'rgba(255,200,50,0.13)');
-        grad.addColorStop(1,   'rgba(255,200,50,0)');
+        grad.addColorStop(0, "rgba(255,200,50,0.28)");
+        grad.addColorStop(0.5, "rgba(255,200,50,0.13)");
+        grad.addColorStop(1, "rgba(255,200,50,0)");
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
@@ -347,7 +353,8 @@ class KoiFish extends BaseFish {
 // 游动的贝壳：继承 BaseFish 复用 swim() 逻辑，高价值可见目标
 class SwimmingPearlShell extends BaseFish {
     constructor(x, y) {
-        super(x, y, "Moving Shell", 1000, 2, 42); // 缩小体积：60 → 42
+        // 在 SwimmingPearlShell 类的 constructor 中
+        super(x, y, "Moving Shell", floor(random(750, 900)), 2, 42); // 原本是 1000
         this.speed = random(2.5, 3.8);
         // 动画帧序列：1-2-3-4-3-2-1（ping-pong 循环）
         this._framePingPong = [0, 1, 2, 3, 2, 1];
@@ -368,9 +375,9 @@ class SwimmingPearlShell extends BaseFish {
             let ctx = drawingContext;
             ctx.save();
             let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
-            grad.addColorStop(0,   'rgba(200,240,255,0.32)');
-            grad.addColorStop(0.5, 'rgba(180,230,255,0.14)');
-            grad.addColorStop(1,   'rgba(160,220,255,0)');
+            grad.addColorStop(0, "rgba(200,240,255,0.32)");
+            grad.addColorStop(0.5, "rgba(180,230,255,0.14)");
+            grad.addColorStop(1, "rgba(160,220,255,0)");
             ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
@@ -384,13 +391,15 @@ class SwimmingPearlShell extends BaseFish {
 
         imageMode(CENTER);
 
-        const hasImgs = typeof pearlShellImgs !== "undefined" &&
-                        pearlShellImgs.length > 0 &&
-                        pearlShellImgs[0];
+        const hasImgs =
+            typeof pearlShellImgs !== "undefined" &&
+            pearlShellImgs.length > 0 &&
+            pearlShellImgs[0];
 
         if (hasImgs) {
-            let seqIndex = Math.floor(frameCount / this._frameInterval) %
-                           this._framePingPong.length;
+            let seqIndex =
+                Math.floor(frameCount / this._frameInterval) %
+                this._framePingPong.length;
             let frameIdx = this._framePingPong[seqIndex];
             let img = pearlShellImgs[frameIdx];
             if (img) image(img, 0, 0, this.width, this.height);
