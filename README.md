@@ -306,7 +306,10 @@ The second major technical challenge involved designing a comprehensive game bal
 **Expected Value Framework for Game Design**
 
 We developed an expected value formula to guide our game balance decisions. When designing each item's score value, we consider the player's expected return per unit time invested. The ultimate expected value ($EV$) for targeting a specific item is calculated as:
-$$EV = \frac{E_{theory}}{DF} = \frac{S \cdot 60 \cdot R_{eff}}{50 \cdot D \cdot \left( \frac{1}{5} + \frac{1}{\max(1, 5 - W)} \right) \cdot (1 + 0.3 \cdot V)}$$
+
+$$
+EV = \frac{E_{theory}}{DF} = \frac{S \cdot 60 \cdot R_{eff}}{50 \cdot D \cdot \left( \frac{1}{5} + \frac{1}{\max(1, 5 - W)} \right) \cdot (1 + 0.3 \cdot V)}
+$$
 
 Where:
 
