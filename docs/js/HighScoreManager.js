@@ -32,6 +32,8 @@ class HighScoreManager {
                         e.difficulty ?? "easy",
                         e.playerMode ?? "single",
                         e.catchHistory ?? {},
+                        e.perLevelEarned ?? e.per_level_earned ?? [],
+                        e.perLevelSpawnValue ?? e.per_level_spawn_value ?? [],
                     ),
             );
             this._sortScores();
@@ -65,13 +67,40 @@ class HighScoreManager {
         );
     }
 
-    checkNewHighScore(score, name, levelsCompleted = 0, difficulty = "easy", playerMode = "single", catchHistory = {}) {
-        let entry = new ScoreEntry(name, score, levelsCompleted, difficulty, playerMode, catchHistory);
+    checkNewHighScore(
+        score,
+        name,
+        levelsCompleted = 0,
+        difficulty = "easy",
+        playerMode = "single",
+        catchHistory = {},
+        perLevelEarned = null,
+        perLevelSpawnValue = null,
+    ) {
+        let entry = new ScoreEntry(
+            name,
+            score,
+            levelsCompleted,
+            difficulty,
+            playerMode,
+            catchHistory,
+            perLevelEarned,
+            perLevelSpawnValue,
+        );
         this.topScores.push(entry);
         this._sortScores();
         this.topScores = this.topScores.slice(0, 50);
         this.saveScores();
-        this.submitToSupabase(score, name, levelsCompleted, difficulty, playerMode, catchHistory);
+        this.submitToSupabase(
+            score,
+            name,
+            levelsCompleted,
+            difficulty,
+            playerMode,
+            catchHistory,
+            entry.perLevelEarned,
+            entry.perLevelSpawnValue,
+        );
     }
 
     async fetchFromSupabase() {
@@ -104,6 +133,8 @@ class HighScoreManager {
                         r.difficulty ?? "easy",
                         r.player_mode ?? "single",
                         r.catch_history ?? {},
+                        r.per_level_earned ?? [],
+                        r.per_level_spawn_value ?? [],
                     ),
             );
             this._sortScores();
@@ -147,6 +178,8 @@ class HighScoreManager {
                         r.difficulty ?? "easy",
                         r.player_mode ?? "single",
                         r.catch_history ?? {},
+                        r.per_level_earned ?? [],
+                        r.per_level_spawn_value ?? [],
                     ),
             );
             const prevLen = this.topScores.length;
@@ -162,7 +195,16 @@ class HighScoreManager {
         }
     }
 
-    async submitToSupabase(score, name, levelsCompleted, difficulty = "easy", playerMode = "single", catchHistory = {}) {
+    async submitToSupabase(
+        score,
+        name,
+        levelsCompleted,
+        difficulty = "easy",
+        playerMode = "single",
+        catchHistory = {},
+        perLevelEarned = [],
+        perLevelSpawnValue = [],
+    ) {
         if (!isProdOrigin()) return;
         const cfg =
             typeof SUPABASE_CONFIG !== "undefined" ? SUPABASE_CONFIG : null;
@@ -172,6 +214,9 @@ class HighScoreManager {
         const d = (difficulty || "easy").toString().toLowerCase();
         const p = (playerMode || "single").toString().toLowerCase();
         const ch = catchHistory && typeof catchHistory === "object" ? catchHistory : {};
+        // 需在 Supabase `scores` 表增加 jsonb 列：per_level_earned、per_level_spawn_value
+        const ple = Array.isArray(perLevelEarned) ? perLevelEarned : [];
+        const pls = Array.isArray(perLevelSpawnValue) ? perLevelSpawnValue : [];
         try {
             await fetch(`${cfg.url}/rest/v1/scores`, {
                 method: "POST",
@@ -187,6 +232,8 @@ class HighScoreManager {
                     difficulty: d,
                     player_mode: p,
                     catch_history: ch,
+                    per_level_earned: ple,
+                    per_level_spawn_value: pls,
                 }),
             });
         } catch (e) {

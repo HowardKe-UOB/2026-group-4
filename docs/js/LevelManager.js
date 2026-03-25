@@ -121,6 +121,8 @@ class LevelManager {
         this.activeItems = [];
         this.fishCaught = {};
         this.spawnItems();
+        // spawnItems 完成后的海里物品分值总和（不含后续锦鲤等动态生成）
+        this.initialSpawnValueTotal = this._sumActiveItemsScoreValue();
         this.floatingScores = [];
         this.koiSpawned = false;
 
@@ -144,6 +146,20 @@ class LevelManager {
             this.sharkSpawnTimer = 0;
             this.sharkSpawnInterval = floor(random(600, 800)); // 5–8 秒随机间隔
         }
+    }
+
+    _sumActiveItemsScoreValue() {
+        let sum = 0;
+        for (const item of this.activeItems) {
+            if (
+                item &&
+                typeof item.scoreValue === "number" &&
+                !isNaN(item.scoreValue)
+            ) {
+                sum += item.scoreValue;
+            }
+        }
+        return sum;
     }
 
     spawnItems() {

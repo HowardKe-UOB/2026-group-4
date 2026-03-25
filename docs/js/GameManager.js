@@ -39,6 +39,13 @@ class GameManager {
         this.scaledMouseX = 0;
         this.scaledMouseY = 0;
         this.nameInputFocused = false;
+
+        /** 每关进入 PLAYING 时的 totalScore（index = levelNum - 1） */
+        this.perLevelScoreAtStart = [];
+        /** 每关增收：离开 PLAYING 时 totalScore − 关初（含失败前已打的钱） */
+        this.perLevelEarned = [];
+        /** 每关开局生成时 activeItems 的 scoreValue 总和（与上一字段同下标） */
+        this.perLevelSpawnValue = [];
     }
 
     _applyVolume() {
@@ -185,6 +192,9 @@ class GameManager {
         this.player.hasClubCard = false;  // 避免沿用上一局的会员卡
         this.gameSessionFishCaught = {};
         this.levelNum = 1;
+        this.perLevelScoreAtStart = [];
+        this.perLevelEarned = [];
+        this.perLevelSpawnValue = [];
         const buttonOverlay = document.getElementById('button-overlay');
         if (buttonOverlay) {
             buttonOverlay.classList.add('hidden');
@@ -208,7 +218,38 @@ class GameManager {
 
         // 如果上面 ShopItem 报错，下面这行就永远跑不到
         this.player.consumeItems(this.levelManager);
+        this._recordLevelSpawnTotal();
+        this._snapshotLevelStartScore();
         this.changeState(GameState.PLAYING);
+    }
+
+    _recordLevelSpawnTotal() {
+        const i = this.levelNum - 1;
+        while (this.perLevelSpawnValue.length <= i) {
+            this.perLevelSpawnValue.push(undefined);
+        }
+        const total =
+            this.levelManager &&
+            typeof this.levelManager.initialSpawnValueTotal === "number"
+                ? this.levelManager.initialSpawnValueTotal
+                : 0;
+        this.perLevelSpawnValue[i] = total;
+    }
+
+    _snapshotLevelStartScore() {
+        const i = this.levelNum - 1;
+        while (this.perLevelScoreAtStart.length <= i) {
+            this.perLevelScoreAtStart.push(undefined);
+            this.perLevelEarned.push(undefined);
+        }
+        this.perLevelScoreAtStart[i] = this.player.totalScore;
+    }
+
+    _finalizeCurrentLevelEarnings() {
+        const i = this.levelNum - 1;
+        if (i < 0 || this.perLevelScoreAtStart[i] === undefined) return;
+        this.perLevelEarned[i] =
+            this.player.totalScore - this.perLevelScoreAtStart[i];
     }
 
 changeState(newState) {
@@ -649,10 +690,12 @@ changeState(newState) {
                 if (!this.gamePaused) {
                     let result = this.levelManager.update();
                     if (result === 'PASS') {
+                        this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.shopManager.resetShop(this.levelNum, this.player);
                         this.changeState(GameState.LEVEL_PASS_CELEBRATION);
                     } else if (result === 'FAIL') {
+                        this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
@@ -663,6 +706,8 @@ changeState(newState) {
                             this.currentDifficulty,
                             this.currentPlayerMode,
                             this.gameSessionFishCaught || {},
+                            this.perLevelEarned,
+                            this.perLevelSpawnValue,
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                     }
@@ -1994,6 +2039,7 @@ changeState(newState) {
                     }
                     if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
                         this.gamePaused = false;
+                        this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
@@ -2004,6 +2050,8 @@ changeState(newState) {
                             this.currentDifficulty,
                             this.currentPlayerMode,
                             this.gameSessionFishCaught || {},
+                            this.perLevelEarned,
+                            this.perLevelSpawnValue,
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                         break;
