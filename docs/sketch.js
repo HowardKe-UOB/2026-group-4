@@ -327,6 +327,14 @@ function mousePressed() {
 
 function keyPressed() {
     userStartAudio();
+    
+    // 🌟 新增：按 F 键或者 F11 切换真正的全屏
+    if (key === 'f' || key === 'F') {
+        let fs = fullscreen();
+        fullscreen(!fs); 
+        return; // 拦截掉，不让它触发游戏内的其他快捷键
+    }
+
     if (gameManager) gameManager.handleKeyPress(key, keyCode);
 }
 
