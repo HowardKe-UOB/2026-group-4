@@ -1,7 +1,5 @@
 class ShopManager {
     constructor() {
-        this.resetShop(1, null);  // 初始化时，因为还没有获取到玩家，传 null 进去
-
         this.goldBoxX = 260;
         this.goldBoxY = 70;
         this.nextLevelBoxX = 1020;
@@ -19,57 +17,125 @@ class ShopManager {
             { x: width / 2 + 120, y: height / 2 - 140 } // Club Card
         ];
 
+        // 1. 定义道具的基础配置 (通过 slotIndex 绑定到上面固定的位置)
+        // 非永久道具：baseProb 高，maxProb 高
+        // 永久道具：baseProb 低，maxProb 较低
+        this.itemConfigs = [
+            { slotIndex: 0, name: "Strength Potion", basePrice: 225, baseProb: 0.5, maxProb: 0.7, desc: "A potion can bestow you with magical power!\nPulls items 1.5x faster.\n[period: 1 level]" },
+            { slotIndex: 1, name: "Laser Sight", basePrice: 175, baseProb: 0.5, maxProb: 0.7, desc: "Often miss? Buy Laser Sight now!\nAdd aiming assistance, swing speed -40%.\n[period: 1 level]" },
+            { slotIndex: 2, name: "Sand Clock", basePrice: 175, baseProb: 0.5, maxProb: 0.7, desc: "A fisher is never late!\nAdd 8~15 seconds based on level.\n[period: 1 level]" },
+            { slotIndex: 3, name: "Submarine", basePrice: 1000, baseProb: 1.0, maxProb: 1.0, desc: "Prove to yourself that you have the strength\nand courage to explore the deep sea.\n[Permanent upgrade]" },
+            { slotIndex: 4, name: "Four-Leaf Clover", basePrice: 500, baseProb: 0.15, maxProb: 0.4, desc: "You will encounter rarer treasure!\nTreasures worth 35% more.\n[Permanent upgrade]" },
+            { slotIndex: 5, name: "Fishbone Collector", basePrice: 400, baseProb: 0.15, maxProb: 0.4, desc: "Museum love old fishbone and stone!\nFishbone:$20~$50, Stone value+100%.\n[Permanent upgrade]" },
+            { slotIndex: 6, name: "Lucky Coin", basePrice: 300, baseProb: 0.4, maxProb: 0.6, desc: "A rare Koi Fish will appear\nat 10s in the next level!\nSpecial sound effects included!\n[period: 1 level]" },
+            { slotIndex: 7, name: "Club Card", basePrice: 500, baseProb: 0.15, maxProb: 0.4, desc: "Exclusive member benefits!\nGet 10%~30% off all items.\n[Permanent upgrade]" }
+        ];
+
         this.hitRadius = 60; // 判定范围
+        this.availableItems = [];
+
+        this.resetShop(1, null);  // 初始化时，因为还没有获取到玩家，传 null 进去
     }
 
     resetShop(levelNum = 1, player = null) {
-        this.availableItems = [
-            new ShopItem(
-                "Strength Potion",
-                225,
-                "A potion can bestow you with magical power!\nPulls items 1.5x faster.\n[period: 1 level]",
-                levelNum, player
-            ),
-            new ShopItem(
-                "Laser Sight",
-                175,
-                "Often miss? Buy Laser Sight now!\nAdd aiming assistance, swing speed -40%.\n[period: 1 level]",
-                levelNum, player
-            ),
-            new ShopItem(
-                "Sand Clock",
-                175,
-                "A fisher is never late!\nAdd 8~15 seconds based on level.\n[period: 1 level]",
-                levelNum, player
-            ),
-            new ShopItem(
-                "Submarine",
-                1000,
-                "Prove to yourself that you have the strength\nand courage to explore the deep sea.\n[Permanent upgrade]",
-                levelNum, player
-            ),
-            new ShopItem("Four-Leaf Clover",
-                500,
-                "You will encounter rarer treasure!\nTreasures worth 35% more.\n[Permanent upgrade]",
-                levelNum, player
-            ),
-            new ShopItem("Fishbone Collector",
-                400,
-                "Museum love old fishbone and stone!\nFishbone:$20~$50, Stone value+100%.\n[Permanent upgrade]",
-                levelNum, player
-            ),
-            new ShopItem("Lucky Coin",
-                300,
-                "A rare Koi Fish will appear\nat 10s in the next level!\nSpecial sound effects included!\n[period: 1 level]",
-                levelNum, player
-            ),
-            new ShopItem("Club Card", 
-                500, 
-                "Exclusive member benefits!\nGet 10%~30% off all items.\n[Permanent upgrade]",
-                levelNum, player
-            )
-        ];
+        this.availableItems = [];
+        let pool = [];
+
+        // 1. 强制添加潜水艇（每关必出）
+        let subConfig = this.itemConfigs.find(c => c.name === "Submarine");
+        pool.push(subConfig);
+
+        // 2. 处理其他道具的动态概率
+        // 线性增长计算：从第1关到第6关增长，6关后固定
+        let progress = Math.min(levelNum, 6);
+        let ratio = (progress - 1) / 5; // 0.0 (L1) 到 1.0 (L6)
+
+        this.itemConfigs.forEach(config => {
+            if (config.name === "Submarine") return; // 跳过潜水艇
+
+            // 计算当前关卡的动态概率
+            let currentProb = config.baseProb + (config.maxProb - config.baseProb) * ratio;
+
+            if (Math.random() < currentProb) {
+                pool.push(config);
+            }
+        });
+
+        // 3. 保底机制：如果道具少于3个（含潜水艇），随机补齐
+        while (pool.length < 3) {
+            let remainConfigs = this.itemConfigs.filter(c => !pool.includes(c));
+            if (remainConfigs.length === 0) break;
+            // 随机抽取一个补入
+            let randomConfig = remainConfigs[Math.floor(Math.random() * remainConfigs.length)];
+            pool.push(randomConfig);
+        }
+
+        // 4. 按原始 slotIndex 排序，保持视觉位置绝对不打乱
+        pool.sort((a, b) => a.slotIndex - b.slotIndex);
+
+        // 5. 实例化道具，并记录它们对应的位置索引
+        pool.forEach(config => {
+            let item = new ShopItem(
+                config.name,
+                config.basePrice,
+                config.desc,
+                levelNum,
+                player
+            );
+            item.slotIndex = config.slotIndex; // 关键：绑定到原有的柜台位置
+            this.availableItems.push(item);
+        });
     }
+
+    // 旧版resetshop
+    // resetShop(levelNum = 1, player = null) {
+    //     this.availableItems = [
+    //         new ShopItem(
+    //             "Strength Potion",
+    //             225,
+    //             "A potion can bestow you with magical power!\nPulls items 1.5x faster.\n[period: 1 level]",
+    //             levelNum, player
+    //         ),
+    //         new ShopItem(
+    //             "Laser Sight",
+    //             175,
+    //             "Often miss? Buy Laser Sight now!\nAdd aiming assistance, swing speed -40%.\n[period: 1 level]",
+    //             levelNum, player
+    //         ),
+    //         new ShopItem(
+    //             "Sand Clock",
+    //             175,
+    //             "A fisher is never late!\nAdd 8~15 seconds based on level.\n[period: 1 level]",
+    //             levelNum, player
+    //         ),
+    //         new ShopItem(
+    //             "Submarine",
+    //             1000,
+    //             "Prove to yourself that you have the strength\nand courage to explore the deep sea.\n[Permanent upgrade]",
+    //             levelNum, player
+    //         ),
+    //         new ShopItem("Four-Leaf Clover",
+    //             500,
+    //             "You will encounter rarer treasure!\nTreasures worth 35% more.\n[Permanent upgrade]",
+    //             levelNum, player
+    //         ),
+    //         new ShopItem("Fishbone Collector",
+    //             400,
+    //             "Museum love old fishbone and stone!\nFishbone:$20~$50, Stone value+100%.\n[Permanent upgrade]",
+    //             levelNum, player
+    //         ),
+    //         new ShopItem("Lucky Coin",
+    //             300,
+    //             "A rare Koi Fish will appear\nat 10s in the next level!\nSpecial sound effects included!\n[period: 1 level]",
+    //             levelNum, player
+    //         ),
+    //         new ShopItem("Club Card", 
+    //             500, 
+    //             "Exclusive member benefits!\nGet 10%~30% off all items.\n[Permanent upgrade]",
+    //             levelNum, player
+    //         )
+    //     ];
+    // }
 
     // playerMode 参数：用于双人模式下显示各自余额及差异化扣款
     draw(player, playerMode = PlayerMode.SINGLE, levelNum = 1) {
@@ -155,7 +221,7 @@ class ShopManager {
 
         for (let i = 0; i < this.availableItems.length; i++) {
             let item = this.availableItems[i];
-            let pos = this.itemPositions[i];
+            let pos = this.itemPositions[item.slotIndex];
 
             let d = dist(mx, my, pos.x, pos.y);
             let isHovered = d < this.hitRadius;
@@ -326,7 +392,7 @@ class ShopManager {
 
         for (let i = 0; i < this.availableItems.length; i++) {
             let item = this.availableItems[i];
-            let pos = this.itemPositions[i];
+            let pos = this.itemPositions[item.slotIndex];
 
             let d = dist(mx, my, pos.x, pos.y);
             if (d < this.hitRadius) {
