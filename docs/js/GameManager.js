@@ -952,7 +952,7 @@ changeState(newState) {
         fill(10, 40, 50, 200); 
         text('~ ✦ ~',      textX + 2, y0 + 2); // 新增符号阴影
         text('PRESS',      textX + 2, y1 + 2);
-        text('[ F ]',      textX + 2, y2 + 2);
+        text('[ SPACE ]',      textX + 2, y2 + 2);
         text('FOR',        textX + 2, y3 + 2);
         text('FULLSCREEN', textX + 2, y4 + 2);
         text('~ ✦ ~',      textX + 2, y5 + 2); // 新增符号阴影
@@ -966,7 +966,7 @@ changeState(newState) {
         // 下面是你原本的冰蓝渐变文字，一模一样
         fill(180, 240, 255, fAlpha); 
         text('PRESS',      textX, y1);
-        text('[ F ]',      textX, y2);
+        text('[ SPACE ]',      textX, y2);
         fill(100, 200, 230, fAlpha); 
         text('FOR',        textX, y3);
         text('FULLSCREEN', textX, y4);
@@ -1006,7 +1006,7 @@ changeState(newState) {
             text('enter your name', width / 2, boxY);
         }
 
-        // 名字已存在时显示红色提示
+       // 名字已存在时显示红色提示
         if (this.nameExistsCheck === true) {
             fill(255, 80, 80);
             textSize(12);
@@ -1016,6 +1016,18 @@ changeState(newState) {
         fill(200, 230, 255);
         textSize(16);
         text('Press ENTER to cast off', width / 2, boxY + 75);
+
+        // 1. 实时检测：如果当前已经是全屏状态了，就立刻把警告关掉
+        if (this.showFullscreenWarning && fullscreen()) {
+            this.showFullscreenWarning = false;
+        }
+
+        // 2. 显示警告（如果没有全屏的话）
+        if (this.showFullscreenWarning) {
+            fill(255, 80, 80); // 🌟 这里去掉了 warnAlpha，直接变成纯正的实心红字，不再闪烁
+            textSize(12);
+            text('MUST PRESS [ SPACE ] TO ENTER FULLSCREEN FIRST!', width / 2, boxY + 105);
+        }
 
         // 右下角小奖杯，点击进入高分榜（设置按钮由 drawSettingsButton 统一绘制）
         const trophySize = 28;
@@ -2633,18 +2645,26 @@ changeState(newState) {
             }
         }
 
-        // --- 3. 姓名输入界面逻辑 (保持不变) ---
+        // --- 3. 姓名输入界面逻辑 ---
         if (this.currentState === GameState.NAME_ENTRY) {
             this.nameInputFocused = true;
             if (keyCode === BACKSPACE) {
-                this.inputText = this.inputText.substring(
-                    0,
-                    this.inputText.length - 1,
-                );
+                // ... 省略部分代码
             } else if (keyCode === ENTER) {
                 const name = this.inputText.trim();
                 if (name) {
                     if (this.nameExistsCheck !== false) return;
+
+                    // ==========================================
+                    // 🌟 新增：强制全屏检查拦截！
+                    // ==========================================
+                    if (!fullscreen()) {
+                        this.showFullscreenWarning = true; // 触发警告开关
+                        return; 
+                    }
+                    this.showFullscreenWarning = false; // 已全屏则关闭警告
+                    // ==========================================
+
                     this.player.name = name;
                     this.changeState(GameState.DIFFICULTY_SELECT);
                 }

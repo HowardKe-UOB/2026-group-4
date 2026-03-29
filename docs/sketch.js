@@ -341,16 +341,22 @@ function mousePressed() {
 }
 
 function keyPressed() {
-    userStartAudio();
-    
-    // 🌟 新增：按 F 键或者 F11 切换真正的全屏
-    if (key === 'f' || key === 'F') {
-        let fs = fullscreen();
-        fullscreen(!fs); 
-        return; // 拦截掉，不让它触发游戏内的其他快捷键
+    // ==========================================
+    // 🌟 全局拦截空格键 (keyCode === 32)
+    // ==========================================
+    if (keyCode === 32) {
+        // 如果当前【不是全屏】（比如刚开局，或者中途不小心按了 ESC 退出了）
+        if (!fullscreen()) {
+            fullscreen(true); // 开启全屏
+        }
+        return; 
     }
+    // ==========================================
 
-    if (gameManager) gameManager.handleKeyPress(key, keyCode);
+    // ... 下面是你原本就有的代码（比如把其他按键传给 gameManager 处理）
+    if (typeof gameManager !== 'undefined' && gameManager) {
+        gameManager.handleKeyPress(key, keyCode);
+    }
 }
 
 function mouseWheel(event) {
