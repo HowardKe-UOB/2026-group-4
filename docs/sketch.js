@@ -44,6 +44,10 @@ let pearlShellImgs = [];
 let passcelebrationImg;
 let nextlevelImg;
 let backImg;
+let Treasure_Chest2;
+let victoryBgm;
+let targetBgm; 
+
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
 // Press Start 2P加单引号，让浏览器解析
 const pixelFont = "'Press Start 2P'";
@@ -53,7 +57,7 @@ function preload() {
     bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); 
     passcelebrationImg = loadImage('assets/passcelebration.jpg');
     nextLevelBgImg = loadImage('assets/nextlevel.jpg');
-    bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 【修复】此文件不存在，使用 ocean_bg2 代替 // 需要新增此资源或使用现有的ocean_bg2作为深海
+    bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 如果没有这张图，记得改成 ocean_bg2.jpg
     backImg = loadImage('assets/back.png');
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
@@ -71,13 +75,23 @@ function preload() {
     shopBgm = loadSound("assets/ShopGen3.mp3");
     boatImg = loadImage("assets/boat.png");
     boatImg2 = loadImage("assets/boat2.png");
-    // 潜水艇图片（文件不存在时自动使用代码绘制的 fallback）
+    victoryBgm = loadSound('assets/victory.mp3');
+    targetBgm = loadSound('assets/target.mp3');
+
+    
+    // 🌟 重点在这里：小写的接开箱，大写的接关箱！
+    treasureChest = loadImage("assets/Treasure_Chest.png");
+    Treasure_Chest2 = loadImage("assets/Treasure_Chest2.png");
+    
+    sharkImg = loadImage('assets/shark_1.png');
     submarineImg = loadImage("assets/submarineImg.png");
     submarineImg2 = loadImage('assets/submarineImg2.png');
+    
     for (let i = 1; i <= 4; i++) {
         sharkImgs.push(loadImage(`assets/shark_${i}.png`));
         anglerFishImgs.push(loadImage(`assets/AnglerFish_${i}.png`));
     }
+    
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
     newhookImg = loadImage("assets/newhook.png");
@@ -104,19 +118,20 @@ function preload() {
         let stone = loadImage(`assets/stone${i}.png`);
         stones.push(stone);
     }
+    
     imgSkeleton = loadImage("assets/Skeleton.png");
-    treasureChest = loadImage("assets/Treasure_Chest.png");
     pearlImg = loadImage("assets/pearl.png");
+    
     for (let i = 1; i <= 4; i++) {
         pearlShellImgs.push(loadImage(`assets/shell_${i}.png`));
     }
+    
     nameEntryBgImg = loadImage("assets/deepsea_prospector.png");
     modeSelectBgImg = loadImage("assets/choose_fishing_challenge.png");
     levelFailedImg = loadImage("assets/levelfailed.png");
     leaderboardBgImg = loadImage("assets/leaderboard.png");
     pauseMenuBgImg = loadImage("assets/pause_button_bg.png");
 }
-
 function makeWhiteTransparent(img, threshold = 245) {
     if (!img || !img.pixels) return;
     img.loadPixels();

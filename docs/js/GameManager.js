@@ -268,11 +268,11 @@ class GameManager {
     }
 
 changeState(newState) {
-    this.currentState = newState;
-    // 只有状态改变时，才主动调用一次 UI 同步
-    if (this._syncOverlay) {
-        this._syncOverlay();
-    }
+        this.currentState = newState;
+        // 只有状态改变时，才主动调用一次 UI 同步
+        if (this._syncOverlay) {
+            this._syncOverlay();
+        }
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
             this.fishGalleryEntry = null;
@@ -292,67 +292,55 @@ changeState(newState) {
             this.menuSelectionIndex = 0;
         }
 
-        //首页背景音乐
+        // ==========================================
+        // 🎵 统一音乐大管家 (彻底解决音乐打架)
+        // ==========================================
+        this._applyVolume(); // 统一在这里刷新一次音量，下面就不写了
+
+        // 1. 首页背景音乐
         const menuStates = [
             GameState.NAME_ENTRY,
             GameState.DIFFICULTY_SELECT,
             GameState.PLAYER_MODE_SELECT,
         ];
         if (menuStates.includes(this.currentState)) {
-            if (
-                typeof titleBgm !== 'undefined' &&
-                titleBgm &&
-                !titleBgm.isPlaying()
-            ) {
-                this._applyVolume();
-                titleBgm.loop();
-            }
-        } else if (this.currentState === GameState.PLAYING) {
-            if (
-                typeof titleBgm !== 'undefined' &&
-                titleBgm &&
-                titleBgm.isPlaying()
-            ) {
-                titleBgm.stop();
-            }
+            if (typeof titleBgm !== 'undefined' && titleBgm && !titleBgm.isPlaying()) titleBgm.loop();
+        } else {
+            // 只要不是首页这三个状态，立刻闭嘴！(下面都是纯 else)
+            if (typeof titleBgm !== 'undefined' && titleBgm && titleBgm.isPlaying()) titleBgm.stop();
         }
-        //游戏中背景音乐
+
+        // 2. 游戏中背景音乐
         if (this.currentState === GameState.PLAYING) {
-            if (
-                typeof gameplayBgm !== 'undefined' &&
-                gameplayBgm &&
-                !gameplayBgm.isPlaying()
-            ) {
-                this._applyVolume();
-                gameplayBgm.loop();
+            if (typeof gameplayBgm !== 'undefined' && gameplayBgm && !gameplayBgm.isPlaying()) gameplayBgm.loop();
+        } else {
+            if (typeof gameplayBgm !== 'undefined' && gameplayBgm && gameplayBgm.isPlaying()) gameplayBgm.stop();
+        }
+
+        // 3. 商店音乐
+        if (this.currentState === GameState.SHOP) {
+            if (typeof shopBgm !== 'undefined' && shopBgm && !shopBgm.isPlaying()) shopBgm.loop();
+        } else {
+            if (typeof shopBgm !== 'undefined' && shopBgm && shopBgm.isPlaying()) shopBgm.stop();
+        }
+
+        // 4. 通关结算页面音乐
+        if (this.currentState === GameState.LEVEL_PASS_CELEBRATION) {
+            if (typeof victoryBgm !== 'undefined' && victoryBgm && !victoryBgm.isPlaying()) {
+                // 🌟 这里修改了：把 play() 改成了 loop()，这样音乐就会一直循环播放，直到玩家点击屏幕进入商店！
+                victoryBgm.loop(); 
             }
         } else {
-            if (
-                typeof gameplayBgm !== 'undefined' &&
-                gameplayBgm &&
-                gameplayBgm.isPlaying()
-            ) {
-                gameplayBgm.stop();
+            if (typeof victoryBgm !== 'undefined' && victoryBgm && victoryBgm.isPlaying()) {
+                victoryBgm.stop();
             }
         }
-        //商店音乐
-        if (this.currentState === GameState.SHOP) {
-            if (
-                typeof shopBgm !== 'undefined' &&
-                shopBgm &&
-                !shopBgm.isPlaying()
-            ) {
-                this._applyVolume();
-                shopBgm.loop();
-            }
-        } else if (this.currentState === GameState.PLAYING) {
-            if (
-                typeof shopBgm !== 'undefined' &&
-                shopBgm &&
-                shopBgm.isPlaying()
-            ) {
-                shopBgm.stop();
-            }
+
+        // 5. 目标分数展示页音乐
+        if (this.currentState === GameState.NEXT_LEVEL_TARGET) {
+            if (typeof targetBgm !== 'undefined' && targetBgm && !targetBgm.isPlaying()) targetBgm.loop(); 
+        } else {
+            if (typeof targetBgm !== 'undefined' && targetBgm && targetBgm.isPlaying()) targetBgm.stop();
         }
 
         // iPad Magic Keyboard: focus canvas when entering keyboard-driven states
@@ -1342,156 +1330,387 @@ changeState(newState) {
         rectMode(CORNER);
         noSmooth();
 
-        // 1. 画你的海底背景图
+        // 1. 画海底背景图
         if (typeof passcelebrationImg !== 'undefined' && passcelebrationImg) {
             imageMode(CORNER);
             image(passcelebrationImg, 0, 0, width, height);
         }
 
-        // 🌟 修改一：把全屏黑色遮罩的透明度从 200 降到了 80！这样背景瞬间就亮了！
+        // 2. 暗色遮罩
         fill(0, 0, 0, 80); 
         rect(0, 0, width, height);
 
-        const panelW = 540;
-        const panelH = 420;
+        // ==========================================
+        // 🌟 背景动画层：气泡与星光
+        for (let i = 0; i < 20; i++) {
+            let bx = ((i * 107 + frameCount * 0.5) % (width + 200)) - 100; 
+            let by = height - ((i * 57 + frameCount * (1 + i % 2)) % (height + 50));
+            let br = 4 + (i % 5) * 2;
+            fill(255, 255, 255, 40 + sin(frameCount * 0.05 + i) * 40);
+            ellipse(bx, by, br, br);
+
+            if (i % 2 === 0) {
+                let sx = i < 10 ? (i * 35 + frameCount) % 350 : width - ((i * 35 + frameCount) % 350); 
+                let sy = (i * 77 + frameCount * 0.2) % height;
+                let alpha = 150 + 100 * sin(frameCount * 0.1 + i);
+                fill(255, 220, 100, alpha);
+                textAlign(CENTER, CENTER);
+                textSize(10 + (i % 3) * 4);
+                text("✦", sx, sy);
+            }
+        }
+
+        // ==========================================
+        // 🦈 核心动画：【大白鲨极速追杀 + 气泡尾流】
+        if (typeof koiFishImgs !== 'undefined' && koiFishImgs.length > 0) {
+            
+            // 逃窜的锦鲤
+            let koiSpeed = 4.5; 
+            let kx = ((frameCount * koiSpeed) % (width + 1000)) - 400; 
+            let ky = height - 120; 
+            let frameIdx = floor((frameCount / 4) % koiFishImgs.length); 
+            
+            push();
+            translate(kx, ky);
+            imageMode(CENTER);
+            image(koiFishImgs[frameIdx], 0, 0, 100, 100); 
+            pop();
+
+            // 紧追的大白鲨与气泡
+            push();
+            let sharkX = kx - 260; 
+            translate(sharkX, ky); 
+
+            // 淡淡的黑色水流阴影压迫感
+            fill(0, 0, 0, 50);
+            noStroke();
+            ellipse(-30, 0, 320, 120);
+
+            // 尾翼剧烈搅动产生的湍流气泡
+            let tailX = -130; 
+            for (let i = 0; i < 20; i++) {
+                let flowOffset = (frameCount * 5 + i * 15) % 300; 
+                let bubbleX = tailX - flowOffset; 
+                let spread = flowOffset * 0.15; 
+                let bubbleY = sin(frameCount * 0.2 + i) * spread * 15; 
+                let bAlpha = map(flowOffset, 0, 300, 200, 0); 
+                let bSize = map(sin(frameCount * 0.1 + i * 3), -1, 1, 4, 16);
+                
+                fill(255, 255, 255, bAlpha);
+                ellipse(bubbleX, bubbleY, bSize, bSize);
+
+                let microY = cos(frameCount * 0.15 + i * 7) * spread * 20;
+                fill(255, 255, 255, bAlpha * 0.6);
+                ellipse(bubbleX - 10, microY, bSize * 0.4, bSize * 0.4);
+            }
+            pop();
+
+            // 画出鲨鱼本体 (带摆动动画)
+            push();
+            translate(sharkX, ky); 
+            imageMode(CENTER);
+            
+            if (typeof sharkImg !== 'undefined' && sharkImg) {
+                let sharkFrameIdx = floor((frameCount / 10) % sharkImgs.length);
+                let currentSharkImg = sharkImgs[sharkFrameIdx];
+
+                if (typeof sharkJawsImg !== 'undefined' && sharkJawsImg && frameCount % 60 < 20) {
+                    currentSharkImg = sharkJawsImg; 
+                } else if (!currentSharkImg) {
+                    currentSharkImg = sharkImg;
+                }
+                
+                rotate(cos(frameCount * 0.1) * 0.05); 
+                image(currentSharkImg, 0, 0, 300, 300); 
+            }
+            pop();
+        }
+
+        // ==========================================
+        // 🌟 核心布局：面板 700x500
+        const panelW = 700; 
+        const panelH = 500; 
         const panelX = (width - panelW) / 2;
-        const panelY = (height - panelH) / 2 - 20;
+        const panelY = 40; 
+        const itemCenterY = panelY + panelH / 2; 
 
-        // 画中间的深色蓝框
+        // ==========================================
+        // 💎 财富点缀层
+        imageMode(CENTER);
+        
+        // 【左边：内部金币刺眼闪光大宝箱】
+        if (typeof treasureChest !== 'undefined' && typeof Treasure_Chest2 !== 'undefined') {
+            let chestY = itemCenterY + sin(frameCount * 0.04) * 12; 
+            
+            push();
+            translate(160, chestY); 
+            noStroke();
+            
+            let isChestOpen = floor(frameCount / 25) % 2 === 0;
+            let currentChestImg = Treasure_Chest2; 
+            if (isChestOpen) {
+                currentChestImg = treasureChest;
+            }
+
+            fill(255, 200, 0, 20 + sin(frameCount * 0.05) * 10);
+            ellipse(0, 0, 180, 180);
+            image(currentChestImg, 0, 0, 240, 240);
+
+            if (isChestOpen) {
+                push();
+                translate(0, -15); 
+                let glarePulse = abs(sin(frameCount * 0.15)); 
+                fill(255, 255, 255, 180 + 75 * glarePulse);
+                ellipse(0, 0, 50 + 20 * glarePulse, 50 + 20 * glarePulse);
+                fill(255, 220, 0, 120 + 80 * glarePulse);
+                ellipse(0, 0, 90 + 30 * glarePulse, 90 + 30 * glarePulse);
+                fill(255, 255, 255, 200 + 55 * glarePulse);
+                let flareW = 160 + 80 * glarePulse; 
+                let flareH = 6; 
+                ellipse(0, 0, flareW, flareH);
+                ellipse(0, 0, flareH, flareW);
+                rotate(PI / 4);
+                ellipse(0, 0, flareW * 0.5, flareH * 0.8);
+                ellipse(0, 0, flareH * 0.8, flareW * 0.5);
+                pop();
+
+                for (let j = 0; j < 4; j++) {
+                    let px = sin(frameCount * 0.1 + j * 2) * 55;
+                    let py = cos(frameCount * 0.13 + j * 3) * 35 - 15;
+                    let pSize = 3 + sin(frameCount * 0.2 + j) * 2;
+                    fill(255, 255, 255, 220); 
+                    quad(px, py - pSize*2, px + pSize, py, px, py + pSize*2, px - pSize, py);
+                }
+            }
+            pop();
+        }
+
+        // ==========================================
+        // 💎 财富点缀层
+        imageMode(CENTER);
+        
+        // 【左边：内部金币刺眼闪光大宝箱】
+        // ... (这部分代码保持不变，不需要修改) ...
+
+        // 【右边：开合大珍珠】
+        if (typeof pearlShellImgs !== 'undefined' && pearlShellImgs.length > 0) {
+            let shellY = itemCenterY + cos(frameCount * 0.04) * 12; 
+            let frameIdx = floor((frameCount / 12) % pearlShellImgs.length);
+            push();
+            translate(width - 160, shellY); 
+            noStroke();
+            let pearlPulse = cos(frameCount * 0.05);
+            
+            // 🌟 1. 按比例缩小背后的冰蓝光晕，显得更协调
+            // 这里修改了，基础半径和脉冲幅度都缩小了，以适应变小的贝壳
+            let maxPR = 120 + pearlPulse * 15; // 👈 这里修改了，从 160+p*20 改为 120+p*15
+            for (let r = maxPR; r > 0; r -= 10) { // 👈 减少步长以适应更小的半径，把 -= 15 改为 -= 10，让光晕更细腻
+                let alpha = map(r, 0, maxPR, 40, 0);
+                let rCol = map(r, 0, maxPR, 180, 0);
+                let gCol = map(r, 0, maxPR, 255, 200);
+                let bCol = map(r, 0, maxPR, 255, 255);
+                fill(rCol, gCol, bCol, alpha);
+                ellipse(0, 0, r * 2, r * 2);
+            }
+            
+            push();
+            scale(-1, 1); 
+            // 🌟 2. 贝壳尺寸从 240 缩小到 180
+            // 这里修改了，让贝壳图像显示得更小
+            image(pearlShellImgs[frameIdx], 0, 0, 180, 180); // 👈 这里修改了，从 240x240 改为 180x180
+            pop();
+            
+            if (typeof pearlImg !== 'undefined' && pearlImg && frameIdx > 0) {
+                // 这里修改了，按比例缩小珍珠的垂直偏移和脉冲幅度
+                let pearlOffsetY = -11 + sin(frameCount * 0.15) * 6; // 👈 这里修改了，从 -15+s*8 改为 -11+s*6
+                let pearlAlpha = map(frameIdx, 1, pearlShellImgs.length - 1, 100, 255);
+                push();
+                tint(255, pearlAlpha); 
+                // 🌟 3. 里面的珍珠也按比例从 85 缩小到 64
+                // 这里修改了，让珍珠图像显示得更小
+                image(pearlImg, 0, pearlOffsetY, 64, 64); // 👈 这里修改了，从 85x85 改为 64x64
+                pop();
+            }
+            pop();
+        }
+        imageMode(CORNER);
+
+        // ==========================================
+        // 🌟 面板底框质感绘制
         noStroke();
-        fill(0, 0, 0, 80);
-        rect(panelX + 6, panelY + 6, panelW, panelH, 12);
-        fill(8, 35, 65, 235); // 框内底色
+        fill(0, 0, 0, 150);
+        rect(panelX + 10, panelY + 10, panelW, panelH, 12);
+        fill(8, 35, 65, 245); 
         rect(panelX, panelY, panelW, panelH, 12);
-        stroke(60, 160, 220); // 亮蓝色描边
-        strokeWeight(4);
+        stroke(30, 90, 140);
+        strokeWeight(2);
         noFill();
+        rect(panelX + 6, panelY + 6, panelW - 12, panelH - 12, 10);
+        stroke(0, 230, 255); 
+        strokeWeight(4);
         rect(panelX, panelY, panelW, panelH, 12);
         noStroke();
 
-        // ===== 从这里开始替换 =====
+        // ==========================================
+        // 🌟 文字立体像素化（干掉黑框蓝框，全立体阴影）
+        textAlign(CENTER, CENTER);
 
-        // 顶部大字：CONGRATS! YOU ADVANCED! (保持金色闪烁)
-        const pulse = 0.03 * sin(frameCount * 0.08);
-        const scaleFactor = 1 + pulse;
+        // 1. 第一行标题 (22px 不越界)
+        const pulseTitle = 0.03 * sin(frameCount * 0.08);
+        const scaleFactorTitle = 1 + pulseTitle;
         push();
         translate(width / 2, panelY + 70); 
-        scale(scaleFactor);
-        fill(255, 220, 80);
-        // 🌟 修改：第一行大字调大（原来是14，现在改到了22）
+        scale(scaleFactorTitle);
+        noStroke(); 
         textSize(22); 
-        textAlign(CENTER, CENTER);
-        this._drawPixelTextOutline('CONGRATS! YOU ADVANCED!', 0, 0);
-        fill(255, 240, 140);
+        fill(0); 
+        text('CONGRATS! YOU ADVANCED!', -2, 0);
+        text('CONGRATS! YOU ADVANCED!', 2, 0);
+        text('CONGRATS! YOU ADVANCED!', 0, -2);
+        text('CONGRATS! YOU ADVANCED!', 0, 2);
+        fill(255, 230, 80);
         text('CONGRATS! YOU ADVANCED!', 0, 0);
         pop();
         
-        const rankInfo = this._getCelebrationRankInfo();
-        let cy = panelY + 135; 
-        // 🌟 修改：字变大了，行距也稍微加宽一点防重叠（原来是36，现在改到了42）
-        const lineH = 42; 
-
-        // 1. 你的排名：【亮青色】
-        fill(0, 230, 255); 
-        // 🌟 修改：第二行调大（原来是14，现在改到了18）
-        textSize(18); 
-        textAlign(CENTER, CENTER);
-        text(`Your Rank: #${rankInfo.rank}`, width / 2, cy);
-        cy += lineH;
+        // ==========================================
+        // 🌟 文字排版：完美右下角3D立体像素阴影
+        // ... (保留前面的 1. 标题 部分) ...
         
-        // 2. 你的分数：【亮绿色】
-        fill(120, 255, 120); 
-        // 🌟 修改：第三行调大（原来是12，现在改到了16）
-        textSize(16); 
-        text(`${this.player.name || 'Anon'}  Score: ${this.player.totalScore}  Lv.${this.levelNum}`, width / 2, cy);
+        const rankInfo = this._getCelebrationRankInfo();
+        let cy = panelY + 150; 
 
+        // ==========================================
+        // 【当前玩家信息模块】
+        // 1. 醒目的当前排位
+        textSize(36); 
+        fill(20, 60, 20, 200);
+        text(`🏆 Rank: #${rankInfo.rank}`, width / 2 + 3, cy + 3);
+        fill(255, 215, 0); 
+        text(`🏆 Rank: #${rankInfo.rank}`, width / 2, cy);
+        
+        cy += 50; // 🌟 大间距：把排位和具体数据区隔开
+
+        // 2. 玩家名字 (和下方的数据紧密组合)
+        textSize(24); 
+        let myNameLine = `⭐ ${this.player.name || 'Anon'}`;
+        fill(20, 60, 20, 200);
+        text(myNameLine, width / 2 + 2, cy + 2);
+        fill(200, 255, 200); 
+        text(myNameLine, width / 2, cy);
+        
+        cy += 40; // 🌟 小间距：让名字和分数紧紧抱团，变成一个整体！
+
+        // 3. 玩家分数与关卡
+        textSize(16); 
+        let myDataLine = `Score: ${this.player.totalScore}   |   Lv.${this.levelNum}`;
+        fill(20, 60, 20, 200);
+        text(myDataLine, width / 2 + 2, cy + 2);
+        fill(170, 230, 170); 
+        text(myDataLine, width / 2, cy);
+        
+        cy += 40; // 🌟 大间距：数据块结束，准备画分割线
+
+        // ==========================================
+        // 【目标玩家信息模块】
         if (rankInfo.nextEntry) {
-            cy += lineH + 10;
-            // 3. Next Up 提示词：【橙黄色】
-            fill(255, 180, 50); 
-            textSize(12); // 原来是10，顺便稍微大一点点
-            text('Next up:', width / 2, cy);
-            cy += lineH - 8;
+            // 分割线
+            stroke(0, 150, 220, 180);
+            strokeWeight(2);
+            line(panelX + 70, cy, panelX + panelW - 70, cy);
+            noStroke();
             
-            // 4. 对手的排名和分数：【粉红色】
-            fill(255, 150, 180); 
-            // 🌟 修改：第五行调大（原来是11，现在改到了15）
-            textSize(15); 
-            text(`#${rankInfo.nextRank}  ${rankInfo.nextEntry.playerName}  Score: ${rankInfo.nextEntry.score}  Lv.${rankInfo.nextEntry.levelsCompleted ?? 0}`, width / 2, cy);
+            cy += 40; // 分割线到下一区域的距离
+            
+            // 4. "Next up" 提示
+            textSize(14); 
+            fill(40, 20, 20, 200);
+            text('- Next up -', width / 2 + 2, cy + 2);
+            fill(255, 180, 50); 
+            text('- Next up -', width / 2, cy);
+            
+            cy += 50; // 小间距
+            
+            // 5. 目标玩家排名与名字 (统一格式，看起来更专业)
+            textSize(20); 
+            let line1 = `⚔️ Rank: #${rankInfo.nextRank}  -  ${rankInfo.nextEntry.playerName}`;
+            fill(40, 20, 20, 200);
+            text(line1, width / 2 + 2, cy + 2);
+            fill(255, 120, 150); 
+            text(line1, width / 2, cy);
+            
+            cy += 40; // 🌟 小间距：和当前玩家一样，名字和分数紧密抱团！
+            
+            // 6. 目标玩家分数与关卡
+            textSize(16); 
+            let line2 = `Score: ${rankInfo.nextEntry.score}   |   Lv.${rankInfo.nextEntry.levelsCompleted ?? 0}`;
+            fill(40, 20, 20, 200);
+            text(line2, width / 2 + 2, cy + 2);
+            fill(255, 160, 180); 
+            text(line2, width / 2, cy);
         }
 
-        // 5. 底部点击提示：带呼吸闪烁效果的【浅绿色】
-        cy = panelY + panelH - 45;
-        fill(180, 255, 180, (sin(frameCount * 0.1) * 127 + 128)); 
-        // 这里也稍微调大了一点（原来是8，改到了11），免得太小看不清
+        // 5. 点击提示
+        cy = panelY + panelH - 45; 
         textSize(11); 
-        textAlign(CENTER, CENTER);
+        fill(0);
+        text('Click anywhere to continue', width / 2 - 2, cy);
+        text('Click anywhere to continue', width / 2 + 2, cy);
+        text('Click anywhere to continue', width / 2, cy - 2);
+        text('Click anywhere to continue', width / 2, cy + 2);
+        fill(180, 255, 180, (sin(frameCount * 0.04) * 127 + 128)); 
         text('Click anywhere to continue', width / 2, cy);
         pop();
     }
-    // 🌟 黄金矿工风格：下一关目标展示页
+    // 🌟 绝对居中终极版：向左回滚，整体上移，微缩间距
     drawNextLevelTarget() {
         push();
         if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
-        rectMode(CORNER);
+        rectMode(CENTER);
         noSmooth();
 
-        // 🌟 1. 先把你的专属 NEXTLEVEL 背景图画在最底层铺满全屏
+        // 1. 画背景图
         if (typeof nextLevelBgImg !== 'undefined' && nextLevelBgImg) {
             imageMode(CORNER);
             image(nextLevelBgImg, 0, 0, width, height);
-        } else {
-            // 如果图片没加载出来，给个深蓝底色保底
-            fill(8, 28, 55);
-            rect(0, 0, width, height);
         }
 
-        // 🌟 2. 盖上一层半透明黑色滤镜（重要！让图片变暗，确保上面绿色的目标分数能看清）
-        // 如果你觉得图片太亮，把 160 改大（比如 200）；如果觉得太暗，把 160 改小（比如 100）。
-        fill(0, 0, 0, 160); 
-        rect(0, 0, width, height);
+        // ==========================================
+        // 🕹️ 核心微调区 (保留你完美的调参数值)
+        // ==========================================
+        let offsetX = 32; 
+        let offsetY = -165; 
 
-        // 2. 居中面板 (参考黄金矿工，做得稍微扁宽一点)
-        const panelW = 460;
-        const panelH = 300;
-        const panelX = (width - panelW) / 2;
-        const panelY = (height - panelH) / 2;
-
-        noStroke();
-        fill(0, 0, 0, 80); 
-        rect(panelX + 6, panelY + 6, panelW, panelH, 12);
-        fill(20, 40, 70, 240); // 深蓝底色
-        rect(panelX, panelY, panelW, panelH, 12);
-        
-        // 🌟 重点：黄金矿工风格的橙金色发光描边！
-        stroke(0, 230, 255);
-        strokeWeight(4);
-        noFill();
-        rect(panelX, panelY, panelW, panelH, 12);
-        noStroke();
-
-        let cy = panelY + 50;
-        
-        // 🌟 标题：第几关
-        fill(255, 220, 80);
-        textSize(24);
         textAlign(CENTER, CENTER);
-        text(`LEVEL ${this.levelNum}`, width / 2, cy);
-        cy += 50;
+        const cx = width / 2 + offsetX;
+        let textCy = height / 2 + offsetY; 
 
-        // 🌟 目标分数提示文本
-        fill(255, 120, 0);
-        textSize(16);
-        text("TARGET SCORE:", width / 2, cy);
-        cy += 55;
+        // ==========================================
 
-        // 🌟 超大荧光绿目标分数（灵魂所在！）
-        // ⚠️ 注意：这里我暂定了一个公式(关卡数*1500)，你需要替换成你游戏真实的过关分数变量
-        // 🌟 获取真实目标分数（完美同步 LevelManager 的算法）
+        // -- 1. 关卡标题 (取消缩放，固定不动) --
+        noStroke(); 
+        textSize(26); 
+        fill(20, 60, 20, 200); 
+        text('LEVEL ' + this.levelNum, cx + 2, textCy + 2); // 阴影
+        fill(255, 230, 80);    
+        text('LEVEL ' + this.levelNum, cx, textCy);         // 主字
+        
+        // 🚨 收紧间距
+        textCy += 50; 
+
+        // -- 2. 目标分数提示 --
+        textSize(14); 
+        fill(40, 20, 20, 200);
+        text("TARGET SCORE:", cx + 2, textCy + 2);
+        fill(255, 120, 0); 
+        text("TARGET SCORE:", cx, textCy);
+        
+        // 🚨 收紧间距
+        textCy += 50; 
+
+        // -- 3. 超大目标分数数据 (✨转移到这里：呼吸缩放闪烁) --
         let n = this.levelNum;
         const goldFishEff = 26.67; 
         let totalTarget = 0;
-
         for (let i = 1; i <= n; i++) {
             let stdTime = (this.currentDifficulty === Difficulty.HARD) ? Math.min(35, 24 + i) : Math.min(40, 29 + i);
             let factorLevel = Math.min(i, 10);
@@ -1499,26 +1718,43 @@ changeState(newState) {
             let growthFactor = 1 + (factorLevel - 1) * 0.05;
             totalTarget += stdTime * goldFishEff * skillFactor * growthFactor;
         }
-
         if (this.currentDifficulty === Difficulty.HARD) totalTarget *= 1.20;
         if (this.currentPlayerMode === PlayerMode.TWO_PLAYER) totalTarget *= 1.75;
-
         let targetScore = Math.floor(totalTarget / 10) * 10; 
-        fill(255, 100, 200)
-        textSize(56); 
-        text(`${targetScore}`, width / 2, cy);
-        cy += 65;
+        
+        textSize(48); 
+        const pulseScore = 0.03 * sin(frameCount * 0.08); 
+        push();
+        translate(cx, textCy);
+        scale(1 + pulseScore); // ✨ 给目标分数加上动态缩放
+        fill(40, 10, 30, 200);
+        text(`${targetScore}`, 3, 3);
+        fill(255, 100, 200);
+        text(`${targetScore}`, 0, 0);
+        pop();
+        
+        // 🚨 收紧间距
+        textCy += 60; 
 
-        // 当前分数提示
-        fill(150, 200, 255);
-        textSize(12);
-        text(`Current Score: ${this.player.totalScore}`, width / 2, cy);
+        // -- 4. 当前分数 --
+        textSize(14); 
+        fill(10, 30, 60, 200);
+        text(`Current Score: ${this.player.totalScore}`, cx + 2, textCy + 2);
+        fill(150, 220, 255); 
+        text(`Current Score: ${this.player.totalScore}`, cx, textCy);
+        
+        // 🚨 收紧间距
+        textCy += 70; 
 
-        // 闪烁的点击提示
-        cy = panelY + panelH - 25;
-        fill(180, 255, 180, (sin(frameCount * 0.1) * 127 + 128));
-        textSize(10);
-        text('Click anywhere to start level', width / 2, cy);
+        // -- 5. 呼吸闪烁的启动提示 --
+        textSize(8); 
+        fill(10, 30, 30, 200);
+        text('Click anywhere to start level', cx + 2, textCy + 2);
+        
+        // 🌟 核心修改：把 0.1 改成了 0.04！数字越小，闪烁越慢！
+        let mainAlpha = (sin(frameCount * 0.04) * 127 + 128); 
+        fill(180, 255, 180, mainAlpha); 
+        text('Click anywhere to start level', cx, textCy);
 
         pop();
     }
@@ -2078,10 +2314,17 @@ changeState(newState) {
                     const bc = this._pauseMenuBtnClose;
                     const b1 = this._pauseMenuBtn1;
                     const b2 = this._pauseMenuBtn2;
+                    
+                    // 1. 点击了“继续游戏”的 X 按钮
                     if (bc && mouseX >= bc.x && mouseX <= bc.x + bc.w && mouseY >= bc.y && mouseY <= bc.y + bc.h) {
                         this.gamePaused = false;
+                        // 🎵 恢复音乐播放
+                        if (typeof gameplayBgm !== 'undefined' && gameplayBgm && !gameplayBgm.isPlaying()) {
+                            gameplayBgm.loop();
+                        }
                         break;
                     }
+                    // 2. 点击了“结束当前关卡/放弃游戏”
                     if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
                         this.gamePaused = false;
                         this._finalizeCurrentLevelEarnings();
@@ -2101,6 +2344,7 @@ changeState(newState) {
                         this.changeState(GameState.LEVEL_RESULT);
                         break;
                     }
+                    // 3. 点击了“重新开始游戏” (返回主菜单)
                     if (b2 && mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y && mouseY <= b2.y + b2.h) {
                         this.gamePaused = false;
                         this.changeState(GameState.NAME_ENTRY);
@@ -2108,11 +2352,27 @@ changeState(newState) {
                     }
                 } else {
                     const pb = this.levelManager._pauseBtnBounds;
+                    // 4. 点击了右上角的【暂停按钮】
                     if (
                         pb &&
                         this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)
                     ) {
-                        this.gamePaused = !this.gamePaused;
+                        this.gamePaused = !this.gamePaused; // 切换暂停状态
+                        
+                        // 🎵 处理音乐的停止与恢复
+                        if (typeof gameplayBgm !== 'undefined' && gameplayBgm) {
+                            if (this.gamePaused) {
+                                // 如果进入暂停，停止音乐
+                                if (gameplayBgm.isPlaying()) {
+                                    gameplayBgm.pause(); 
+                                }
+                            } else {
+                                // 取消暂停时恢复
+                                if (!gameplayBgm.isPlaying()) {
+                                    gameplayBgm.loop(); 
+                                }
+                            }
+                        }
                     }
                 }
                 break;
