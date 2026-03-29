@@ -342,20 +342,38 @@ function mousePressed() {
 
 function keyPressed() {
     // ==========================================
-    // 🌟 全局拦截空格键 (keyCode === 32)
+    // 🌟 1. 全局拦截空格键 (防误触 + 强制全屏)
     // ==========================================
     if (keyCode === 32) {
-        // 如果当前【不是全屏】（比如刚开局，或者中途不小心按了 ESC 退出了）
         if (!fullscreen()) {
-            fullscreen(true); // 开启全屏
+            fullscreen(true);
         }
-        return; 
+        return false; 
     }
-    // ==========================================
 
-    // ... 下面是你原本就有的代码（比如把其他按键传给 gameManager 处理）
+    // ==========================================
+    // 🌟 2. 将按键传递给游戏管理器 (处理打字、删字、控制等)
+    // ==========================================
     if (typeof gameManager !== 'undefined' && gameManager) {
         gameManager.handleKeyPress(key, keyCode);
+    }
+
+    // ==========================================
+    // 🌟 3. 精准护盾：只拦截该拦截的！
+    // ==========================================
+    
+    // 永远拦截方向键，防止疯狂抓鱼时整个网页跟着上下乱抖
+    if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(keyCode)) {
+        return false;
+    }
+
+    // 针对退格键 (BACKSPACE) 的特殊处理：
+    // 如果当前【不是】输入名字的页面，才拦截它（防止打游戏时误触导致网页后退）。
+    // 如果在输入名字，就放行，让你能正常删字！
+    if (keyCode === BACKSPACE) {
+        if (gameManager && gameManager.currentState !== GameState.NAME_ENTRY) {
+            return false;
+        }
     }
 }
 

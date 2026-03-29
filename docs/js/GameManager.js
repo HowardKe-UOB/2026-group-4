@@ -2658,34 +2658,34 @@ changeState(newState) {
         // --- 3. 姓名输入界面逻辑 ---
         if (this.currentState === GameState.NAME_ENTRY) {
             this.nameInputFocused = true;
-            if (keyCode === BACKSPACE) {
-                // ... 省略部分代码
-            } else if (keyCode === ENTER) {
+            
+            // 🌟 双保险：同时检测数字代号(8)和真实键名('Backspace')
+            if (keyCode === 8 || key === 'Backspace') {
+                // 加个保护：只有当框里有字的时候才删，防止报错
+                if (this.inputText.length > 0) {
+                    this.inputText = this.inputText.substring(0, this.inputText.length - 1);
+                }
+            } else if (keyCode === ENTER || keyCode === 13) {
                 const name = this.inputText.trim();
                 if (name) {
                     if (this.nameExistsCheck !== false) return;
-
-                    // ==========================================
-                    // 🌟 新增：强制全屏检查拦截！
-                    // ==========================================
+                    
                     if (!fullscreen()) {
-                        this.showFullscreenWarning = true; // 触发警告开关
-                        return; 
+                        this.showFullscreenWarning = true;
+                        return;
                     }
-                    this.showFullscreenWarning = false; // 已全屏则关闭警告
-                    // ==========================================
-
+                    this.showFullscreenWarning = false; 
+                    
                     this.player.name = name;
                     this.changeState(GameState.DIFFICULTY_SELECT);
                 }
-            } else if (keyCode === 32 || key === ' ') {
-                this._nameEntrySpaceWarningUntilFrame =
-                    (typeof frameCount === 'number' ? frameCount : 0) + 90;
             } else if (key.length === 1) {
                 if (this.inputText.length < 12) {
                     this.inputText += key;
                 }
             }
         }
-    }
-}
+     }
+ }
+
+
