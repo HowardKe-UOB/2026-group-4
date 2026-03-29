@@ -342,13 +342,22 @@ function mousePressed() {
 
 function keyPressed() {
     // ==========================================
-    // 🌟 1. 全局拦截空格键 (防误触 + 强制全屏)
+    // 🌟 1. 空格键：仅在「输入名字」页用来进全屏（与石碑上的 SPACE 提示一致）。
+    //    游戏中若也对全屏请求，部分浏览器 / 环境下会整页刷新或重复跑 setup()，
+    //    setup() 里又会 changeState(NAME_ENTRY)，表现为「一按空格回到输名字」。
+    //    游戏中一律吞掉空格，避免误触全屏。
     // ==========================================
     if (keyCode === 32) {
-        if (!fullscreen()) {
-            fullscreen(true);
+        if (
+            typeof gameManager !== 'undefined' &&
+            gameManager &&
+            gameManager.currentState === GameState.NAME_ENTRY
+        ) {
+            if (!fullscreen()) {
+                fullscreen(true);
+            }
         }
-        return false; 
+        return false;
     }
 
     // ==========================================
