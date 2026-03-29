@@ -1995,7 +1995,7 @@ changeState(newState) {
 
         const cols = 8;
         const cellW = 72;
-        const cellH = 68;
+        const cellH = 62;
         const panelW = cols * cellW + 48;
         const rows = Math.ceil(GameManager.FISH_GALLERY_TYPES.length / cols);
         const panelH = rows * cellH + 80;
