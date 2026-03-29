@@ -926,6 +926,54 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
+        // ==========================================
+        // 🌟 直接在左侧石碑上写全屏提示 (原版字体位置 + 神秘符号)
+        // ==========================================
+        push();
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+        textAlign(CENTER, CENTER);
+        noSmooth();
+
+        const textX = 172;          // 左右位置保持不变
+        const textY = height - 250; // 上下位置保持不变
+        let fAlpha = (sin(frameCount * 0.04) * 127 + 128); 
+
+        textSize(12); // 字号大小保持 12 不变
+        
+        // 🌟 在你原本的 y1~y4 基础上，只增加了 y0 和 y5
+        const y0 = textY - 55; // 新增：顶部符号位置
+        const y1 = textY - 30; 
+        const y2 = textY - 10; 
+        const y3 = textY + 10; 
+        const y4 = textY + 30; 
+        const y5 = textY + 55; // 新增：底部符号位置
+
+        // 1. 画深色阴影
+        fill(10, 40, 50, 200); 
+        text('~ ✦ ~',      textX + 2, y0 + 2); // 新增符号阴影
+        text('PRESS',      textX + 2, y1 + 2);
+        text('[ F ]',      textX + 2, y2 + 2);
+        text('FOR',        textX + 2, y3 + 2);
+        text('FULLSCREEN', textX + 2, y4 + 2);
+        text('~ ✦ ~',      textX + 2, y5 + 2); // 新增符号阴影
+
+        // 2. 画发光主字
+        // 🌟 新增：给上下两个神秘符号配了淡薄荷绿发光色
+        fill(150, 255, 200, fAlpha); 
+        text('~ ✦ ~',      textX, y0);
+        text('~ ✦ ~',      textX, y5);
+
+        // 下面是你原本的冰蓝渐变文字，一模一样
+        fill(180, 240, 255, fAlpha); 
+        text('PRESS',      textX, y1);
+        text('[ F ]',      textX, y2);
+        fill(100, 200, 230, fAlpha); 
+        text('FOR',        textX, y3);
+        text('FULLSCREEN', textX, y4);
+        
+        pop();
+        // ==========================================
+        // ==========================================
         push();
         fill(255);
         textAlign(CENTER, CENTER);
