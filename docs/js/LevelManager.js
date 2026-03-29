@@ -544,16 +544,18 @@ class LevelManager {
             }
         }
 
-        // 只有当玩家本关没有购买 Lucky Coin 时，才有小概率随机生成锦鲤
+        // 随机锦鲤：与 Lucky Coin 锦鲤互斥，本关最多一条锦鲤
         if (
             this.hasRandomKoi &&
             !this.randomKoiSpawned &&
+            !this.koiSpawned &&
             timePassed >= this.randomKoiTime
         ) {
             if (!this.player.hasLuckyCoin) {
                 let randomKoi = new KoiFish(random(375, 475));
                 this.activeItems.push(randomKoi);
                 this.randomKoiSpawned = true;
+                this.koiSpawned = true;
 
                 if (koiInSfx && !koiInSfx.isPlaying()) {
                     koiInSfx.play();
