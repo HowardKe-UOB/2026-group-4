@@ -42,6 +42,8 @@ class GameManager {
         this.scaledMouseX = 0;
         this.scaledMouseY = 0;
         this.nameInputFocused = false;
+        /** NAME_ENTRY：按空格时显示提示，frameCount 在此之前一直显示 */
+        this._nameEntrySpaceWarningUntilFrame = 0;
 
         /** 每关进入 PLAYING 时的 totalScore（index = levelNum - 1） */
         this.perLevelScoreAtStart = [];
@@ -284,6 +286,7 @@ changeState(newState) {
             this.nameExistsCheck = null;
             this.lastCheckedName = '';
             this.nameInputFocused = false;
+            this._nameEntrySpaceWarningUntilFrame = 0;
         }
         if (
             newState === GameState.DIFFICULTY_SELECT ||
@@ -1011,6 +1014,13 @@ changeState(newState) {
             fill(255, 80, 80);
             textSize(12);
             text('name already exists', width / 2, boxY + 55);
+        } else if (
+            typeof frameCount === 'number' &&
+            frameCount < this._nameEntrySpaceWarningUntilFrame
+        ) {
+            fill(255, 190, 90);
+            textSize(12);
+            text('Space is not allowed', width / 2, boxY + 55);
         }
 
         fill(200, 230, 255);
@@ -2668,6 +2678,9 @@ changeState(newState) {
                     this.player.name = name;
                     this.changeState(GameState.DIFFICULTY_SELECT);
                 }
+            } else if (keyCode === 32 || key === ' ') {
+                this._nameEntrySpaceWarningUntilFrame =
+                    (typeof frameCount === 'number' ? frameCount : 0) + 90;
             } else if (key.length === 1) {
                 if (this.inputText.length < 12) {
                     this.inputText += key;
