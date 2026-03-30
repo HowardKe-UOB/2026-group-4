@@ -422,25 +422,43 @@ changeState(newState) {
         imageMode(CENTER);
         image(img, width / 2, height / 2, dw, dh);
     }
-    // 🌟 新增：只画左下角的返回箭头
-    // 🌟 修改：放大返回图片，扩大点击范围
+  
     _drawMenuBackButton() {
         push();
         imageMode(CORNER);
-        rectMode(CORNER);
 
-        // 🌟 把尺寸调大！你可以随意修改这两个数字，直到看起来舒服为止
+        // 保持你原来调好的尺寸
         const btnW = 170;
-        const btnH = 60;// 图片高度
-        const btnX = 20; // 距离左边框的距离
-        const btnY = height - 20 - btnH; // 距离下边框的距离
+        const btnH = 60;
+        const btnX = 20; 
+        const btnY = height - 20 - btnH; 
 
+        // 1. 判断鼠标有没有悬浮和按下
+        let isHovered = mouseX >= btnX && mouseX <= btnX + btnW && mouseY >= btnY && mouseY <= btnY + btnH;
+        let isPressed = isHovered && mouseIsPressed;
+        
+        // 2. 如果按下了，往下偏移 4 像素
+        let pressOffset = isPressed ? 4 : 0;
+
+        // 3. 画出你的图片
         if (typeof backImg !== 'undefined' && backImg) {
-            image(backImg, btnX, btnY, btnW, btnH);
-        } else {   
+            if (isPressed) {
+                tint(180); // 🌟 按下时稍微变暗
+            } else {
+                noTint();  // 正常时不改变颜色
+            }
+            
+            // 画出带有向下偏移量 (pressOffset) 的图片
+            image(backImg, btnX, btnY + pressOffset, btnW, btnH);
+            
+            noTint(); // 🌟 极其重要：画完立刻重置颜色！不然会导致整个游戏的背景变成纯黑或者消失！
         }
 
-        // 把新的大尺寸记录下来，点击判定范围也会跟着变大！
+        // 4. 热区保持死死不动，保证点击有效
+        this._menuBackBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
+        pop()
+
+        // ⛔ 重点：物理判定区（热区）绝对不能跟着平移！不然按下去的一瞬间鼠标就不在判定区内了，会导致按钮疯狂抽搐
         this._menuBackBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
         pop();
     }
@@ -1232,17 +1250,20 @@ changeState(newState) {
         text("Fish bone: 0 pts (20-50 w/ Collector)", lx, cy);
         cy += lineH + 16;
 
-        // 闪烁提示
+        // ==========================================
+        // 🌟 修复：闪烁提示 (固定在面板底部，不再受上面行数影响)
+        // ==========================================
         let blinkAlpha = 150 + 105 * sin(frameCount * 0.08);
         fill(0, 220, 180, blinkAlpha);
-        textAlign(CENTER, TOP);
+        // 把对齐方式改成 CENTER, CENTER 会更准
+        textAlign(CENTER, CENTER); 
         textSize(11);
         textStyle(BOLD);
-        text("CLICK ANYWHERE TO START", width / 2, cy);
+        // 🌟 核心修改：把 cy 改成了 panelY + panelH - 24，让它永远离底部边框 24 个像素
+        text("CLICK ANYWHERE TO START", width / 2, panelY + panelH - 16);
 
         pop();
     }
-
     drawShop() {
         push();
         this.shopManager.draw(this.player, this.currentPlayerMode, this.levelNum);

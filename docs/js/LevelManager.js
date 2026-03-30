@@ -76,11 +76,11 @@ class LevelManager {
                   ? hookImg
                   : null;
 
-        let startY = 180;
+        let startY = 185;
 
         if (this.isDeepSea) {
             p1HookImg = typeof newhookImg !== "undefined" ? newhookImg : null;
-            startY = 183; // 潜水艇吃水深，发射点往下移，如果不喜欢可以改回185
+            startY = 179; // 潜水艇吃水深，发射点往下移，如果不喜欢可以改回185
         }
         // ───────────────────────────────────────────────────
 

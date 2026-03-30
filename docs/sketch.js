@@ -175,8 +175,20 @@ function setup() {
     gameManager._applySfxVolume();
     gameManager.changeState(GameState.NAME_ENTRY);
     wireModeButtons();
-}
 
+    // ==========================================
+    // 🌟 把它放在 wireModeButtons() 下面，但在 setup() 结束的大括号上面！
+    // ==========================================
+    document.addEventListener('fullscreenchange', () => {
+        // 稍微延迟 100 毫秒，等浏览器的缩放动画结束
+        setTimeout(() => {
+            let c = document.querySelector('canvas');
+            if (c) {
+                c.focus(); // 强行把键盘控制权抢回给游戏画面！
+            }
+        }, 100);
+    });
+} 
 function wireModeButtons() {
     const overlay = document.getElementById("button-overlay");
     const mermaidCursor = document.getElementById("mermaid-cursor");
@@ -341,48 +353,27 @@ function mousePressed() {
 }
 
 function keyPressed() {
-    // ==========================================
-    // 🌟 1. 空格键：仅在「输入名字」页用来进全屏（与石碑上的 SPACE 提示一致）。
-    //    游戏中若也对全屏请求，部分浏览器 / 环境下会整页刷新或重复跑 setup()，
-    //    setup() 里又会 changeState(NAME_ENTRY)，表现为「一按空格回到输名字」。
-    //    游戏中一律吞掉空格，避免误触全屏。
-    // ==========================================
+    // 1. 全局拦截空格键 (防误触 + 强制全屏)
     if (keyCode === 32) {
-        if (
-            typeof gameManager !== 'undefined' &&
-            gameManager &&
-            gameManager.currentState === GameState.NAME_ENTRY
-        ) {
-            if (!fullscreen()) {
-                fullscreen(true);
-            }
+        if (!fullscreen()) {
+            fullscreen(true);
         }
-        return false;
+        return false; 
     }
 
-    // ==========================================
-    // 🌟 2. 将按键传递给游戏管理器 (处理打字、删字、控制等)
-    // ==========================================
+    // 2. 将按键正常传递给游戏 (刚刚改过的 GameManager 就会在这里接管退格键并删字)
     if (typeof gameManager !== 'undefined' && gameManager) {
         gameManager.handleKeyPress(key, keyCode);
     }
 
-    // ==========================================
-    // 🌟 3. 精准护盾：只拦截该拦截的！
-    // ==========================================
+    // 🌟 3. 终极护盾：死死按住退格键，不管任何情况，绝对不让浏览器触发“返回上一页”！
+    if (keyCode === 8 || key === 'Backspace') {
+        return false; 
+    }
     
-    // 永远拦截方向键，防止疯狂抓鱼时整个网页跟着上下乱抖
+    // 4. 拦截方向键，防止疯狂抓鱼时整个网页跟着上下乱抖
     if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(keyCode)) {
         return false;
-    }
-
-    // 针对退格键 (BACKSPACE) 的特殊处理：
-    // 如果当前【不是】输入名字的页面，才拦截它（防止打游戏时误触导致网页后退）。
-    // 如果在输入名字，就放行，让你能正常删字！
-    if (keyCode === BACKSPACE) {
-        if (gameManager && gameManager.currentState !== GameState.NAME_ENTRY) {
-            return false;
-        }
     }
 }
 
