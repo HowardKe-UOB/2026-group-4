@@ -25,20 +25,22 @@
             body {
                 padding: 0;
                 margin: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                width: 100vw;
                 height: 100vh;
-                background-color: #333;
+                overflow: hidden; /* 隐藏滚动条 */
+                background-color: #000;
             }
             #game-container {
                 position: relative;
-                width: 1280px;
-                height: 720px;
+                /* 👇 去掉了比例限制，强制宽高 100% */
+                width: 100%;
+                height: 100%;
             }
             #game-container canvas {
+                /* 👇 强制画布填满容器，这会导致非 16:9 屏幕发生拉伸 */
+                width: 100% !important;
+                height: 100% !important;
                 display: block;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             }
             #game-container canvas:focus {
                 outline: none;
@@ -219,42 +221,12 @@
                     inset 12px 12px 0px #8b5a2a,
                     inset -12px -12px 0px #d9a065;
             }
-
-            #back-btn {
-                appearance: none;
-                outline: none;
-                position: absolute;
-                bottom: 24px;
-                left: 24px;
-                width: 44px;
-                height: 44px;
-                padding: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 28px;
-                border: none;
-                background: none;
-                color: #fbf5da;
-                cursor: pointer;
-                transition: opacity 0.15s;
-                font-family: 'Press Start 2P', monospace;
-                text-shadow: 2px 2px 0 #1c2b36;
-            }
-            #back-btn:hover {
-                opacity: 0.9;
-            }
-            #back-btn:active {
-                opacity: 0.7;
-                transform: translateX(-2px);
-            }
         </style>
     </head>
     <body>
         <div id="game-container">
             <div id="button-overlay" class="hidden">
                 <img id="mermaid-cursor" class="mermaid-cursor" src="assets/mermaid.png" alt="">
-                <button id="back-btn" type="button" title="Back">←</button>
                 <div id="difficulty-buttons" class="btn-group hidden">
                     <div class="btn-row">
                         <button class="pixel-btn" id="btn-easy">EASY</button>

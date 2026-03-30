@@ -58,7 +58,7 @@ class ShopItem {
         if (levelManager.hooks && levelManager.hooks.length > 0) {
             levelManager.hooks.forEach(h => {
                 if (this.name === "Strength Potion") {
-                    h.retractMultiplier = 2; // 提升所有玩家的回拉速度
+                    h.retractMultiplier = 1.5; // 提升所有玩家的回拉速度
                 }
                 if (this.name === "Laser Sight") {
                     h.hasLaser = true; // 所有玩家获得激光

@@ -249,15 +249,24 @@ let submarineImg2;
 let newhook2Img;
 let pearlImg;
 let pearlShellImgs = [];
+let passcelebrationImg;
+let nextlevelImg;
+let backImg;
+let Treasure_Chest2;
+let victoryBgm;
+let targetBgm; 
+
 // 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
 // Press Start 2P加单引号，让浏览器解析
 const pixelFont = "'Press Start 2P'";
 
 function preload() {
     bgImageLevel1 = loadImage("assets/ocean_bg.jpg");
-    bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); // 确保文件名和后缀绝对一致！
-
-    bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 【修复】此文件不存在，使用 ocean_bg2 代替 // 需要新增此资源或使用现有的ocean_bg2作为深海
+    bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); 
+    passcelebrationImg = loadImage('assets/passcelebration.jpg');
+    nextLevelBgImg = loadImage('assets/nextlevel.jpg');
+    bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 如果没有这张图，记得改成 ocean_bg2.jpg
+    backImg = loadImage('assets/back.png');
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
     clockImg = loadImage("assets/SandClock.png");
@@ -274,13 +283,23 @@ function preload() {
     shopBgm = loadSound("assets/ShopGen3.mp3");
     boatImg = loadImage("assets/boat.png");
     boatImg2 = loadImage("assets/boat2.png");
-    // 潜水艇图片（文件不存在时自动使用代码绘制的 fallback）
+    victoryBgm = loadSound('assets/victory.mp3');
+    targetBgm = loadSound('assets/target.mp3');
+
+    
+    // 🌟 重点在这里：小写的接开箱，大写的接关箱！
+    treasureChest = loadImage("assets/Treasure_Chest.png");
+    Treasure_Chest2 = loadImage("assets/Treasure_Chest2.png");
+    
+    sharkImg = loadImage('assets/shark_1.png');
     submarineImg = loadImage("assets/submarineImg.png");
     submarineImg2 = loadImage('assets/submarineImg2.png');
+    
     for (let i = 1; i <= 4; i++) {
         sharkImgs.push(loadImage(`assets/shark_${i}.png`));
         anglerFishImgs.push(loadImage(`assets/AnglerFish_${i}.png`));
     }
+    
     hookImg = loadImage("assets/hook.png");
     hookImg2 = loadImage("assets/hook2.png");
     newhookImg = loadImage("assets/newhook.png");
@@ -307,19 +326,20 @@ function preload() {
         let stone = loadImage(`assets/stone${i}.png`);
         stones.push(stone);
     }
+    
     imgSkeleton = loadImage("assets/Skeleton.png");
-    treasureChest = loadImage("assets/Treasure_Chest.png");
     pearlImg = loadImage("assets/pearl.png");
+    
     for (let i = 1; i <= 4; i++) {
         pearlShellImgs.push(loadImage(`assets/shell_${i}.png`));
     }
+    
     nameEntryBgImg = loadImage("assets/deepsea_prospector.png");
     modeSelectBgImg = loadImage("assets/choose_fishing_challenge.png");
     levelFailedImg = loadImage("assets/levelfailed.png");
     leaderboardBgImg = loadImage("assets/leaderboard.png");
     pauseMenuBgImg = loadImage("assets/pause_button_bg.png");
 }
-
 function makeWhiteTransparent(img, threshold = 245) {
     if (!img || !img.pixels) return;
     img.loadPixels();
@@ -360,10 +380,23 @@ function setup() {
 
     gameManager = new GameManager();
     gameManager._applyVolume();
+    gameManager._applySfxVolume();
     gameManager.changeState(GameState.NAME_ENTRY);
     wireModeButtons();
-}
 
+    // ==========================================
+    // 🌟 把它放在 wireModeButtons() 下面，但在 setup() 结束的大括号上面！
+    // ==========================================
+    document.addEventListener('fullscreenchange', () => {
+        // 稍微延迟 100 毫秒，等浏览器的缩放动画结束
+        setTimeout(() => {
+            let c = document.querySelector('canvas');
+            if (c) {
+                c.focus(); // 强行把键盘控制权抢回给游戏画面！
+            }
+        }, 100);
+    });
+} 
 function wireModeButtons() {
     const overlay = document.getElementById("button-overlay");
     const mermaidCursor = document.getElementById("mermaid-cursor");
@@ -408,15 +441,6 @@ function wireModeButtons() {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.TWO_PLAYER;
         gameManager.startGame();
-    });
-
-    document.getElementById("back-btn").addEventListener("click", () => {
-        userStartAudio();
-        if (gameManager.currentState === GameState.DIFFICULTY_SELECT) {
-            gameManager.changeState(GameState.NAME_ENTRY);
-        } else if (gameManager.currentState === GameState.PLAYER_MODE_SELECT) {
-            gameManager.changeState(GameState.DIFFICULTY_SELECT);
-        }
     });
 
     function syncOverlay() {
@@ -540,8 +564,28 @@ function mousePressed() {
 }
 
 function keyPressed() {
-    userStartAudio();
-    if (gameManager) gameManager.handleKeyPress(key, keyCode);
+    // 1. 全局拦截空格键 (防误触 + 强制全屏)
+    if (keyCode === 32) {
+        if (!fullscreen()) {
+            fullscreen(true);
+        }
+        return false; 
+    }
+
+    // 2. 将按键正常传递给游戏 (刚刚改过的 GameManager 就会在这里接管退格键并删字)
+    if (typeof gameManager !== 'undefined' && gameManager) {
+        gameManager.handleKeyPress(key, keyCode);
+    }
+
+    // 🌟 3. 终极护盾：死死按住退格键，不管任何情况，绝对不让浏览器触发“返回上一页”！
+    if (keyCode === 8 || key === 'Backspace') {
+        return false; 
+    }
+    
+    // 4. 拦截方向键，防止疯狂抓鱼时整个网页跟着上下乱抖
+    if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(keyCode)) {
+        return false;
+    }
 }
 
 function mouseWheel(event) {

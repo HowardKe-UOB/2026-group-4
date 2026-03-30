@@ -31,14 +31,26 @@ class GameManager {
         // 设置（从 localStorage 恢复）
         this.settingsOpen = false;
         const savedVol = parseFloat(localStorage.getItem('ds_volume'));
+        const savedSfx = parseFloat(localStorage.getItem('ds_sfx_volume'));
         const savedBright = parseFloat(localStorage.getItem('ds_brightness'));
         this.volumeLevel = isNaN(savedVol) ? 0.8 : constrain(savedVol, 0, 1);
+        this.sfxVolumeLevel = isNaN(savedSfx) ? 0.8 : constrain(savedSfx, 0, 1);
         this.brightnessLevel = isNaN(savedBright) ? 1 : constrain(savedBright, 0, 1);
         this._settingsVolumeDragging = false;
+        this._settingsSfxVolumeDragging = false;
         this._settingsBrightnessDragging = false;
         this.scaledMouseX = 0;
         this.scaledMouseY = 0;
         this.nameInputFocused = false;
+        /** NAME_ENTRY：按空格时显示提示，frameCount 在此之前一直显示 */
+        this._nameEntrySpaceWarningUntilFrame = 0;
+
+        /** 每关进入 PLAYING 时的 totalScore（index = levelNum - 1） */
+        this.perLevelScoreAtStart = [];
+        /** 每关增收：离开 PLAYING 时 totalScore − 关初（含失败前已打的钱） */
+        this.perLevelEarned = [];
+        /** 每关开局生成时 activeItems 的 scoreValue 总和（与上一字段同下标） */
+        this.perLevelSpawnValue = [];
     }
 
     _applyVolume() {
@@ -47,6 +59,18 @@ class GameManager {
         if (typeof shopBgm !== 'undefined' && shopBgm) shopBgm.setVolume(v);
         if (typeof gameplayBgm !== 'undefined' && gameplayBgm) gameplayBgm.setVolume(v);
         try { localStorage.setItem('ds_volume', String(v)); } catch (_) {}
+    }
+
+    _applySfxVolume() {
+        const v = this.sfxVolumeLevel;
+        if (typeof koiInSfx !== 'undefined' && koiInSfx) koiInSfx.setVolume(v);
+        if (typeof koiOutSfx !== 'undefined' && koiOutSfx) koiOutSfx.setVolume(v);
+        if (typeof buySfx !== 'undefined' && buySfx) buySfx.setVolume(v);
+        if (typeof catchSfx !== 'undefined' && catchSfx) catchSfx.setVolume(v);
+        if (typeof ballCatchSfx !== 'undefined' && ballCatchSfx) ballCatchSfx.setVolume(v);
+        if (typeof sharkStolenSfx !== 'undefined' && sharkStolenSfx)
+            sharkStolenSfx.setVolume(v);
+        try { localStorage.setItem('ds_sfx_volume', String(v)); } catch (_) {}
     }
 
     _saveBrightness() {
@@ -185,6 +209,9 @@ class GameManager {
         this.player.hasClubCard = false;  // 避免沿用上一局的会员卡
         this.gameSessionFishCaught = {};
         this.levelNum = 1;
+        this.perLevelScoreAtStart = [];
+        this.perLevelEarned = [];
+        this.perLevelSpawnValue = [];
         const buttonOverlay = document.getElementById('button-overlay');
         if (buttonOverlay) {
             buttonOverlay.classList.add('hidden');
@@ -208,16 +235,47 @@ class GameManager {
 
         // 如果上面 ShopItem 报错，下面这行就永远跑不到
         this.player.consumeItems(this.levelManager);
-        // 🌟 改为触发过场动画：屏幕渐黑后再进入游戏
+        this._recordLevelSpawnTotal();
+        this._snapshotLevelStartScore();
+        // Screen fade transition before entering gameplay
         triggerTransition(GameState.PLAYING);
     }
 
-changeState(newState) {
-    this.currentState = newState;
-    // 只有状态改变时，才主动调用一次 UI 同步
-    if (this._syncOverlay) {
-        this._syncOverlay();
+    _recordLevelSpawnTotal() {
+        const i = this.levelNum - 1;
+        while (this.perLevelSpawnValue.length <= i) {
+            this.perLevelSpawnValue.push(undefined);
+        }
+        const total =
+            this.levelManager &&
+            typeof this.levelManager.initialSpawnValueTotal === "number"
+                ? this.levelManager.initialSpawnValueTotal
+                : 0;
+        this.perLevelSpawnValue[i] = total;
     }
+
+    _snapshotLevelStartScore() {
+        const i = this.levelNum - 1;
+        while (this.perLevelScoreAtStart.length <= i) {
+            this.perLevelScoreAtStart.push(undefined);
+            this.perLevelEarned.push(undefined);
+        }
+        this.perLevelScoreAtStart[i] = this.player.totalScore;
+    }
+
+    _finalizeCurrentLevelEarnings() {
+        const i = this.levelNum - 1;
+        if (i < 0 || this.perLevelScoreAtStart[i] === undefined) return;
+        this.perLevelEarned[i] =
+            this.player.totalScore - this.perLevelScoreAtStart[i];
+    }
+
+changeState(newState) {
+        this.currentState = newState;
+        // 只有状态改变时，才主动调用一次 UI 同步
+        if (this._syncOverlay) {
+            this._syncOverlay();
+        }
         if (newState === GameState.HIGH_SCORE) {
             this.highScoreScrollY = 0;
             this.fishGalleryEntry = null;
@@ -229,6 +287,7 @@ changeState(newState) {
             this.nameExistsCheck = null;
             this.lastCheckedName = '';
             this.nameInputFocused = false;
+            this._nameEntrySpaceWarningUntilFrame = 0;
         }
         if (
             newState === GameState.DIFFICULTY_SELECT ||
@@ -237,67 +296,55 @@ changeState(newState) {
             this.menuSelectionIndex = 0;
         }
 
-        //首页背景音乐
+        // ==========================================
+        // 🎵 统一音乐大管家 (彻底解决音乐打架)
+        // ==========================================
+        this._applyVolume(); // 统一在这里刷新一次音量，下面就不写了
+
+        // 1. 首页背景音乐
         const menuStates = [
             GameState.NAME_ENTRY,
             GameState.DIFFICULTY_SELECT,
             GameState.PLAYER_MODE_SELECT,
         ];
         if (menuStates.includes(this.currentState)) {
-            if (
-                typeof titleBgm !== 'undefined' &&
-                titleBgm &&
-                !titleBgm.isPlaying()
-            ) {
-                this._applyVolume();
-                titleBgm.loop();
-            }
-        } else if (this.currentState === GameState.PLAYING) {
-            if (
-                typeof titleBgm !== 'undefined' &&
-                titleBgm &&
-                titleBgm.isPlaying()
-            ) {
-                titleBgm.stop();
-            }
+            if (typeof titleBgm !== 'undefined' && titleBgm && !titleBgm.isPlaying()) titleBgm.loop();
+        } else {
+            // 只要不是首页这三个状态，立刻闭嘴！(下面都是纯 else)
+            if (typeof titleBgm !== 'undefined' && titleBgm && titleBgm.isPlaying()) titleBgm.stop();
         }
-        //游戏中背景音乐
+
+        // 2. 游戏中背景音乐
         if (this.currentState === GameState.PLAYING) {
-            if (
-                typeof gameplayBgm !== 'undefined' &&
-                gameplayBgm &&
-                !gameplayBgm.isPlaying()
-            ) {
-                this._applyVolume();
-                gameplayBgm.loop();
+            if (typeof gameplayBgm !== 'undefined' && gameplayBgm && !gameplayBgm.isPlaying()) gameplayBgm.loop();
+        } else {
+            if (typeof gameplayBgm !== 'undefined' && gameplayBgm && gameplayBgm.isPlaying()) gameplayBgm.stop();
+        }
+
+        // 3. 商店音乐
+        if (this.currentState === GameState.SHOP) {
+            if (typeof shopBgm !== 'undefined' && shopBgm && !shopBgm.isPlaying()) shopBgm.loop();
+        } else {
+            if (typeof shopBgm !== 'undefined' && shopBgm && shopBgm.isPlaying()) shopBgm.stop();
+        }
+
+        // 4. 通关结算页面音乐
+        if (this.currentState === GameState.LEVEL_PASS_CELEBRATION) {
+            if (typeof victoryBgm !== 'undefined' && victoryBgm && !victoryBgm.isPlaying()) {
+                // 🌟 这里修改了：把 play() 改成了 loop()，这样音乐就会一直循环播放，直到玩家点击屏幕进入商店！
+                victoryBgm.loop(); 
             }
         } else {
-            if (
-                typeof gameplayBgm !== 'undefined' &&
-                gameplayBgm &&
-                gameplayBgm.isPlaying()
-            ) {
-                gameplayBgm.stop();
+            if (typeof victoryBgm !== 'undefined' && victoryBgm && victoryBgm.isPlaying()) {
+                victoryBgm.stop();
             }
         }
-        //商店音乐
-        if (this.currentState === GameState.SHOP) {
-            if (
-                typeof shopBgm !== 'undefined' &&
-                shopBgm &&
-                !shopBgm.isPlaying()
-            ) {
-                this._applyVolume();
-                shopBgm.loop();
-            }
-        } else if (this.currentState === GameState.PLAYING) {
-            if (
-                typeof shopBgm !== 'undefined' &&
-                shopBgm &&
-                shopBgm.isPlaying()
-            ) {
-                shopBgm.stop();
-            }
+
+        // 5. 目标分数展示页音乐
+        if (this.currentState === GameState.NEXT_LEVEL_TARGET) {
+            if (typeof targetBgm !== 'undefined' && targetBgm && !targetBgm.isPlaying()) targetBgm.loop(); 
+        } else {
+            if (typeof targetBgm !== 'undefined' && targetBgm && targetBgm.isPlaying()) targetBgm.stop();
         }
 
         // iPad Magic Keyboard: focus canvas when entering keyboard-driven states
@@ -376,7 +423,46 @@ changeState(newState) {
         imageMode(CENTER);
         image(img, width / 2, height / 2, dw, dh);
     }
+  
+    _drawMenuBackButton() {
+        push();
+        imageMode(CORNER);
 
+        // 保持你原来调好的尺寸
+        const btnW = 170;
+        const btnH = 60;
+        const btnX = 20; 
+        const btnY = height - 20 - btnH; 
+
+        // 1. 判断鼠标有没有悬浮和按下
+        let isHovered = mouseX >= btnX && mouseX <= btnX + btnW && mouseY >= btnY && mouseY <= btnY + btnH;
+        let isPressed = isHovered && mouseIsPressed;
+        
+        // 2. 如果按下了，往下偏移 4 像素
+        let pressOffset = isPressed ? 4 : 0;
+
+        // 3. 画出你的图片
+        if (typeof backImg !== 'undefined' && backImg) {
+            if (isPressed) {
+                tint(180); // 🌟 按下时稍微变暗
+            } else {
+                noTint();  // 正常时不改变颜色
+            }
+            
+            // 画出带有向下偏移量 (pressOffset) 的图片
+            image(backImg, btnX, btnY + pressOffset, btnW, btnH);
+            
+            noTint(); // 🌟 极其重要：画完立刻重置颜色！不然会导致整个游戏的背景变成纯黑或者消失！
+        }
+
+        // 4. 热区保持死死不动，保证点击有效
+        this._menuBackBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
+        pop()
+
+        // ⛔ 重点：物理判定区（热区）绝对不能跟着平移！不然按下去的一瞬间鼠标就不在判定区内了，会导致按钮疯狂抽搐
+        this._menuBackBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
+        pop();
+    }
     // 海洋主题菜单背景：渐变 + 气泡 + 波浪底
     drawOceanMenuBackground() {
         push();
@@ -629,10 +715,12 @@ changeState(newState) {
                 if (!this.gamePaused) {
                     let result = this.levelManager.update();
                     if (result === 'PASS') {
+                        this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.shopManager.resetShop(this.levelNum, this.player);
                         this.changeState(GameState.LEVEL_PASS_CELEBRATION);
                     } else if (result === 'FAIL') {
+                        this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
@@ -643,6 +731,8 @@ changeState(newState) {
                             this.currentDifficulty,
                             this.currentPlayerMode,
                             this.gameSessionFishCaught || {},
+                            this.perLevelEarned,
+                            this.perLevelSpawnValue,
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                     }
@@ -661,6 +751,9 @@ changeState(newState) {
                 break;
             case GameState.HIGH_SCORE:
                 this.drawHighScore();
+                break;
+            case GameState.NEXT_LEVEL_TARGET:
+                this.drawNextLevelTarget();
                 break;
         }
 
@@ -743,7 +836,7 @@ changeState(newState) {
         rect(0, 0, width, height);
 
         const panelW = 380;
-        const panelH = 260;
+        const panelH = 325;
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2;
 
@@ -770,14 +863,15 @@ changeState(newState) {
         const barW = 260;
         const barH = 20;
         const barX = panelX + (panelW - barW) / 2;
-        const barY1 = panelY + 75;
-        const barY2 = panelY + 140;
+        const barY1 = panelY + 68;
+        const barY2 = barY1 + 65;
+        const barY3 = barY2 + 65;
 
-        // 音量条
+        // 背景音乐
         fill(200, 230, 255);
         textSize(10);
         textAlign(LEFT, CENTER);
-        text('VOLUME', panelX + 40, barY1 - 25);
+        text('MUSIC', panelX + 40, barY1 - 25);
         fill(30, 60, 90);
         rect(barX, barY1, barW, barH, 4);
         fill(80, 160, 220);
@@ -792,22 +886,39 @@ changeState(newState) {
         rect(thumb1X, barY1 - 4, 16, barH + 8, 4);
         this._settingsVolumeBar = { x: barX, y: barY1, w: barW, h: barH };
 
-        // 亮度条
+        // 音效（非 BGM）
         fill(200, 230, 255);
-        text('BRIGHTNESS', panelX + 40, barY2 - 25);
+        text('SFX', panelX + 40, barY2 - 25);
         fill(30, 60, 90);
         rect(barX, barY2, barW, barH, 4);
-        fill(255, 220, 100);
-        rect(barX, barY2, barW * this.brightnessLevel, barH, 4);
+        fill(120, 200, 160);
+        rect(barX, barY2, barW * this.sfxVolumeLevel, barH, 4);
         stroke(0, 0, 0);
         strokeWeight(2);
         noFill();
         rect(barX, barY2, barW, barH, 4);
         noStroke();
         fill(255, 230, 180);
+        const thumbSfxX = barX + barW * this.sfxVolumeLevel - 8;
+        rect(thumbSfxX, barY2 - 4, 16, barH + 8, 4);
+        this._settingsSfxVolumeBar = { x: barX, y: barY2, w: barW, h: barH };
+
+        // 亮度条
+        fill(200, 230, 255);
+        text('BRIGHTNESS', panelX + 40, barY3 - 25);
+        fill(30, 60, 90);
+        rect(barX, barY3, barW, barH, 4);
+        fill(255, 220, 100);
+        rect(barX, barY3, barW * this.brightnessLevel, barH, 4);
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        noFill();
+        rect(barX, barY3, barW, barH, 4);
+        noStroke();
+        fill(255, 230, 180);
         const thumb2X = barX + barW * this.brightnessLevel - 8;
-        rect(thumb2X, barY2 - 4, 16, barH + 8, 4);
-        this._settingsBrightnessBar = { x: barX, y: barY2, w: barW, h: barH };
+        rect(thumb2X, barY3 - 4, 16, barH + 8, 4);
+        this._settingsBrightnessBar = { x: barX, y: barY3, w: barW, h: barH };
 
         // 关闭按钮
         const closeBtnW = 100;
@@ -837,6 +948,54 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
+        // ==========================================
+        // 🌟 直接在左侧石碑上写全屏提示 (原版字体位置 + 神秘符号)
+        // ==========================================
+        push();
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+        textAlign(CENTER, CENTER);
+        noSmooth();
+
+        const textX = 172;          // 左右位置保持不变
+        const textY = height - 250; // 上下位置保持不变
+        let fAlpha = (sin(frameCount * 0.04) * 127 + 128); 
+
+        textSize(12); // 字号大小保持 12 不变
+        
+        // 🌟 在你原本的 y1~y4 基础上，只增加了 y0 和 y5
+        const y0 = textY - 55; // 新增：顶部符号位置
+        const y1 = textY - 30; 
+        const y2 = textY - 10; 
+        const y3 = textY + 10; 
+        const y4 = textY + 30; 
+        const y5 = textY + 55; // 新增：底部符号位置
+
+        // 1. 画深色阴影
+        fill(10, 40, 50, 200); 
+        text('~ ✦ ~',      textX + 2, y0 + 2); // 新增符号阴影
+        text('PRESS',      textX + 2, y1 + 2);
+        text('[ SPACE ]',      textX + 2, y2 + 2);
+        text('FOR',        textX + 2, y3 + 2);
+        text('FULLSCREEN', textX + 2, y4 + 2);
+        text('~ ✦ ~',      textX + 2, y5 + 2); // 新增符号阴影
+
+        // 2. 画发光主字
+        // 🌟 新增：给上下两个神秘符号配了淡薄荷绿发光色
+        fill(150, 255, 200, fAlpha); 
+        text('~ ✦ ~',      textX, y0);
+        text('~ ✦ ~',      textX, y5);
+
+        // 下面是你原本的冰蓝渐变文字，一模一样
+        fill(180, 240, 255, fAlpha); 
+        text('PRESS',      textX, y1);
+        text('[ SPACE ]',      textX, y2);
+        fill(100, 200, 230, fAlpha); 
+        text('FOR',        textX, y3);
+        text('FULLSCREEN', textX, y4);
+        
+        pop();
+        // ==========================================
+        // ==========================================
         push();
         fill(255);
         textAlign(CENTER, CENTER);
@@ -869,16 +1028,35 @@ changeState(newState) {
             text('enter your name', width / 2, boxY);
         }
 
-        // 名字已存在时显示红色提示
+       // 名字已存在时显示红色提示
         if (this.nameExistsCheck === true) {
             fill(255, 80, 80);
             textSize(12);
             text('name already exists', width / 2, boxY + 55);
+        } else if (
+            typeof frameCount === 'number' &&
+            frameCount < this._nameEntrySpaceWarningUntilFrame
+        ) {
+            fill(255, 190, 90);
+            textSize(12);
+            text('Space is not allowed', width / 2, boxY + 55);
         }
 
         fill(200, 230, 255);
         textSize(16);
         text('Press ENTER to cast off', width / 2, boxY + 75);
+
+        // 1. 实时检测：如果当前已经是全屏状态了，就立刻把警告关掉
+        if (this.showFullscreenWarning && fullscreen()) {
+            this.showFullscreenWarning = false;
+        }
+
+        // 2. 显示警告（如果没有全屏的话）
+        if (this.showFullscreenWarning) {
+            fill(255, 80, 80); // 🌟 这里去掉了 warnAlpha，直接变成纯正的实心红字，不再闪烁
+            textSize(12);
+            text('MUST PRESS [ SPACE ] TO ENTER FULLSCREEN FIRST!', width / 2, boxY + 105);
+        }
 
         // 右下角小奖杯，点击进入高分榜（设置按钮由 drawSettingsButton 统一绘制）
         const trophySize = 28;
@@ -927,6 +1105,8 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
+        // 🌟 新增下面这一行
+        this._drawMenuBackButton();
     }
 
     drawPlayerModeSelect() {
@@ -935,14 +1115,8 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
-    }
-
-    drawPlayerModeSelect() {
-        if (typeof modeSelectBgImg !== 'undefined' && modeSelectBgImg) {
-            this.drawCoverBackground(modeSelectBgImg);
-        } else {
-            this.drawOceanMenuBackground();
-        }
+        // 🌟 新增下面这一行
+        this._drawMenuBackButton();
     }
 
     drawHowToPlay() {
@@ -1077,17 +1251,20 @@ changeState(newState) {
         text("Fish bone: 0 pts (20-50 w/ Collector)", lx, cy);
         cy += lineH + 16;
 
-        // 闪烁提示
+        // ==========================================
+        // 🌟 修复：闪烁提示 (固定在面板底部，不再受上面行数影响)
+        // ==========================================
         let blinkAlpha = 150 + 105 * sin(frameCount * 0.08);
         fill(0, 220, 180, blinkAlpha);
-        textAlign(CENTER, TOP);
+        // 把对齐方式改成 CENTER, CENTER 会更准
+        textAlign(CENTER, CENTER); 
         textSize(11);
         textStyle(BOLD);
-        text("CLICK ANYWHERE TO START", width / 2, cy);
+        // 🌟 核心修改：把 cy 改成了 panelY + panelH - 24，让它永远离底部边框 24 个像素
+        text("CLICK ANYWHERE TO START", width / 2, panelY + panelH - 16);
 
         pop();
     }
-
     drawShop() {
         push();
         this.shopManager.draw(this.player, this.currentPlayerMode, this.levelNum);
@@ -1245,70 +1422,434 @@ changeState(newState) {
         rectMode(CORNER);
         noSmooth();
 
-        fill(0, 0, 0, 200);
-        rect(0, 0, width, height);
-
-        const panelW = 540;
-        const panelH = 420;
-        const panelX = (width - panelW) / 2;
-        const panelY = (height - panelH) / 2 - 20;
-
-        noStroke();
-        fill(0, 0, 0, 80);
-        rect(panelX + 6, panelY + 6, panelW, panelH, 12);
-        fill(8, 35, 65, 235);
-        rect(panelX, panelY, panelW, panelH, 12);
-        stroke(60, 160, 220);
-        strokeWeight(4);
-        noFill();
-        rect(panelX, panelY, panelW, panelH, 12);
-        noStroke();
-
-        const pulse = 0.03 * sin(frameCount * 0.08);
-        const scaleFactor = 1 + pulse;
-        push();
-        translate(width / 2, panelY + 72);
-        scale(scaleFactor);
-        fill(255, 220, 80);
-        textSize(14);
-        textAlign(CENTER, CENTER);
-        this._drawPixelTextOutline('CONGRATS! YOU ADVANCED!', 0, 0);
-        fill(255, 240, 140);
-        text('CONGRATS! YOU ADVANCED!', 0, 0);
-        pop();
-
-        const rankInfo = this._getCelebrationRankInfo();
-        let cy = panelY + 120;
-        const lineH = 36;
-
-        fill(200, 235, 255);
-        textSize(14);
-        textAlign(CENTER, CENTER);
-        text(`Your Rank: #${rankInfo.rank}`, width / 2, cy);
-        cy += lineH;
-        textSize(12);
-        text(`${this.player.name || 'Anon'}  Score: ${this.player.totalScore}  Lv.${this.levelNum}`, width / 2, cy);
-
-        if (rankInfo.nextEntry) {
-            cy += lineH + 14;
-            fill(140, 180, 220);
-            textSize(10);
-            text('Next up:', width / 2, cy);
-            cy += lineH;
-            fill(180, 210, 245);
-            textSize(11);
-            text(`#${rankInfo.nextRank}  ${rankInfo.nextEntry.playerName}  Score: ${rankInfo.nextEntry.score}  Lv.${rankInfo.nextEntry.levelsCompleted ?? 0}`, width / 2, cy);
+        // 1. 画海底背景图
+        if (typeof passcelebrationImg !== 'undefined' && passcelebrationImg) {
+            imageMode(CORNER);
+            image(passcelebrationImg, 0, 0, width, height);
         }
 
-        cy = panelY + panelH - 50;
-        fill(180, 220, 255);
-        textSize(8);
+        // 2. 暗色遮罩
+        fill(0, 0, 0, 80); 
+        rect(0, 0, width, height);
+
+        // ==========================================
+        // 🌟 背景动画层：气泡与星光
+        for (let i = 0; i < 20; i++) {
+            let bx = ((i * 107 + frameCount * 0.5) % (width + 200)) - 100; 
+            let by = height - ((i * 57 + frameCount * (1 + i % 2)) % (height + 50));
+            let br = 4 + (i % 5) * 2;
+            fill(255, 255, 255, 40 + sin(frameCount * 0.05 + i) * 40);
+            ellipse(bx, by, br, br);
+
+            if (i % 2 === 0) {
+                let sx = i < 10 ? (i * 35 + frameCount) % 350 : width - ((i * 35 + frameCount) % 350); 
+                let sy = (i * 77 + frameCount * 0.2) % height;
+                let alpha = 150 + 100 * sin(frameCount * 0.1 + i);
+                fill(255, 220, 100, alpha);
+                textAlign(CENTER, CENTER);
+                textSize(10 + (i % 3) * 4);
+                text("✦", sx, sy);
+            }
+        }
+
+        // ==========================================
+        // 🦈 核心动画：【大白鲨极速追杀 + 气泡尾流】
+        if (typeof koiFishImgs !== 'undefined' && koiFishImgs.length > 0) {
+            
+            // 逃窜的锦鲤
+            let koiSpeed = 4.5; 
+            let kx = ((frameCount * koiSpeed) % (width + 1000)) - 400; 
+            let ky = height - 120; 
+            let frameIdx = floor((frameCount / 4) % koiFishImgs.length); 
+            
+            push();
+            translate(kx, ky);
+            imageMode(CENTER);
+            image(koiFishImgs[frameIdx], 0, 0, 100, 100); 
+            pop();
+
+            // 紧追的大白鲨与气泡
+            push();
+            let sharkX = kx - 260; 
+            translate(sharkX, ky); 
+
+            // 淡淡的黑色水流阴影压迫感
+            fill(0, 0, 0, 50);
+            noStroke();
+            ellipse(-30, 0, 320, 120);
+
+            // 尾翼剧烈搅动产生的湍流气泡
+            let tailX = -130; 
+            for (let i = 0; i < 20; i++) {
+                let flowOffset = (frameCount * 5 + i * 15) % 300; 
+                let bubbleX = tailX - flowOffset; 
+                let spread = flowOffset * 0.15; 
+                let bubbleY = sin(frameCount * 0.2 + i) * spread * 15; 
+                let bAlpha = map(flowOffset, 0, 300, 200, 0); 
+                let bSize = map(sin(frameCount * 0.1 + i * 3), -1, 1, 4, 16);
+                
+                fill(255, 255, 255, bAlpha);
+                ellipse(bubbleX, bubbleY, bSize, bSize);
+
+                let microY = cos(frameCount * 0.15 + i * 7) * spread * 20;
+                fill(255, 255, 255, bAlpha * 0.6);
+                ellipse(bubbleX - 10, microY, bSize * 0.4, bSize * 0.4);
+            }
+            pop();
+
+            // 画出鲨鱼本体 (带摆动动画)
+            push();
+            translate(sharkX, ky); 
+            imageMode(CENTER);
+            
+            if (typeof sharkImg !== 'undefined' && sharkImg) {
+                let sharkFrameIdx = floor((frameCount / 10) % sharkImgs.length);
+                let currentSharkImg = sharkImgs[sharkFrameIdx];
+
+                if (typeof sharkJawsImg !== 'undefined' && sharkJawsImg && frameCount % 60 < 20) {
+                    currentSharkImg = sharkJawsImg; 
+                } else if (!currentSharkImg) {
+                    currentSharkImg = sharkImg;
+                }
+                
+                rotate(cos(frameCount * 0.1) * 0.05); 
+                image(currentSharkImg, 0, 0, 300, 300); 
+            }
+            pop();
+        }
+
+        // ==========================================
+        // 🌟 核心布局：面板 700x500
+        const panelW = 700; 
+        const panelH = 500; 
+        const panelX = (width - panelW) / 2;
+        const panelY = 40; 
+        const itemCenterY = panelY + panelH / 2; 
+
+        // ==========================================
+        // 💎 财富点缀层
+        imageMode(CENTER);
+        
+        // 【左边：内部金币刺眼闪光大宝箱】
+        if (typeof treasureChest !== 'undefined' && typeof Treasure_Chest2 !== 'undefined') {
+            let chestY = itemCenterY + sin(frameCount * 0.04) * 12; 
+            
+            push();
+            translate(160, chestY); 
+            noStroke();
+            
+            let isChestOpen = floor(frameCount / 25) % 2 === 0;
+            let currentChestImg = Treasure_Chest2; 
+            if (isChestOpen) {
+                currentChestImg = treasureChest;
+            }
+
+            fill(255, 200, 0, 20 + sin(frameCount * 0.05) * 10);
+            ellipse(0, 0, 180, 180);
+            image(currentChestImg, 0, 0, 240, 240);
+
+            if (isChestOpen) {
+                push();
+                translate(0, -15); 
+                let glarePulse = abs(sin(frameCount * 0.15)); 
+                fill(255, 255, 255, 180 + 75 * glarePulse);
+                ellipse(0, 0, 50 + 20 * glarePulse, 50 + 20 * glarePulse);
+                fill(255, 220, 0, 120 + 80 * glarePulse);
+                ellipse(0, 0, 90 + 30 * glarePulse, 90 + 30 * glarePulse);
+                fill(255, 255, 255, 200 + 55 * glarePulse);
+                let flareW = 160 + 80 * glarePulse; 
+                let flareH = 6; 
+                ellipse(0, 0, flareW, flareH);
+                ellipse(0, 0, flareH, flareW);
+                rotate(PI / 4);
+                ellipse(0, 0, flareW * 0.5, flareH * 0.8);
+                ellipse(0, 0, flareH * 0.8, flareW * 0.5);
+                pop();
+
+                for (let j = 0; j < 4; j++) {
+                    let px = sin(frameCount * 0.1 + j * 2) * 55;
+                    let py = cos(frameCount * 0.13 + j * 3) * 35 - 15;
+                    let pSize = 3 + sin(frameCount * 0.2 + j) * 2;
+                    fill(255, 255, 255, 220); 
+                    quad(px, py - pSize*2, px + pSize, py, px, py + pSize*2, px - pSize, py);
+                }
+            }
+            pop();
+        }
+
+        // ==========================================
+        // 💎 财富点缀层
+        imageMode(CENTER);
+        
+        // 【左边：内部金币刺眼闪光大宝箱】
+        // ... (这部分代码保持不变，不需要修改) ...
+
+        // 【右边：开合大珍珠】
+        if (typeof pearlShellImgs !== 'undefined' && pearlShellImgs.length > 0) {
+            let shellY = itemCenterY + cos(frameCount * 0.04) * 12; 
+            let frameIdx = floor((frameCount / 12) % pearlShellImgs.length);
+            push();
+            translate(width - 160, shellY); 
+            noStroke();
+            let pearlPulse = cos(frameCount * 0.05);
+            
+            // 🌟 1. 按比例缩小背后的冰蓝光晕，显得更协调
+            // 这里修改了，基础半径和脉冲幅度都缩小了，以适应变小的贝壳
+            let maxPR = 120 + pearlPulse * 15; // 👈 这里修改了，从 160+p*20 改为 120+p*15
+            for (let r = maxPR; r > 0; r -= 10) { // 👈 减少步长以适应更小的半径，把 -= 15 改为 -= 10，让光晕更细腻
+                let alpha = map(r, 0, maxPR, 40, 0);
+                let rCol = map(r, 0, maxPR, 180, 0);
+                let gCol = map(r, 0, maxPR, 255, 200);
+                let bCol = map(r, 0, maxPR, 255, 255);
+                fill(rCol, gCol, bCol, alpha);
+                ellipse(0, 0, r * 2, r * 2);
+            }
+            
+            push();
+            scale(-1, 1); 
+            // 🌟 2. 贝壳尺寸从 240 缩小到 180
+            // 这里修改了，让贝壳图像显示得更小
+            image(pearlShellImgs[frameIdx], 0, 0, 180, 180); // 👈 这里修改了，从 240x240 改为 180x180
+            pop();
+            
+            if (typeof pearlImg !== 'undefined' && pearlImg && frameIdx > 0) {
+                // 这里修改了，按比例缩小珍珠的垂直偏移和脉冲幅度
+                let pearlOffsetY = -11 + sin(frameCount * 0.15) * 6; // 👈 这里修改了，从 -15+s*8 改为 -11+s*6
+                let pearlAlpha = map(frameIdx, 1, pearlShellImgs.length - 1, 100, 255);
+                push();
+                tint(255, pearlAlpha); 
+                // 🌟 3. 里面的珍珠也按比例从 85 缩小到 64
+                // 这里修改了，让珍珠图像显示得更小
+                image(pearlImg, 0, pearlOffsetY, 64, 64); // 👈 这里修改了，从 85x85 改为 64x64
+                pop();
+            }
+            pop();
+        }
+        imageMode(CORNER);
+
+        // ==========================================
+        // 🌟 面板底框质感绘制
+        noStroke();
+        fill(0, 0, 0, 150);
+        rect(panelX + 10, panelY + 10, panelW, panelH, 12);
+        fill(8, 35, 65, 245); 
+        rect(panelX, panelY, panelW, panelH, 12);
+        stroke(30, 90, 140);
+        strokeWeight(2);
+        noFill();
+        rect(panelX + 6, panelY + 6, panelW - 12, panelH - 12, 10);
+        stroke(0, 230, 255); 
+        strokeWeight(4);
+        rect(panelX, panelY, panelW, panelH, 12);
+        noStroke();
+
+        // ==========================================
+        // 🌟 文字立体像素化（干掉黑框蓝框，全立体阴影）
         textAlign(CENTER, CENTER);
+
+        // 1. 第一行标题 (22px 不越界)
+        const pulseTitle = 0.03 * sin(frameCount * 0.08);
+        const scaleFactorTitle = 1 + pulseTitle;
+        push();
+        translate(width / 2, panelY + 70); 
+        scale(scaleFactorTitle);
+        noStroke(); 
+        textSize(22); 
+        fill(0); 
+        text('CONGRATS! YOU ADVANCED!', -2, 0);
+        text('CONGRATS! YOU ADVANCED!', 2, 0);
+        text('CONGRATS! YOU ADVANCED!', 0, -2);
+        text('CONGRATS! YOU ADVANCED!', 0, 2);
+        fill(255, 230, 80);
+        text('CONGRATS! YOU ADVANCED!', 0, 0);
+        pop();
+        
+        // ==========================================
+        // 🌟 文字排版：完美右下角3D立体像素阴影
+        // ... (保留前面的 1. 标题 部分) ...
+        
+        const rankInfo = this._getCelebrationRankInfo();
+        let cy = panelY + 150; 
+
+        // ==========================================
+        // 【当前玩家信息模块】
+        // 1. 醒目的当前排位
+        textSize(36); 
+        fill(20, 60, 20, 200);
+        text(`🏆 Rank: #${rankInfo.rank}`, width / 2 + 3, cy + 3);
+        fill(255, 215, 0); 
+        text(`🏆 Rank: #${rankInfo.rank}`, width / 2, cy);
+        
+        cy += 50; // 🌟 大间距：把排位和具体数据区隔开
+
+        // 2. 玩家名字 (和下方的数据紧密组合)
+        textSize(24); 
+        let myNameLine = `⭐ ${this.player.name || 'Anon'}`;
+        fill(20, 60, 20, 200);
+        text(myNameLine, width / 2 + 2, cy + 2);
+        fill(200, 255, 200); 
+        text(myNameLine, width / 2, cy);
+        
+        cy += 40; // 🌟 小间距：让名字和分数紧紧抱团，变成一个整体！
+
+        // 3. 玩家分数与关卡
+        textSize(16); 
+        let myDataLine = `Score: ${this.player.totalScore}   |   Lv.${this.levelNum}`;
+        fill(20, 60, 20, 200);
+        text(myDataLine, width / 2 + 2, cy + 2);
+        fill(170, 230, 170); 
+        text(myDataLine, width / 2, cy);
+        
+        cy += 40; // 🌟 大间距：数据块结束，准备画分割线
+
+        // ==========================================
+        // 【目标玩家信息模块】
+        if (rankInfo.nextEntry) {
+            // 分割线
+            stroke(0, 150, 220, 180);
+            strokeWeight(2);
+            line(panelX + 70, cy, panelX + panelW - 70, cy);
+            noStroke();
+            
+            cy += 40; // 分割线到下一区域的距离
+            
+            // 4. "Next up" 提示
+            textSize(14); 
+            fill(40, 20, 20, 200);
+            text('- Next up -', width / 2 + 2, cy + 2);
+            fill(255, 180, 50); 
+            text('- Next up -', width / 2, cy);
+            
+            cy += 50; // 小间距
+            
+            // 5. 目标玩家排名与名字 (统一格式，看起来更专业)
+            textSize(20); 
+            let line1 = `⚔️ Rank: #${rankInfo.nextRank}  -  ${rankInfo.nextEntry.playerName}`;
+            fill(40, 20, 20, 200);
+            text(line1, width / 2 + 2, cy + 2);
+            fill(255, 120, 150); 
+            text(line1, width / 2, cy);
+            
+            cy += 40; // 🌟 小间距：和当前玩家一样，名字和分数紧密抱团！
+            
+            // 6. 目标玩家分数与关卡
+            textSize(16); 
+            let line2 = `Score: ${rankInfo.nextEntry.score}   |   Lv.${rankInfo.nextEntry.levelsCompleted ?? 0}`;
+            fill(40, 20, 20, 200);
+            text(line2, width / 2 + 2, cy + 2);
+            fill(255, 160, 180); 
+            text(line2, width / 2, cy);
+        }
+
+        // 5. 点击提示
+        cy = panelY + panelH - 45; 
+        textSize(11); 
+        fill(0);
+        text('Click anywhere to continue', width / 2 - 2, cy);
+        text('Click anywhere to continue', width / 2 + 2, cy);
+        text('Click anywhere to continue', width / 2, cy - 2);
+        text('Click anywhere to continue', width / 2, cy + 2);
+        fill(180, 255, 180, (sin(frameCount * 0.04) * 127 + 128)); 
         text('Click anywhere to continue', width / 2, cy);
+        pop();
+    }
+    // 🌟 绝对居中终极版：向左回滚，整体上移，微缩间距
+    drawNextLevelTarget() {
+        push();
+        if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+        rectMode(CENTER);
+        noSmooth();
+
+        // 1. 画背景图
+        if (typeof nextLevelBgImg !== 'undefined' && nextLevelBgImg) {
+            imageMode(CORNER);
+            image(nextLevelBgImg, 0, 0, width, height);
+        }
+
+        // ==========================================
+        // 🕹️ 核心微调区 (保留你完美的调参数值)
+        // ==========================================
+        let offsetX = 32; 
+        let offsetY = -165; 
+
+        textAlign(CENTER, CENTER);
+        const cx = width / 2 + offsetX;
+        let textCy = height / 2 + offsetY; 
+
+        // ==========================================
+
+        // -- 1. 关卡标题 (取消缩放，固定不动) --
+        noStroke(); 
+        textSize(26); 
+        fill(20, 60, 20, 200); 
+        text('LEVEL ' + this.levelNum, cx + 2, textCy + 2); // 阴影
+        fill(255, 230, 80);    
+        text('LEVEL ' + this.levelNum, cx, textCy);         // 主字
+        
+        // 🚨 收紧间距
+        textCy += 50; 
+
+        // -- 2. 目标分数提示 --
+        textSize(14); 
+        fill(40, 20, 20, 200);
+        text("TARGET SCORE:", cx + 2, textCy + 2);
+        fill(255, 120, 0); 
+        text("TARGET SCORE:", cx, textCy);
+        
+        // 🚨 收紧间距
+        textCy += 50; 
+
+        // -- 3. 超大目标分数数据 (✨转移到这里：呼吸缩放闪烁) --
+        let n = this.levelNum;
+        const goldFishEff = 26.67; 
+        let totalTarget = 0;
+        for (let i = 1; i <= n; i++) {
+            let stdTime = (this.currentDifficulty === Difficulty.HARD) ? Math.min(35, 24 + i) : Math.min(40, 29 + i);
+            let factorLevel = Math.min(i, 10);
+            let skillFactor = 0.5 + (factorLevel - 1) * (0.4 / 9);
+            let growthFactor = 1 + (factorLevel - 1) * 0.05;
+            totalTarget += stdTime * goldFishEff * skillFactor * growthFactor;
+        }
+        if (this.currentDifficulty === Difficulty.HARD) totalTarget *= 1.20;
+        if (this.currentPlayerMode === PlayerMode.TWO_PLAYER) totalTarget *= 1.75;
+        let targetScore = Math.floor(totalTarget / 10) * 10; 
+        
+        textSize(48); 
+        const pulseScore = 0.03 * sin(frameCount * 0.08); 
+        push();
+        translate(cx, textCy);
+        scale(1 + pulseScore); // ✨ 给目标分数加上动态缩放
+        fill(40, 10, 30, 200);
+        text(`${targetScore}`, 3, 3);
+        fill(255, 100, 200);
+        text(`${targetScore}`, 0, 0);
+        pop();
+        
+        // 🚨 收紧间距
+        textCy += 60; 
+
+        // -- 4. 当前分数 --
+        textSize(14); 
+        fill(10, 30, 60, 200);
+        text(`Current Score: ${this.player.totalScore}`, cx + 2, textCy + 2);
+        fill(150, 220, 255); 
+        text(`Current Score: ${this.player.totalScore}`, cx, textCy);
+        
+        // 🚨 收紧间距
+        textCy += 70; 
+
+        // -- 5. 呼吸闪烁的启动提示 --
+        textSize(8); 
+        fill(10, 30, 30, 200);
+        text('Click anywhere to start level', cx + 2, textCy + 2);
+        
+        // 🌟 核心修改：把 0.1 改成了 0.04！数字越小，闪烁越慢！
+        let mainAlpha = (sin(frameCount * 0.04) * 127 + 128); 
+        fill(180, 255, 180, mainAlpha); 
+        text('Click anywhere to start level', cx, textCy);
 
         pop();
     }
-
     drawHighScore() {
         push();
         rectMode(CORNER);
@@ -1546,7 +2087,7 @@ changeState(newState) {
 
         const cols = 8;
         const cellW = 72;
-        const cellH = 68;
+        const cellH = 62;
         const panelW = cols * cellW + 48;
         const rows = Math.ceil(GameManager.FISH_GALLERY_TYPES.length / cols);
         const panelH = rows * cellH + 80;
@@ -1733,7 +2274,19 @@ changeState(newState) {
                         this._applyVolume();
                     }
                 }
-                if (this._settingsBrightnessBar && !this._settingsVolumeDragging) {
+                if (!this._settingsVolumeDragging && this._settingsSfxVolumeBar) {
+                    const bs = this._settingsSfxVolumeBar;
+                    if (mouseX >= bs.x && mouseX <= bs.x + bs.w && mouseY >= bs.y - 8 && mouseY <= bs.y + bs.h + 8) {
+                        this._settingsSfxVolumeDragging = true;
+                        this.sfxVolumeLevel = constrain((mouseX - bs.x) / bs.w, 0, 1);
+                        this._applySfxVolume();
+                    }
+                }
+                if (
+                    this._settingsBrightnessBar &&
+                    !this._settingsVolumeDragging &&
+                    !this._settingsSfxVolumeDragging
+                ) {
                     const b2 = this._settingsBrightnessBar;
                     if (mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y - 8 && mouseY <= b2.y + b2.h + 8) {
                         this._settingsBrightnessDragging = true;
@@ -1779,6 +2332,12 @@ changeState(newState) {
                 break;
             }
             case GameState.DIFFICULTY_SELECT:
+                if (this._menuBackBtnBounds && 
+                    mouseX >= this._menuBackBtnBounds.x && mouseX <= this._menuBackBtnBounds.x + this._menuBackBtnBounds.w && 
+                    mouseY >= this._menuBackBtnBounds.y && mouseY <= this._menuBackBtnBounds.y + this._menuBackBtnBounds.h) {
+                    this.changeState(GameState.NAME_ENTRY); // 退回到输入名字
+                    break;
+                }
                 if (
                     this.isPointInRect(
                         mouseX,
@@ -1806,6 +2365,12 @@ changeState(newState) {
                 }
                 break;
             case GameState.PLAYER_MODE_SELECT:
+                if (this._menuBackBtnBounds && 
+                    mouseX >= this._menuBackBtnBounds.x && mouseX <= this._menuBackBtnBounds.x + this._menuBackBtnBounds.w && 
+                    mouseY >= this._menuBackBtnBounds.y && mouseY <= this._menuBackBtnBounds.y + this._menuBackBtnBounds.h) {
+                    this.changeState(GameState.DIFFICULTY_SELECT); // 退回到选择难度
+                    break;
+                }
                 if (
                     this.isPointInRect(
                         mouseX,
@@ -1841,12 +2406,20 @@ changeState(newState) {
                     const bc = this._pauseMenuBtnClose;
                     const b1 = this._pauseMenuBtn1;
                     const b2 = this._pauseMenuBtn2;
+                    
+                    // 1. 点击了“继续游戏”的 X 按钮
                     if (bc && mouseX >= bc.x && mouseX <= bc.x + bc.w && mouseY >= bc.y && mouseY <= bc.y + bc.h) {
                         this.gamePaused = false;
+                        // 🎵 恢复音乐播放
+                        if (typeof gameplayBgm !== 'undefined' && gameplayBgm && !gameplayBgm.isPlaying()) {
+                            gameplayBgm.loop();
+                        }
                         break;
                     }
+                    // 2. 点击了“结束当前关卡/放弃游戏”
                     if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
                         this.gamePaused = false;
+                        this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.lastGameFailed = true;
                         const levelsCompleted = Math.max(0, this.levelNum - 1);
@@ -1857,10 +2430,13 @@ changeState(newState) {
                             this.currentDifficulty,
                             this.currentPlayerMode,
                             this.gameSessionFishCaught || {},
+                            this.perLevelEarned,
+                            this.perLevelSpawnValue,
                         );
                         this.changeState(GameState.LEVEL_RESULT);
                         break;
                     }
+                    // 3. 点击了“重新开始游戏” (返回主菜单)
                     if (b2 && mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y && mouseY <= b2.y + b2.h) {
                         this.gamePaused = false;
                         this.changeState(GameState.NAME_ENTRY);
@@ -1868,11 +2444,27 @@ changeState(newState) {
                     }
                 } else {
                     const pb = this.levelManager._pauseBtnBounds;
+                    // 4. 点击了右上角的【暂停按钮】
                     if (
                         pb &&
                         this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)
                     ) {
-                        this.gamePaused = !this.gamePaused;
+                        this.gamePaused = !this.gamePaused; // 切换暂停状态
+                        
+                        // 🎵 处理音乐的停止与恢复
+                        if (typeof gameplayBgm !== 'undefined' && gameplayBgm) {
+                            if (this.gamePaused) {
+                                // 如果进入暂停，停止音乐
+                                if (gameplayBgm.isPlaying()) {
+                                    gameplayBgm.pause(); 
+                                }
+                            } else {
+                                // 取消暂停时恢复
+                                if (!gameplayBgm.isPlaying()) {
+                                    gameplayBgm.loop(); 
+                                }
+                            }
+                        }
                     }
                 }
                 break;
@@ -1881,10 +2473,15 @@ changeState(newState) {
                 let shopResult = this.shopManager.handleMousePress(this.player, this.currentPlayerMode);
                 if (shopResult === 'NEXT_LEVEL') {
                     this.levelNum++;
-                    this.startLevel();
-                    this.player.consumeItems(this.levelManager);
-                    this.shopManager.resetShop(this.levelNum, this.player);
+                    // 🌟 重点：这里不要直接调用 startLevel，而是切到目标展示页
+                    this.changeState(GameState.NEXT_LEVEL_TARGET); 
                 }
+                break;
+            }
+            case GameState.NEXT_LEVEL_TARGET: {
+                this.startLevel();
+                this.player.consumeItems(this.levelManager);
+                this.shopManager.resetShop(this.levelNum, this.player);
                 break;
             }
             case GameState.LEVEL_PASS_CELEBRATION:
@@ -1974,6 +2571,12 @@ changeState(newState) {
                 this._applyVolume();
                 return;
             }
+            if (this._settingsSfxVolumeDragging && this._settingsSfxVolumeBar) {
+                const bs = this._settingsSfxVolumeBar;
+                this.sfxVolumeLevel = constrain((mouseX - bs.x) / bs.w, 0, 1);
+                this._applySfxVolume();
+                return;
+            }
             if (this._settingsBrightnessDragging && this._settingsBrightnessBar) {
                 const b = this._settingsBrightnessBar;
                 this.brightnessLevel = constrain((mouseX - b.x) / b.w, 0, 1);
@@ -1998,6 +2601,7 @@ changeState(newState) {
     handleMouseReleased() {
         this.highScoreScrollDragging = false;
         this._settingsVolumeDragging = false;
+        this._settingsSfxVolumeDragging = false;
         this._settingsBrightnessDragging = false;
     }
 
@@ -2074,18 +2678,27 @@ changeState(newState) {
             }
         }
 
-        // --- 3. 姓名输入界面逻辑 (保持不变) ---
+        // --- 3. 姓名输入界面逻辑 ---
         if (this.currentState === GameState.NAME_ENTRY) {
             this.nameInputFocused = true;
-            if (keyCode === BACKSPACE) {
-                this.inputText = this.inputText.substring(
-                    0,
-                    this.inputText.length - 1,
-                );
-            } else if (keyCode === ENTER) {
+            
+            // 🌟 双保险：同时检测数字代号(8)和真实键名('Backspace')
+            if (keyCode === 8 || key === 'Backspace') {
+                // 加个保护：只有当框里有字的时候才删，防止报错
+                if (this.inputText.length > 0) {
+                    this.inputText = this.inputText.substring(0, this.inputText.length - 1);
+                }
+            } else if (keyCode === ENTER || keyCode === 13) {
                 const name = this.inputText.trim();
                 if (name) {
                     if (this.nameExistsCheck !== false) return;
+                    
+                    if (!fullscreen()) {
+                        this.showFullscreenWarning = true;
+                        return;
+                    }
+                    this.showFullscreenWarning = false; 
+                    
                     this.player.name = name;
                     this.changeState(GameState.DIFFICULTY_SELECT);
                 }
@@ -2095,5 +2708,7 @@ changeState(newState) {
                 }
             }
         }
-    }
-}
+     }
+ }
+
+
