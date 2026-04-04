@@ -328,11 +328,14 @@ changeState(newState) {
         }
 
         // 4. 通关结算页面音乐
+        // 在 changeState(newState) 里的胜利音乐部分：
         if (this.currentState === GameState.LEVEL_PASS_CELEBRATION) {
-            if (typeof victoryBgm !== 'undefined' && victoryBgm && !victoryBgm.isPlaying()) {
-                // 🌟 这里修改了：把 play() 改成了 loop()，这样音乐就会一直循环播放，直到玩家点击屏幕进入商店！
-                victoryBgm.loop(); 
-            }
+             // 延迟 0.1 秒播放，给玩家一个心理准备
+             setTimeout(() => {
+                 if (typeof victoryBgm !== 'undefined' && victoryBgm && !victoryBgm.isPlaying()) {
+                     victoryBgm.loop(); 
+                 }
+             }, 100);
         } else {
             if (typeof victoryBgm !== 'undefined' && victoryBgm && victoryBgm.isPlaying()) {
                 victoryBgm.stop();
@@ -711,13 +714,15 @@ changeState(newState) {
                 this.drawHowToPlay();
                 break;
             case GameState.PLAYING:
-                if (!this.gamePaused) {
+                // 🌟 新增：加上 && !this.isTransitioning 阻止游戏继续运行，冻结画面！
+                if (!this.gamePaused && !this.isTransitioning) {
                     let result = this.levelManager.update();
                     if (result === 'PASS') {
                         this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.shopManager.resetShop(this.levelNum, this.player);
-                        this.changeState(GameState.LEVEL_PASS_CELEBRATION);
+                        // 🌟 核心修改：不直接切页面，而是开启半秒黑屏过渡
+                        this.startBlackScreenTransition(GameState.LEVEL_PASS_CELEBRATION);
                     } else if (result === 'FAIL') {
                         this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
@@ -733,7 +738,8 @@ changeState(newState) {
                             this.perLevelEarned,
                             this.perLevelSpawnValue,
                         );
-                        this.changeState(GameState.LEVEL_RESULT);
+                        // 🌟 核心修改：开启半秒黑屏过渡
+                        this.startBlackScreenTransition(GameState.LEVEL_RESULT);
                     }
                 }
                 this.levelManager.draw();
@@ -783,8 +789,62 @@ changeState(newState) {
             rect(0, 0, width, height);
             pop();
         }
+    if (this.isTransitioning) {
+            this.drawTransitionOverlay();
+        }
+        
     }
+    // ==========================================
+    // 🌟 终极修复版：黑屏瞬间强制切断所有声音
+    // ==========================================
+    startBlackScreenTransition(targetState) {
+        this.isTransitioning = true;
+        this.nextStateTarget = targetState;
+        this.transitionFrame = 0; 
 
+        // 🎵 1. 停止背景音乐
+        if (typeof gameplayBgm !== 'undefined' && gameplayBgm && gameplayBgm.isPlaying()) {
+            gameplayBgm.stop();
+        }
+        
+        // 🔇 2. 核心修复：强制切断所有可能还在尾音播放的音效！
+        if (typeof catchSfx !== 'undefined' && catchSfx && catchSfx.isPlaying()) {
+            catchSfx.stop();
+        }
+        if (typeof ballCatchSfx !== 'undefined' && ballCatchSfx && ballCatchSfx.isPlaying()) {
+            ballCatchSfx.stop();
+        }
+        if (typeof sharkStolenSfx !== 'undefined' && sharkStolenSfx && sharkStolenSfx.isPlaying()) {
+            sharkStolenSfx.stop();
+        }
+        if (typeof koiInSfx !== 'undefined' && koiInSfx && koiInSfx.isPlaying()) {
+            koiInSfx.stop();
+        }
+        if (typeof koiOutSfx !== 'undefined' && koiOutSfx && koiOutSfx.isPlaying()) {
+            koiOutSfx.stop();
+        }
+    }
+    drawTransitionOverlay() {
+        this.transitionFrame++;
+        const maxFrames = 1; // 60fps下，40帧正好是 0.5 秒
+        
+        // 计算透明度：从 0 (透明) 渐变到 255 (纯黑)
+        let alpha = map(this.transitionFrame, 0, maxFrames, 0, 255);
+        alpha = constrain(alpha, 0, 255);
+        
+        push();
+        noStroke();
+        fill(0, 0, 0, alpha);
+        rectMode(CORNER);
+        rect(0, 0, width, height);
+        pop();
+
+        // 当 0.5 秒时间一到，真正切换页面！
+        if (this.transitionFrame >= maxFrames) {
+            this.isTransitioning = false; // 关闭过渡状态
+            this.changeState(this.nextStateTarget); // 跳转到结算界面
+        }
+    }
     drawSettingsButton() {
         const settingsSize = 48;
         const settingsX = 16;
