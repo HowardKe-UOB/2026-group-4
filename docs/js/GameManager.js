@@ -826,8 +826,7 @@ changeState(newState) {
     }
     drawTransitionOverlay() {
         this.transitionFrame++;
-        const maxFrames = 1; // 60fps下，40帧正好是 0.5 秒
-        
+        const maxFrames = 5;
         // 计算透明度：从 0 (透明) 渐变到 255 (纯黑)
         let alpha = map(this.transitionFrame, 0, maxFrames, 0, 255);
         alpha = constrain(alpha, 0, 255);
