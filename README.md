@@ -44,7 +44,7 @@ _Figure 1: The initial game screen of Deep Sea Prospector, showing the mode sele
 _Figure 2: Group 4 development team members._
 
 <div align="center">
-  <img src="./Group4.jpg" alt="group picture" width="600">
+  <img src="./GROUP4.png" alt="group picture" width="600">
 </div>
 
 <div align="center">
