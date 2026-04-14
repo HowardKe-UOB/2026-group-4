@@ -249,50 +249,190 @@ Our architecture applies key design patterns: **State Pattern** for GameManager'
 
 ## 💻 5. Implementation
 
+Each challenge below uses **short code excerpts** from our repo (labeled **Figure A–I**) so you can see how each behaviour is implemented without pasting whole files. For coursework that wants **figures**, screenshot the same lines in your IDE, save PNGs under e.g. `docs/assets/implementation/`, and add `<img src="docs/assets/implementation/your-shot.png" alt="Implementation excerpt" width="720">` beside the matching figure.
+
 ### 5.1 Overview
 
-Deep Sea Prospector is built with [P5.js](https://p5js.org/). Our playable build lives under `docs/`: `docs/sketch.js` runs the global `setup` / `draw` loop and routes input, and we split gameplay logic across `docs/js/`—`GameManager`, `LevelManager`, `Hook`, the `SeaItem` hierarchy, `ShopManager`, `HighScoreManager`, and deep-sea-specific code such as `DeepSeaCreatures.js`. Below we explain how we implemented the game in three areas that gave us the most engineering work: core hook and sea hazards, progression and economy, and cloud-friendly high scores with a fish collection view.
+**What we built with.** We use [P5.js](https://p5js.org/) so the game runs in the browser with straightforward drawing, sound, and input. The live version is published from the `docs/` folder: one main script wires up the frame loop and keyboard, and separate modules handle menus, each level, the hook, sea creatures, the shop, and scores. That separation mattered to us because the game mixes many modes (menus, fishing, shop, results); keeping responsibilities split made it easier to debug and to add features without breaking the whole loop.
 
-`GameManager` drives `GameState` from name entry and menus through `PLAYING`, `SHOP`, and result screens (`Enums.js`). Each level instantiates `LevelManager` with `Difficulty` (easy vs hard), `PlayerMode` (single vs two-player), and shallow vs deep sea: buying the submarine sets `hasSubmarine`, which flips `isDeepSea` and changes boat and hook art, spawns, the darkness overlay, and shark behaviour. **Challenge 1** was making hook motion, collisions, and deep-sea threats feel fair and stable. **Challenge 2** was tuning **level targets and shop prices** so difficulty ramps without constant manual edits. **Challenge 3** was our **shared leaderboard** plus a Pokédex-style **fish gallery**, storing only **JSON catch counts** in the cloud so we never had to fetch fish artwork per leaderboard row.
+**Why these three challenges.** Implementation was not just “drawing sprites”—we had to make the *feel* of the game believable, keep *difficulty and rewards* from drifting out of balance as levels advanced, and give players a reason to care about *other people’s runs* without slowing the site down. In plain terms:
 
-### 5.2 Technical Challenge 1: Hook state machine, collision, and deep-sea hazards
+- **Challenge 1 — The hook and the sea.** Players judge the game on whether casting and reeling feel fair. We had to model swing, drop, hits, and reel-up so catches register when they should (not when they frustratingly miss), heavy loot feels heavy, and deep-sea extras (dark water, sharks) add tension rather than cheap failures.
 
-**Finite-state hook.** `Hook` extends `GameObject` and implements `HookState.IDLE_SWINGING`, `MOVING_DOWN`, and `MOVING_UP`. While idle, the tip orbits the boat pivot; on launch, the swing angle is frozen and rope `length` grows each frame until a hit, screen bounds, or manual retract.
+- **Challenge 2 — Progression and economy.** As levels go up, the score target and the timer need to stay in a sensible relationship, and shop prices need to grow with that pressure so upgrades remain tempting but not automatic. We also tuned how much each species is worth so risky catches feel rewarding without breaking easier levels.
+
+- **Challenge 3 — Leaderboard and fish “dex”.** We wanted shared high scores and a collection-style view of which fish each run caught (similar to filling a Pokédex). The design tension was **motivation vs performance**: sending full images for every fish on every row would be slow and expensive, so we only store **counts per fish type** in the database and let the game **reuse artwork it already loaded** to paint the gallery.
+
+The subsections below walk through how we addressed each area in code, still anchored in the files under `docs/js/`, but starting from *why* a choice existed before naming the mechanism.
+
+### 5.2 Challenge 1: Making the hook, collisions, and deep sea feel fair
+
+**Swing, cast, and reel as clear phases.** The hook is not a single animation—it behaves like three steps players can reason about: swinging at the surface, shooting straight down when they press the key, then coming back up with or without a catch. In code we track those phases explicitly so the same object never tries to “swing” and “reel” at once. While swinging, the tip traces an arc from the boat; once fired, the rope lengthens until it hits something or leaves the play area; on the way up, heavier catches slow the climb so risk matches reward.
+
+_Figure A (excerpt): swing geometry — `Hook.js`_
 
 ```javascript
-// Idle swing and descent (from Hook.js)
+// Core idea: angle drives the arc; rope length grows while dropping (Hook.js)
 this.angle =
     (sin(frameCount * this.angleVel * this.swingSpeedMultiplier) * PI) / 3;
 this.position.x = this.origin.x + sin(this.angle) * this.length;
 this.position.y = this.origin.y + cos(this.angle) * this.length;
-// MOVING_DOWN: this.length += this.moveSpeed;
 ```
 
-**Distance tests and per-item radii.** In `LevelManager`, while a hook is in `MOVING_DOWN`, we test `dist(hook.position, item.position)` against `(item.catchRadius ?? item.width / 2) + 10`, giving a small tolerance at the hook tip. Subclasses tune fairness: `BigFish` sets `catchRadius = this.width * 0.35` (tighter than the sprite); `Pearl` uses a tiny radius and very high score. Spawning uses a local `checkOverlap()` so stones, treasures, and pearls keep minimum separation (often 10–40 px depending on type), reducing unfair overlaps.
+**Hits that players can trust.** We detect catches by measuring distance between the hook tip and each creature or object, with a little extra leniency so a near-miss still feels like a hit. Different objects deliberately use different “hit bubbles”: a big fish might look large but use a slightly stricter zone so mastery matters; a pearl can be tiny and valuable so only precise drops succeed. When the level is built, we also nudge obstacles and treasures apart so they do not spawn stacked on top of each other.
 
-**Retrieval and upgrades.** On `MOVING_UP`, ascent speed is `max(1, this.moveSpeed - this.attachedItem.weight)` so the hook never stalls, then scaled by `retractMultiplier` from shop upgrades. The caught item’s position follows the tip until the rope returns to deck height; the hook then yields the item reference for scoring.
+_Figure B (excerpt): collision while dropping — `LevelManager.js`_
 
-**Deep-sea layer.** When `isDeepSea` is true, `LevelManager` builds a `darknessLayer` buffer and spawns `Shark` instances on a timer. During reel-up, sharks can intersect the line or payload and steal the catch (with dedicated feedback), layering risk on top of collision design.
+```javascript
+if (currentHook.state === HookState.MOVING_DOWN) {
+    for (let j = this.activeItems.length - 1; j >= 0; j--) {
+        let item = this.activeItems[j];
+        let d = dist(
+            currentHook.position.x,
+            currentHook.position.y,
+            item.position.x,
+            item.position.y,
+        );
+        if (d < (item.catchRadius ?? item.width / 2) + 10) {
+            if (item.canBeCaught) {
+                currentHook.grabItem(item);
+                this.activeItems.splice(j, 1);
+                break;
+            }
+        }
+    }
+}
+```
 
-### 5.3 Technical Challenge 2: Level targets, shop economy, and item tuning
+**Reeling and shop upgrades.** Heavier items subtract from the upward speed (with a minimum so the hook never gets stuck), and shop purchases can speed the reel again—so preparation before a hard level is tangible in the controls.
 
-**Cumulative target score.** Level quotas are not a single closed formula; they are the sum of per-level increments keyed to a standard time budget and growth terms. For level index `i` (with growth capped at tier 10), `LevelManager` takes a standard seconds value `stdTime` (easy: 30–40 s; hard: 25–35 s), the `goldFishEff` constant (26.67 in code), a skill factor `0.5 + (i - 1) * (0.4 / 9)`, and a growth factor `1 + (i - 1) * 0.05`. Each increment is `stdTime * goldFishEff * skillFactor * growthFactor`; the total is floored to tens of points, then multiplied by **1.2** on hard mode and **1.75** in two-player mode so one pipeline serves all configurations.
+_Figure C (excerpt): weight and upgrades on the way up — `Hook.js`_
 
-**Aligned timers.** `timeLimit` follows the same `stdTime` schedule used when computing the target, so clock pressure and score pressure stay in sync.
+```javascript
+} else if (this.state === HookState.MOVING_UP) {
+    let originalSpeed = this.attachedItem
+        ? max(1, this.moveSpeed - this.attachedItem.weight)
+        : this.moveSpeed;
+    let currentSpeed = originalSpeed * (this.retractMultiplier || 1);
+    this.length -= currentSpeed;
+    // …tip position + dragging the attached sprite…
+}
+```
 
-**Shop pricing.** `ShopItem` computes `costPrice` from a `baseInflatedPrice` that scales with progression (with optional sale halving). That keeps laser sight, faster reel, and other upgrades reachable as targets rise—matching the economy adjustments discussed in the evaluation section.
+**Deep sea as a rules layer.** After the player buys the submarine, runs switch to a darker scene: we draw a mask so only a cone of light is visible, and sharks appear on a rhythm of their own. If a shark crosses the catch on the way up, the fish can be lost. That is difficult by design, but it is a separate layer from the basic hook logic, which keeps shallow water simple while deep water adds spectacle and risk.
 
-**Catchable value ladder.** Concrete classes encode risk versus reward: `SmallFish` maps size to about **75–115** points with weight in **1.5–2.5**; `BigFish` maps to **190–240** points, weight in **3–4**, and slower swim speeds; deep-sea `AnglerFish` in `DeepSeaCreatures.js` maps to **250–400** points with weight in **6–10** and provides a moving light source in the darkness. Static high-value objects such as `Treasure` and `Pearl` use different hitbox strategies so skill, not only RNG, drives outcomes. Together with hook weight penalties, we keep balance in **explicit numbers in code** that we could adjust after playtesting and after the NASA-TLX / SUS work in Section 6.
+### 5.3 Challenge 2: Level targets, shop prices, and how much each catch is worth
 
-### 5.4 Technical Challenge 3: Shared leaderboard and fish gallery without heavy data fetching
+**Rationale.** If every level used a fixed target or a hand-typed number, we would constantly be guessing whether hard mode or two-player felt impossible. We wanted one **consistent recipe** that: (a) asks for more score as levels advance, (b) respects how much time the player gets that level, and (c) bumps requirements for hard mode and for two people sharing the sea.
 
-We wanted players to **compare and share runs** on a leaderboard while still surfacing a **collection-book incentive** (a per-species “dex” of what each player caught). The difficulty was doing that without turning every sync into a slow download of many fish images.
+**What we actually compute.** For each level index we combine a time budget (shorter pressure on hard mode), a gentle “player is getting better” factor, and a small density factor so later tiers do not plateau. Those pieces are summed across all levels reached so far, rounded to tidy scores, then **hard mode** and **two-player** apply separate multipliers everyone can reason about (roughly “hard asks more,” “two players must earn more together”). The **same time budget** also drives the countdown, so the number you are chasing and the clock you are watching stay in sync—otherwise the game would feel arbitrary.
 
-**JSON-first score rows.** Each run is a `ScoreEntry` (`ScoreEntry.js`) storing name, score, levels cleared, difficulty, player mode, optional per-level earnings arrays, and a **`catchHistory` object**: keys are stable species ids (`fish1`…`fish64`, `Angler Fish`, `KoiFish`, plus display names such as `Treasure` where applicable), values are **integer catch counts** only. `HighScoreManager` persists the table to `localStorage` and, on the production GitHub Pages origin, **POSTs** the same structure to Supabase as JSON (`catch_history`, `per_level_earned`, `per_level_spawn_value` alongside scalar fields—see `submitToSupabase` in `HighScoreManager.js`). Fetches are ordinary **REST JSON** responses; no image blobs travel through that API.
+**Shop.** Item prices start from a base cost and **inflate with level** (with occasional sales), so the shop does not become irrelevant just because targets went up. Laser sight, faster reel, and other tools stay part of the strategy instead of early-game-only toys.
 
-**How counts are produced (ids, not pixels).** When the hook banks a catch, `LevelManager` increments `fishCaught` using compact keys: small fish use `fish${fishIndex + 1}` (indices 0–42 → `fish1`–`fish43`), big fish use `fish${44 + fishIndex}` (0–20 → `fish44`–`fish64`), and other items use their `itemName` string. `GameManager._mergeFishCaught()` merges each level’s map into **`gameSessionFishCaught`** for the whole run. On level failure or when the player abandons from the pause menu, `checkNewHighScore(..., gameSessionFishCaught)` pushes that map into the leaderboard entry so shared data is **only counts and metadata**.
+**Fish and treasures.** Small fish are common fillers; big fish and deep-sea anglerfish pay more but fight the reel; treasures and pearls sit at the high end with different shapes and hit sizes so reading the seabed matters. All of those numbers live in code as plain ranges we adjusted after playtests and the usability study in Section 6.
 
-**Gallery = local catalogue + counts from the server.** `GameManager.FISH_GALLERY_TYPES` defines a fixed grid of `{ key, label, getImg }`. Each `getImg` resolves to **sprites already loaded** with the game (`imgSmallFishes`, `imgBigFishes`, angler and koi assets in preload)—the same indices the gameplay classes use. `drawFishGallery` reads `entry.catchHistory[t.key]` to tint or silhouette each cell and show **×count** for caught species (`GameManager.js`). Opening another player’s row therefore needs **no per-fish image fetch**: the client already has the art; the network layer only supplies **which keys were caught and how often**.
+_Figure D (excerpt): cumulative target from time + growth, then mode multipliers — `LevelManager.js` (constructor)_
+
+```javascript
+const goldFishEff = 26.67;
+let totalTarget = 0;
+for (let i = 1; i <= n; i++) {
+    let stdTime =
+        this.difficulty === Difficulty.HARD
+            ? Math.min(35, 24 + i)
+            : Math.min(40, 29 + i);
+    let factorLevel = Math.min(i, 10);
+    let skillFactor = 0.5 + (factorLevel - 1) * (0.4 / 9);
+    let growthFactor = 1 + (factorLevel - 1) * 0.05;
+    totalTarget += stdTime * goldFishEff * skillFactor * growthFactor;
+}
+if (this.difficulty === Difficulty.HARD) totalTarget *= 1.2;
+if (this.playerMode === PlayerMode.TWO_PLAYER) totalTarget *= 1.75;
+this.targetScore = Math.floor(totalTarget / 10) * 10;
+```
+
+_Figure E (excerpt): level-scaled shop price — `ShopItem.js`_
+
+```javascript
+let inflationRate = 0.10; // per-item tweaks for Laser, Submarine, etc.
+let inflationLevel = Math.min(levelNum, 11);
+let multiplier = 1 + (inflationLevel - 1) * inflationRate;
+let currentPrice = Math.floor(basePrice * multiplier);
+if (this.name !== "Submarine" && Math.random() <= 0.1) {
+    this.isDiscounted = true;
+    currentPrice *= 0.5;
+}
+this.costPrice = Math.floor(currentPrice);
+```
+
+_The real `ShopItem` constructor sets `inflationRate` per product (e.g. laser vs submarine) before this block; this excerpt shows the level-scaling and sale idea only._
+
+### 5.4 Challenge 3: Shared leaderboard and fish gallery without bloating downloads
+
+**Rationale.** Competing on score is more fun when the table is real for everyone, not only on one machine. Showing *which species someone caught* adds a collector’s goal beyond raw points. The pitfall is technical: a leaderboard row could try to ship dozens of images—bad for mobile users and for our free hosting. Our answer was to treat the cloud as a **small facts sheet** (name, score, mode, and **how many of each fish type**) and keep every **picture** bundled with the game once, loaded at startup.
+
+**What gets stored.** Each finished run stores the usual headline fields plus a **catch history**: for each fish type id, how many times it was caught that run—integers only, no image data. Locally we cache scores in the browser; on the live site we sync the same JSON-shaped row to Supabase so everyone sees one table.
+
+**How the gallery works.** When you open a player’s fish grid, the game looks up those counts, dims species they never caught, and shows a total next to the ones they did. The portraits come from the same art the gameplay already uses (small fish sheet, big fish sheet, special sprites), so **opening a row does not trigger dozens of new downloads**—only the tiny score record did.
+
+**Why that mattered to us.** Players get social proof and a “collection” moment; we keep the implementation maintainable and the page responsive; markers and future teammates can read the data model without hunting through binary files.
+
+_Figure F (excerpt): turn each catch into a stable id for the dex — `LevelManager.js`_
+
+```javascript
+let key = returnedItem.itemName || "Unknown";
+if (returnedItem.itemName === "Small Fish" && returnedItem.fishIndex != null) {
+    key = `fish${returnedItem.fishIndex + 1}`; // fish1 … fish43
+} else if (returnedItem.itemName === "Big Fish" && returnedItem.fishIndex != null) {
+    key = `fish${44 + returnedItem.fishIndex}`; // fish44 … fish64
+}
+this.fishCaught[key] = (this.fishCaught[key] || 0) + 1;
+```
+
+_Figure G (excerpt): send one small JSON row to the cloud (counts, not images) — `HighScoreManager.js`_
+
+```javascript
+await fetch(`${cfg.url}/rest/v1/scores`, {
+    method: "POST",
+    headers: {
+        apikey: cfg.anonKey,
+        Authorization: `Bearer ${cfg.anonKey}`,
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        player_name: name,
+        score: score,
+        levels_completed: levelsCompleted,
+        difficulty: d,
+        player_mode: p,
+        catch_history: ch,
+        per_level_earned: ple,
+        per_level_spawn_value: pls,
+    }),
+});
+```
+
+_Figure H (excerpt): each gallery slot knows its `key` and which preloaded sprite to draw — `GameManager.js`_
+
+```javascript
+list.push({
+    key: `fish${i}`,
+    label: names ? names.en : `Fish ${i}`,
+    getImg: () =>
+        typeof imgSmallFishes !== "undefined" && imgSmallFishes[idx]
+            ? imgSmallFishes[idx][0]
+            : null,
+});
+```
+
+_Figure I (excerpt): gallery UI from counts only — `GameManager.js` (`drawFishGallery`)_
+
+```javascript
+const count = catchHistory[t.key] || 0;
+const caught = count > 0;
+if (caught) text(`×${count}`, cx, cy + 22);
+else text("?", cx, cy + 22);
+```
 
 ### 📝 Report Guidance
 
