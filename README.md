@@ -44,7 +44,7 @@ _Figure 1: The initial game screen of Deep Sea Prospector, showing the mode sele
 _Figure 2: Group 4 development team members._
 
 <div align="center">
-  <img src="./Group4.jpg" alt="group picture" width="600">
+  <img src="./GROUP4.png" alt="group picture" width="600">
 </div>
 
 <div align="center">
@@ -54,7 +54,7 @@ _Figure 2: Group 4 development team members._
 | **Weikai Mao**  | uz25020@bristol.ac.uk | [M1yanoShiho](https://github.com/M1yanoShiho)             | -    |
 | **Zenan Wu**    | jp25459@bristol.ac.uk | [zenanwu479-glitch](https://github.com/zenanwu479-glitch) | -    |
 | **Jianxing Li** | ue25937@bristol.ac.uk | [UoB26Git](https://github.com/UoB26Git)                   | -    |
-| **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/Howard Ke)                 | -    |
+| **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/HowardKe-UOB)              | -    |
 | **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | -    |
 
 </div>

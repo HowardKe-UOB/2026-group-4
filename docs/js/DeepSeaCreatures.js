@@ -8,7 +8,7 @@ class AnglerFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(80, 130);
         // High score reward: 400–800, deep sea risk premium
-        let calculatedScore = floor(map(randomSize, 80, 130, 400, 800));
+        let calculatedScore = floor(map(randomSize, 80, 130, 250, 400));
         let calculatedWeight = map(randomSize, 80, 130, 6, 10);
         super(
             x,
@@ -38,9 +38,9 @@ class AnglerFish extends BaseFish {
         let ctx = drawingContext;
         ctx.save();
         let grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.3);
-        grad.addColorStop(0,   'rgba(255,200,50,0.22)');
-        grad.addColorStop(0.5, 'rgba(255,200,50,0.12)');
-        grad.addColorStop(1,   'rgba(255,200,50,0)');
+        grad.addColorStop(0, "rgba(255,200,50,0.22)");
+        grad.addColorStop(0.5, "rgba(255,200,50,0.12)");
+        grad.addColorStop(1, "rgba(255,200,50,0)");
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(0, 0, r * 1.3, 0, Math.PI * 2);
@@ -50,7 +50,10 @@ class AnglerFish extends BaseFish {
         // Sprite or fallback shape (anglerfish images face right, so use +direction)
         scale(this.direction, 1);
         imageMode(CENTER);
-        if (typeof anglerFishImgs !== "undefined" && anglerFishImgs.length === 4) {
+        if (
+            typeof anglerFishImgs !== "undefined" &&
+            anglerFishImgs.length === 4
+        ) {
             let frameIndex = floor(frameCount / 12) % 4;
             let img = anglerFishImgs[frameIndex];
             let ratio = img.height / img.width;
@@ -96,7 +99,9 @@ class Shark {
     overlaps(px, py, radius) {
         let dx = abs(this.x - px);
         let dy = abs(this.y - py);
-        return dx < this.width * 0.4 + radius && dy < this.height * 0.28 + radius;
+        return (
+            dx < this.width * 0.4 + radius && dy < this.height * 0.28 + radius
+        );
     }
 
     draw() {

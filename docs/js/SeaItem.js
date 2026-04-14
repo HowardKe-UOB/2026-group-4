@@ -266,7 +266,7 @@ class Stone extends SeaItem {
 class KoiFish extends BaseFish {
     constructor(y) {
         // 参数
-        let val = random([777, 888]);
+        let val = random([700, 800]);
         // 随机从屏幕左边(-100)或右边(width+100)生成
         let spawnX = random() > 0.5 ? -100 : width + 100;
         super(spawnX, y, "KoiFish", val, 2.33, 60); // 体积，重量设定
@@ -286,7 +286,7 @@ class KoiFish extends BaseFish {
             this.height = targetHeight;
         }
 
-        this.speed = 2.33; // 移速较快
+        this.speed = random(3.5, 4.2); // 移速较快
         this.direction = spawnX < 0 ? 1 : -1; // 在左边就向右游，在右边就向左游
 
         this.glowPhase = random(TWO_PI);
@@ -354,8 +354,8 @@ class KoiFish extends BaseFish {
 class SwimmingPearlShell extends BaseFish {
     constructor(x, y) {
         // 在 SwimmingPearlShell 类的 constructor 中
-        super(x, y, "Moving Shell", floor(random(750, 900)), 2, 42); // 原本是 1000
-        this.speed = random(2.5, 3.8);
+        super(x, y, "Moving Shell", floor(random(500, 600)), 2, 42); // 原本是 1000
+        this.speed = random(3, 3.8);
         // 动画帧序列：1-2-3-4-3-2-1（ping-pong 循环）
         this._framePingPong = [0, 1, 2, 3, 2, 1];
         this._frameInterval = 8; // 每 8 帧切换一次图
