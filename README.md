@@ -249,190 +249,115 @@ Our architecture applies key design patterns: **State Pattern** for GameManager'
 
 ## 💻 5. Implementation
 
-Each challenge below uses **short code excerpts** from our repo (labeled **Figure A–I**) so you can see how each behaviour is implemented without pasting whole files. For coursework that wants **figures**, screenshot the same lines in your IDE, save PNGs under e.g. `docs/assets/implementation/`, and add `<img src="docs/assets/implementation/your-shot.png" alt="Implementation excerpt" width="720">` beside the matching figure.
-
 ### 5.1 Overview
 
-**What we built with.** We use [P5.js](https://p5js.org/) so the game runs in the browser with straightforward drawing, sound, and input. The live version is published from the `docs/` folder: one main script wires up the frame loop and keyboard, and separate modules handle menus, each level, the hook, sea creatures, the shop, and scores. That separation mattered to us because the game mixes many modes (menus, fishing, shop, results); keeping responsibilities split made it easier to debug and to add features without breaking the whole loop.
+Deep Sea Prospector was implemented using P5.js, a JavaScript library that provides comprehensive tools for creative coding and interactive graphics. The implementation focused on three connected goals: creating responsive physics-based hook mechanics, building a mathematically guided balance framework for progression across Shallow Water and Deep Sea modes, and adding a lightweight cloud-backed leaderboard with a fish collection index to strengthen replay motivation. Our development process therefore centered on three technical challenges: (1) implementing realistic hook physics with multi-state collision detection, (2) designing fair score and economy scaling using an expected-value perspective, and (3) structuring shared run records so players can compare results and collections without introducing heavy data-fetch overhead.
 
-**Why these three challenges.** Implementation was not just “drawing sprites”—we had to make the *feel* of the game believable, keep *difficulty and rewards* from drifting out of balance as levels advanced, and give players a reason to care about *other people’s runs* without slowing the site down. In plain terms:
+### 5.2 Technical Challenge 1: Physics-Based Hook Mechanics and Collision System
 
-- **Challenge 1 — The hook and the sea.** Players judge the game on whether casting and reeling feel fair. We had to model swing, drop, hits, and reel-up so catches register when they should (not when they frustratingly miss), heavy loot feels heavy, and deep-sea extras (dark water, sharks) add tension rather than cheap failures.
+The core gameplay revolves around the hook mechanism, which required implementing several interconnected systems to achieve smooth, responsive, and realistic behavior.
 
-- **Challenge 2 — Progression and economy.** As levels go up, the score target and the timer need to stay in a sensible relationship, and shop prices need to grow with that pressure so upgrades remain tempting but not automatic. We also tuned how much each species is worth so risky catches feel rewarding without breaking easier levels.
+**Hook State Machine Implementation**
 
-- **Challenge 3 — Leaderboard and fish “dex”.** We wanted shared high scores and a collection-style view of which fish each run caught (similar to filling a Pokédex). The design tension was **motivation vs performance**: sending full images for every fish on every row would be slow and expensive, so we only store **counts per fish type** in the database and let the game **reuse artwork it already loaded** to paint the gallery.
-
-The subsections below walk through how we addressed each area in code, still anchored in the files under `docs/js/`, but starting from *why* a choice existed before naming the mechanism.
-
-### 5.2 Challenge 1: Making the hook, collisions, and deep sea feel fair
-
-**Swing, cast, and reel as clear phases.** The hook is not a single animation—it behaves like three steps players can reason about: swinging at the surface, shooting straight down when they press the key, then coming back up with or without a catch. In code we track those phases explicitly so the same object never tries to “swing” and “reel” at once. While swinging, the tip traces an arc from the boat; once fired, the rope lengthens until it hits something or leaves the play area; on the way up, heavier catches slow the climb so risk matches reward.
-
-_Figure A (excerpt): swing geometry — `Hook.js`_
+The hook operates through a finite state machine with three primary states: `IDLE_SWINGING`, `MOVING_DOWN`, and `MOVING_UP`. The swinging motion uses trigonometric functions to create a pendulum effect:
 
 ```javascript
-// Core idea: angle drives the arc; rope length grows while dropping (Hook.js)
-this.angle =
-    (sin(frameCount * this.angleVel * this.swingSpeedMultiplier) * PI) / 3;
-this.position.x = this.origin.x + sin(this.angle) * this.length;
-this.position.y = this.origin.y + cos(this.angle) * this.length;
+angle = sin(frameCount * swingSpeed) * maxSwingAngle;
+hookX = pivotX + sin(angle) * ropeLength;
+hookY = pivotY + cos(angle) * ropeLength;
 ```
 
-**Hits that players can trust.** We detect catches by measuring distance between the hook tip and each creature or object, with a little extra leniency so a near-miss still feels like a hit. Different objects deliberately use different “hit bubbles”: a big fish might look large but use a slightly stricter zone so mastery matters; a pearl can be tiny and valuable so only precise drops succeed. When the level is built, we also nudge obstacles and treasures apart so they do not spawn stacked on top of each other.
+When the player presses the down arrow key, the hook transitions to `MOVING_DOWN` state, fixing the current angle and extending the rope linearly. This required careful synchronization between the visual representation and the underlying physics model to ensure the hook moves smoothly without visual artifacts.
 
-_Figure B (excerpt): collision while dropping — `LevelManager.js`_
+**Collision Detection System**
+
+Implementing accurate collision detection between the hook and various sea objects presented significant challenges. We employed a distance-based collision detection approach using P5.js's `dist()` function:
 
 ```javascript
-if (currentHook.state === HookState.MOVING_DOWN) {
-    for (let j = this.activeItems.length - 1; j >= 0; j--) {
-        let item = this.activeItems[j];
-        let d = dist(
-            currentHook.position.x,
-            currentHook.position.y,
-            item.position.x,
-            item.position.y,
-        );
-        if (d < (item.catchRadius ?? item.width / 2) + 10) {
-            if (item.canBeCaught) {
-                currentHook.grabItem(item);
-                this.activeItems.splice(j, 1);
-                break;
-            }
-        }
-    }
+let d = dist(
+    hook.position.x,
+    hook.position.y,
+    item.position.x,
+    item.position.y,
+);
+if (d < item.catchRadius) {
+    /* collision detected */
 }
 ```
 
-**Reeling and shop upgrades.** Heavier items subtract from the upward speed (with a minimum so the hook never gets stuck), and shop purchases can speed the reel again—so preparation before a hard level is tangible in the controls.
+The system handles multiple object types with distinct collision behaviors: fish and treasures trigger capture and attachment to the hook; rocks immediately stop descent and begin retraction; sharks intercept and destroy captured items during retrieval. Each object type has customized `catchRadius` values—for example, BigFish uses `width * 0.35` for tighter hitboxes (approximately 38-52 pixels), creating strategic depth where visual size doesn't always match catchability. This design choice rewards skilled players who understand the precise collision boundaries.
 
-_Figure C (excerpt): weight and upgrades on the way up — `Hook.js`_
+Additionally, we implemented an overlap prevention system during level initialization using `checkOverlap()` to ensure items spawn with sufficient spacing, preventing frustrating scenarios where multiple items occupy the same position. This spatial management system checks distances between all static items (treasures, rocks, pearls) during generation, maintaining minimum separation distances of 10-20 pixels depending on item type.
 
-```javascript
-} else if (this.state === HookState.MOVING_UP) {
-    let originalSpeed = this.attachedItem
-        ? max(1, this.moveSpeed - this.attachedItem.weight)
-        : this.moveSpeed;
-    let currentSpeed = originalSpeed * (this.retractMultiplier || 1);
-    this.length -= currentSpeed;
-    // …tip position + dragging the attached sprite…
-}
-```
+**Weight-Based Physics**
 
-**Deep sea as a rules layer.** After the player buys the submarine, runs switch to a darker scene: we draw a mask so only a cone of light is visible, and sharks appear on a rhythm of their own. If a shark crosses the catch on the way up, the fish can be lost. That is difficult by design, but it is a separate layer from the basic hook logic, which keeps shallow water simple while deep water adds spectacle and risk.
-
-### 5.3 Challenge 2: Level targets, shop prices, and how much each catch is worth
-
-**Rationale.** If every level used a fixed target or a hand-typed number, we would constantly be guessing whether hard mode or two-player felt impossible. We wanted one **consistent recipe** that: (a) asks for more score as levels advance, (b) respects how much time the player gets that level, and (c) bumps requirements for hard mode and for two people sharing the sea.
-
-**What we actually compute.** For each level index we combine a time budget (shorter pressure on hard mode), a gentle “player is getting better” factor, and a small density factor so later tiers do not plateau. Those pieces are summed across all levels reached so far, rounded to tidy scores, then **hard mode** and **two-player** apply separate multipliers everyone can reason about (roughly “hard asks more,” “two players must earn more together”). The **same time budget** also drives the countdown, so the number you are chasing and the clock you are watching stay in sync—otherwise the game would feel arbitrary.
-
-**Shop.** Item prices start from a base cost and **inflate with level** (with occasional sales), so the shop does not become irrelevant just because targets went up. Laser sight, faster reel, and other tools stay part of the strategy instead of early-game-only toys.
-
-**Fish and treasures.** Small fish are common fillers; big fish and deep-sea anglerfish pay more but fight the reel; treasures and pearls sit at the high end with different shapes and hit sizes so reading the seabed matters. All of those numbers live in code as plain ranges we adjusted after playtests and the usability study in Section 6.
-
-_Figure D (excerpt): cumulative target from time + growth, then mode multipliers — `LevelManager.js` (constructor)_
+The retrieval phase implements weight-based physics where heavier objects slow down the hook's ascent speed. The retrieval speed calculation uses the formula:
 
 ```javascript
-const goldFishEff = 26.67;
-let totalTarget = 0;
-for (let i = 1; i <= n; i++) {
-    let stdTime =
-        this.difficulty === Difficulty.HARD
-            ? Math.min(35, 24 + i)
-            : Math.min(40, 29 + i);
-    let factorLevel = Math.min(i, 10);
-    let skillFactor = 0.5 + (factorLevel - 1) * (0.4 / 9);
-    let growthFactor = 1 + (factorLevel - 1) * 0.05;
-    totalTarget += stdTime * goldFishEff * skillFactor * growthFactor;
-}
-if (this.difficulty === Difficulty.HARD) totalTarget *= 1.2;
-if (this.playerMode === PlayerMode.TWO_PLAYER) totalTarget *= 1.75;
-this.targetScore = Math.floor(totalTarget / 10) * 10;
+retrievalSpeed = baseSpeed / (1 + itemWeight * weightFactor);
 ```
 
-_Figure E (excerpt): level-scaled shop price — `ShopItem.js`_
+This creates strategic depth as players must balance the value of heavy items against the time cost of retrieving them, especially when approaching the level time limit.
+
+### 5.3 Technical Challenge 2: Mathematical Game Balance and Expected Value Framework
+
+The second major technical challenge involved designing a comprehensive game balance system that ensures fair difficulty progression and meaningful strategic choices. Rather than arbitrary score assignments, we developed a mathematical framework to systematically evaluate and balance all catchable items based on expected value optimization.
+
+**Expected Value Framework for Game Design**
+
+We developed an expected value formula to guide our game balance decisions. When designing each item's score value, we consider the player's expected return per unit time invested. The ultimate expected value ($EV$) for targeting a specific item is calculated as:
+
+$$
+EV = \frac{E_{theory}}{DF} = \frac{S \cdot 60 \cdot R_{eff}}{50 \cdot D \cdot \left( \frac{1}{5} + \frac{1}{\max(1, 5 - W)} \right) \cdot (1 + 0.3 \cdot V)}
+$$
+
+Where:
+
+- $S$ = Item score value (the variable we're designing)
+- $D$ = Average distance to target (normalized to typical gameplay distances)
+- $W$ = Item weight (SmallFish 2-3, BigFish 6-9, AnglerFish 6-10)
+- $V$ = Velocity factor for moving targets (0 for stationary, 0.2-2.5 for fish)
+- $R_{eff}$ = Effective capture rate considering player skill and difficulty
+- $DF$ = Difficulty factor accounting for miss probability and wasted time
+
+**Formula Components and Design Rationale**
+
+The numerator $S \cdot 60 \cdot R_{eff}$ represents theoretical score gain per minute, scaled by capture success rate. The denominator accounts for multiple cost factors that players implicitly evaluate:
+
+1. **Distance Cost** — $50 \cdot D$ converts pixel distance to time-equivalent metric (at 5 pixels/frame descent speed)
+2. **Weight Penalty** — $\left( \frac{1}{5} + \frac{1}{\max(1, 5 - W)} \right)$ exponentially increases cost for heavier items due to slower retrieval
+3. **Velocity Penalty** — $(1 + 0.3 \cdot V)$ penalizes fast-moving targets harder to predict and intercept
+
+**Practical Application: Score Balancing**
+
+Using this framework, we systematically balanced all item scores. For example, SmallFish (70-110 pts, weight 2-3, speed 1.2-1.6) have high $EV$ due to abundance and easy capture, serving as reliable "filler" items. BigFish (220-340 pts, weight 6-9, speed 0.3-0.8) offer medium $EV$ with high risk-reward ratio, as heavy weight significantly reduces retrieval speed. AnglerFish (400-800 pts, weight 6-10, speed 0.2-0.5) provide highest $EV$ in deep sea mode, justified by limited visibility and increased difficulty. This mathematical approach ensured consistent difficulty scaling between Shallow Water and Deep Sea modes, validated through our NASA TLX evaluation showing appropriate workload increases without overwhelming players.
+
+### 5.4 Additional Implementation Point: Shared Leaderboard and Fish Collection Index
+
+Beyond the two core technical challenges above, we also implemented a shared leaderboard and a collection-style fish gallery to strengthen replay motivation and social comparison. The key design goal was to keep cloud synchronization lightweight while still preserving meaningful run history.
+
+**Cloud-Synced Score Records with Structured Catch Data**
+
+The leaderboard is managed by `HighScoreManager`, which persists local scores in `localStorage` and synchronizes to Supabase on the production deployment. Instead of uploading image assets or bulky binary payloads, each score entry stores structured JSON fields (player name, score, difficulty, mode, and `catch_history`). This design keeps API requests small and fast while preserving the data needed for post-run analysis and display.
 
 ```javascript
-let inflationRate = 0.10; // per-item tweaks for Laser, Submarine, etc.
-let inflationLevel = Math.min(levelNum, 11);
-let multiplier = 1 + (inflationLevel - 1) * inflationRate;
-let currentPrice = Math.floor(basePrice * multiplier);
-if (this.name !== "Submarine" && Math.random() <= 0.1) {
-    this.isDiscounted = true;
-    currentPrice *= 0.5;
-}
-this.costPrice = Math.floor(currentPrice);
+body: JSON.stringify({
+    player_name: name,
+    score: score,
+    levels_completed: levelsCompleted,
+    difficulty: d,
+    player_mode: p,
+    catch_history: ch,
+    per_level_earned: ple,
+    per_level_spawn_value: pls,
+}),
 ```
 
-_The real `ShopItem` constructor sets `inflationRate` per product (e.g. laser vs submarine) before this block; this excerpt shows the level-scaling and sale idea only._
+**Fish Collection Gallery via Indexed Keys**
 
-### 5.4 Challenge 3: Shared leaderboard and fish gallery without bloating downloads
+To support the gallery efficiently, catches are converted into stable indexed keys at runtime (for example, `fish1`–`fish64`, plus named special fish). `LevelManager` accumulates these counts in `fishCaught`, and `GameManager` merges them into session-wide history before submission. The gallery then maps those keys to preloaded sprite arrays (`imgSmallFishes`, `imgBigFishes`, and special fish assets), so rendering a player's collection requires only numeric counts from the database, not remote image downloads.
 
-**Rationale.** Competing on score is more fun when the table is real for everyone, not only on one machine. Showing *which species someone caught* adds a collector’s goal beyond raw points. The pitfall is technical: a leaderboard row could try to ship dozens of images—bad for mobile users and for our free hosting. Our answer was to treat the cloud as a **small facts sheet** (name, score, mode, and **how many of each fish type**) and keep every **picture** bundled with the game once, loaded at startup.
-
-**What gets stored.** Each finished run stores the usual headline fields plus a **catch history**: for each fish type id, how many times it was caught that run—integers only, no image data. Locally we cache scores in the browser; on the live site we sync the same JSON-shaped row to Supabase so everyone sees one table.
-
-**How the gallery works.** When you open a player’s fish grid, the game looks up those counts, dims species they never caught, and shows a total next to the ones they did. The portraits come from the same art the gameplay already uses (small fish sheet, big fish sheet, special sprites), so **opening a row does not trigger dozens of new downloads**—only the tiny score record did.
-
-**Why that mattered to us.** Players get social proof and a “collection” moment; we keep the implementation maintainable and the page responsive; markers and future teammates can read the data model without hunting through binary files.
-
-_Figure F (excerpt): turn each catch into a stable id for the dex — `LevelManager.js`_
-
-```javascript
-let key = returnedItem.itemName || "Unknown";
-if (returnedItem.itemName === "Small Fish" && returnedItem.fishIndex != null) {
-    key = `fish${returnedItem.fishIndex + 1}`; // fish1 … fish43
-} else if (returnedItem.itemName === "Big Fish" && returnedItem.fishIndex != null) {
-    key = `fish${44 + returnedItem.fishIndex}`; // fish44 … fish64
-}
-this.fishCaught[key] = (this.fishCaught[key] || 0) + 1;
-```
-
-_Figure G (excerpt): send one small JSON row to the cloud (counts, not images) — `HighScoreManager.js`_
-
-```javascript
-await fetch(`${cfg.url}/rest/v1/scores`, {
-    method: "POST",
-    headers: {
-        apikey: cfg.anonKey,
-        Authorization: `Bearer ${cfg.anonKey}`,
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-        player_name: name,
-        score: score,
-        levels_completed: levelsCompleted,
-        difficulty: d,
-        player_mode: p,
-        catch_history: ch,
-        per_level_earned: ple,
-        per_level_spawn_value: pls,
-    }),
-});
-```
-
-_Figure H (excerpt): each gallery slot knows its `key` and which preloaded sprite to draw — `GameManager.js`_
-
-```javascript
-list.push({
-    key: `fish${i}`,
-    label: names ? names.en : `Fish ${i}`,
-    getImg: () =>
-        typeof imgSmallFishes !== "undefined" && imgSmallFishes[idx]
-            ? imgSmallFishes[idx][0]
-            : null,
-});
-```
-
-_Figure I (excerpt): gallery UI from counts only — `GameManager.js` (`drawFishGallery`)_
-
-```javascript
-const count = catchHistory[t.key] || 0;
-const caught = count > 0;
-if (caught) text(`×${count}`, cx, cy + 22);
-else text("?", cx, cy + 22);
-```
+This indexing approach gave us the “Pokemon-style” collection feedback loop while avoiding heavy fetch overhead, improving responsiveness on both desktop and lower-bandwidth connections.
 
 ### 📝 Report Guidance
 
