@@ -29,7 +29,7 @@ _Figure 1: The initial game screen of Deep Sea Prospector, showing the mode sele
 5. [Implementation](#5-implementation)
 6. [Evaluation](#6-evaluation)
 7. [Sustainability](#7-sustainability)
-8. [Process](#8-process)
+8. [Process](#8-process) — [Teamwork](#81-teamwork) · [Tools used](#82-tools-used)
 9. [Conclusion](#9-conclusion)
 10. [Contribution Statement](#10-contribution-statement)
 11. [Appendix](#11-appendix)
@@ -493,8 +493,32 @@ Add your sustainability discussion here.
 
 ## 🔄 8. Process
 
-- 15% ~750 words
-- Teamwork. How did you work together, what tools and methods did you use? Did you define team roles? Reflection on how you worked together. Be honest, we want to hear about what didn't work as well as what did work, and importantly how your team adapted throughout the project.
+- 15% ~750 words (for the whole Process section)
+
+<a id="81-teamwork"></a>
+
+### 8.1 Teamwork
+
+We followed the course week by week and quickly applied what we learned to our team workflow and development process. For example, we kept each task small and specific, asked everyone to commit frequently even for very minor changes, and started creating weekly branches from the second week to manage the game’s versions.
+
+From the third week, we clearly defined the main entry points and scenes of the game, such as the start input page, the game shop, the game manager for score control, the sea item system for generating in-game objects, and the settlement page. Based on that structure, we first built the most basic code framework to make sure everyone worked from a shared standard when developing later on.
+
+During the first five weeks, we did not assign fixed roles in detail. Instead, we divided the work broadly by function: two members focused on the game start and end screens, as well as the early development of the game shop and backend setup, while three members worked on the core game mechanics such as difficulty levels, scene variation, random fish generation, and level design. At the same time, every team member kept playing the game, giving feedback, and asking the responsible person to improve the related part.
+
+As the project progressed, the game evolved from basic interaction logic into a pixel-art style from around week seven. After that, everyone began to optimize their own parts, and we also started sharing assets with one another to further unify the visual style and interaction design. Our roles gradually became more specialized, including front-end asset optimization, game mechanic algorithms, background sound effects, and backend development improvements.
+
+After two to three weeks of playtesting, especially when we moved into qualitative and quantitative evaluation, the whole team focused on improving the scoring system and the shop item exchange algorithm to balance difficulty and playability. We adjusted the game from a linear algorithm that was considered too easy to an exponential one that was then judged too difficult, and we also improved the page display and navigation between scenes so the game became more playable and reasonable.
+
+Because the tasks became more complex over time, there were not many conflicting opinions at the beginning. However, as different scenes and features started interacting with each other, more disagreements naturally appeared. In those situations, we communicated fully, exchanged opinions, explained our reasoning clearly, and finally reached a consensus version as the final one.
+
+Our GitHub version control also improved a lot over time. What started as a process where we were not very familiar with handling conflicts eventually became something we managed smoothly and confidently. Since we also deployed the backend database relatively early, the backend playtest data became our main source of quantitative evaluation for game balance and playability, and this provided the foundation for assessing whether the algorithms and overall design were reasonable.
+
+<a id="82-tools-used"></a>
+
+### 8.2 Tools used
+
+- Which tools and methods supported your workflow (for example version control, issue tracking, communication, design or testing tools)?
+- How did you use them in practice (branching, reviews, stand-ups, Kanban, etc.)?
 
 ---
 
