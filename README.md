@@ -69,13 +69,13 @@ Table 1: Team Members
 
 ## 🚀 2. Introduction
 
-Deep Sea Prospector is a 2D pixel-style casual resource collection game developed using the p5.js library. Inspired by the classic game Gold Miner, our project reinterprets the core gameplay within an ocean exploration setting. Players control a hook deployed from a boat to capture various underwater objects and accumulate as many points as possible within a limited time, progressing through increasingly challenging levels.
+Deep Sea Prospector is a 2D pixel-style casual resource collection game developed using the p5.js library. Inspired by the classic game Gold Miner, our project reinterprets the core gameplay within an ocean exploration setting. Players control a hook deployed from a boat to capture various underwater objects and accumulate as many points as possible within a limited time, progressing through increasingly challenging levels with higher score requirements.
 
-The game features a wide variety of collectible objects, including fish of different sizes, shells, pearls, stone, and treasure chests. Each item is designed with distinct attributes such as weight, movement speed, and value. While high-value targets like large fish and pearls offer greater rewards, players must carefully avoid low-value or obstructive items such as rocks and fish bones, which can significantly reduce efficiency.
+The game features a wide variety of collectible objects, including fish of different sizes, shells, pearls, stones, and treasure chests. Each item is designed with distinct attributes such as weight, movement speed, and value, creating a dynamic and strategic gameplay experience. While high-value targets like large fish and pearls offer greater rewards, players must carefully avoid low-value or obstructive items such as rocks and fish bones, which can significantly reduce efficiency and waste valuable time.
 
-To enhance playability, a shop system is introduced between levels, where players can spend their accumulated score on items with diverse effects. At least three items are randomly generated in each visit, including both consumable and persistent upgrades. In addition, purchasing a submarine unlocks the “Deep Sea Mode,” a high-risk, high-reward environment featuring limited visibility, dangerous predators such as sharks, and more valuable targets.
+To enhance playability and replayability, a shop system is introduced between levels, where players can spend their accumulated score on items with diverse effects. At least three items are randomly generated in each visit, including both consumable and persistent upgrades, encouraging strategic resource management. In addition, purchasing a submarine unlocks the “Deep Sea Mode,” a high-risk, high-reward environment featuring limited visibility, dangerous predators such as sharks, and more valuable targets.
 
-The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and encourage long-term engagement.
+The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and promote long-term player engagement.
 
 </div>
 
@@ -84,14 +84,14 @@ The game supports both single-player and two-player modes, as well as two diffic
 
 | Name | Image | Description |
 |------|------|------------|
-| Boat | <img src="docs/assets/boat.png" width="80"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
-| Small Fish | <img src="docs/assets/fish8_1.png" width="80"/> | Small, fast-moving fish with low weight and low value. |
-| Big Fish | <img src="docs/assets/fish59_1.png" width="80"/> | Large, slow-moving fish with high weight and high value. |
-| Koi Fish | <img src="docs/assets/koifish1.png" width="80"/> | A rare spawn in each level. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
-| Shark | <img src="docs/assets/shark_1.png" width="80"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
-| Rock | <img src="docs/assets/stone11.png" width="80"/> | Heavy and low-value obstacle that wastes time when captured. |
-| Shell | <img src="docs/assets/shell_4.png" width="80"/> | High-value item that is difficult to catch and requires precise timing. |
-| Treasure Chest | <img src="docs/assets/Treasure_Chest.png" width="80"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
+| Boat | <img src="docs/assets/boat.png" height="70"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
+| Small Fish | <img src="docs/assets/fish8_1.png" height="70"/> | Small, fast-moving fish with low weight and low value. |
+| Big Fish | <img src="docs/assets/fish59_1.png" height="70"/> | Large, slow-moving fish with high weight and high value. |
+| Koi Fish | <img src="docs/assets/koifish1.png" height="70"/> | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
+| Shark | <img src="docs/assets/shark_1.png" height="70"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
+| Rock | <img src="docs/assets/stone11.png" height="70"/> | Heavy and low-value obstacle that wastes time when captured. |
+| Shell | <img src="docs/assets/shell_4.png" height="70"/> | High-value item that is difficult to catch and requires precise timing. |
+| Treasure Chest | <img src="docs/assets/Treasure_Chest.png" height="70"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
 
 Table 2: Main Game Objects
 
