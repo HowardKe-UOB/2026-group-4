@@ -49,6 +49,7 @@ _Figure 2: Group 4 development team members._
 
 <div align="center">
 
+
 | Name            | Email                 | Github                                                    | Role |
 | :-------------- | :-------------------- | :-------------------------------------------------------- | :--- |
 | **Weikai Mao**  | uz25020@bristol.ac.uk | [M1yanoShiho](https://github.com/M1yanoShiho)             | Gameplay Programmer, Level Designer |
@@ -69,14 +70,21 @@ _Figure 2: Group 4 development team members._
 
 ### ℹ️ Info
 
-This is the template for your group project repo/report. We'll be setting up your repo and assigning you to it after the group forming activity. You can delete this info section, but please keep the rest of the repo structure intact.
 
-You will be developing your game using [P5.js](https://p5js.org) a javascript library that provides you will all the tools you need to make your game. However, we won't be teaching you javascript, this is a chance for you and your team to learn a (friendly) new language and framework quickly, something you will almost certainly have to do with your summer project and in future. There is a lot of documentation online, you can start with:
 
-- [P5.js tutorials](https://p5js.org/tutorials/)
-- [Coding Train P5.js](https://thecodingtrain.com/tracks/code-programming-with-p5-js) course - go here for enthusiastic video tutorials from Dan Shiffman (recommended!)
+### 🎮 Your Game (change to title of your game)
 
-#### 🎬 Paper Prototype Video
+
+### 📝 Report Guidance
+
+
+---
+
+<a id="3-requirements"></a>
+
+## 📋 3. Requirements
+
+### 3.1 Ideation Process
 
 <div align="center">
 
@@ -90,28 +98,8 @@ Our initial motivation was to create a game with simple controls and an immediat
 
 The paper prototyping phase allowed us to visualize the gameplay flow and refine the structured risk-reward loop. By stepping through the mechanics manually, we confirmed that the combination of precise aiming, strategic timing, and resource collection provided a compelling sense of progression. Feedback from peer groups further validated that this direction offered a clear purpose and satisfying player agency. Consequently, we focused our development on "Deep Sea Prospector," prioritizing a compact control scheme, tactile feedback, and the engaging collect-and-upgrade loop that defines the final experience.
 
-### 🎮 Your Game (change to title of your game)
 
-STRAPLINE. Add an exciting one sentence description of your game here.
-
-IMAGE. Add an image of your game here, keep this updated with a snapshot of your latest development.
-
-LINK. Add a link here to your deployed game, you can also make the image above link to your game if you wish. Your game lives in the `/docs` folder, and is published using Github pages.
-
-VIDEO. Include a demo video of your game here (you don't have to wait until the end, you can insert a work in progress video)
-
-### 📝 Report Guidance
-
-- 5% ~250 words
-- Describe your game, what is based on, what makes it novel? (what's the "twist"?)
-
----
-
-<a id="3-requirements"></a>
-
-## 📋 3. Requirements
-
-### 3.1 Stakeholder table
+### 3.2 Stakeholder table
 
 | Stakeholder                 | Epic                        | User Story                                                                                                                                           | Acceptance Criteria                                                                                                                                                                                                   |
 | :-------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -122,7 +110,7 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 | **User: Developer**         | Core Fishing Mechanics      | "As a developer, I want a collision detection system, so that the hook recognizes when it hits an object versus empty water."                        | **Given** the hook is extending,<br>**When** the hook collider touches a 'Rock' object,<br>**Then** the hook should stop extending and immediately begin retracting.                                                  |
 | **User: Artist**            | Visual Feedback & Immersion | "As an artist, I want distinct animations for different fish states, so that the player gets visual feedback on their actions."                      | **Given** a fish is idle swimming,<br>**When** the hook grabs the fish,<br>**Then** the fish sprite should switch to a 'struggling' animation.                                                                        |
 
-### 3.2 Reflection
+### 3.3 Reflection
 
 **1.** In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development.
 
@@ -136,7 +124,7 @@ VIDEO. Include a demo video of your game here (you don't have to wait until the 
 
 **3.** We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
 
-### 3.3 Prioritised Feature Breakdown
+### 3.4 Prioritised Feature Breakdown
 
 A risk-managed development roadmap prioritising the core hook mechanic and level progression before advanced systems and multiplayer features.
 
