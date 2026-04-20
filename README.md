@@ -89,8 +89,8 @@ Table 2: Main Game Objects
 
 | Name | Image | Description |
 |------|------|------------|
-| Boat | <img src="docs/assets/boat.png" height="70"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
-| Small Fish | <img src="docs/assets/fish8_1.png" height="70"/> | Small, fast-moving fish with low weight and low value. |
+| Boat | <img src="docs/assets/boat.png" height="90"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
+| Small Fish | <img src="docs/assets/fish8_1.png" height="90"/> | Small, fast-moving fish with low weight and low value. |
 | Big Fish | <img src="docs/assets/fish59_1.png" height="70"/> | Large, slow-moving fish with high weight and high value. |
 | Koi Fish | <img src="docs/assets/koifish1.png" height="70"/> | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
 | Shark | <img src="docs/assets/shark_1.png" height="70"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
