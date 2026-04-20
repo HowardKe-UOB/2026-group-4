@@ -8,9 +8,9 @@
 
 [**🎮 Click this link to play our game 🎮**](https://uob-comsm0166.github.io/2026-group-4/)
 
-_Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style._
-
 <img src="docs/assets/deepsea_prospector.png" alt="Game initial input page background" width="800">
+
+_Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style._
 
 <br>
 
@@ -41,10 +41,11 @@ _Figure 1: The initial game screen of Deep Sea Prospector, showing the mode sele
 
 ## 👨‍💻 1. Development Team
 
-_Figure 2: Group 4 development team members._
-
 <div align="center">
   <img src="./GROUP4.png" alt="group picture" width="600">
+  
+  _Figure 2: Group 4 development team members._
+  
 </div>
 
 <div align="center">
@@ -58,6 +59,7 @@ _Figure 2: Group 4 development team members._
 | **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/HowardKe-UOB)              | Test Engineer, Optimization Engineer |
 | **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | Backend Developer, UI Designer |
 
+_Table 1: Team Members
 
 </div>
 
@@ -67,16 +69,24 @@ _Figure 2: Group 4 development team members._
 
 ## 🚀 2. Introduction
 
-
-### ℹ️ Info
-
-
-
-### 🎮 Your Game (change to title of your game)
+Deep Sea Prospector is a 2D pixel-style casual resource collection game developed using the p5.js library. Inspired by the classic game Gold Miner, our project reinterprets the core gameplay within an ocean exploration setting. Players control a hook deployed from a boat to capture various underwater objects and accumulate as many points as possible within a limited time, progressing through increasingly challenging levels.
+The game features a wide variety of collectible objects, including fish of different sizes, shells, pearls, stone, and treasure chests. Each item is designed with distinct attributes such as weight, movement speed, and value. While high-value targets like large fish and pearls offer greater rewards, players must carefully avoid low-value or obstructive items such as rocks and fish bones, which can significantly reduce efficiency.
+To enhance playability, a shop system is introduced between levels, where players can spend their accumulated score on items with diverse effects. At least three items are randomly generated in each visit, including both consumable and persistent upgrades. In addition, purchasing a submarine unlocks the “Deep Sea Mode,” a high-risk, high-reward environment featuring limited visibility, dangerous predators such as sharks, and more valuable targets.
+The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and encourage long-term engagement.
 
 
-### 📝 Report Guidance
+_Table 2: Main Game Objects
 
+| Name | Image | Description |
+|------|------|------------|
+| Boat | <img src="docs/assets/boat.png" width="80"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
+| Small Fish | <img src="docs/assets/fish8_1.png" width="80"/> | Small, fast-moving fish with low weight and low value. |
+| Big Fish | <img src="docs/assets/fish59_1.png" width="80"/> | Large, slow-moving fish with high weight and high value. |
+| Koi Fish | <img src="docs/assets/koifish1.png" width="80"/> | A rare spawn in each level. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
+| Shark | <img src="docs/assets/shark_1.png" width="80"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
+| Rock | <img src="docs/assets/stone11.png" width="80"/> | Heavy and low-value obstacle that wastes time when captured. |
+| Shell | <img src="docs/assets/shell_4.png" width="80"/> | High-value item that is difficult to catch and requires precise timing. |
+| Treasure Chest | <img src="docs/assets/Treasure_Chest.png" width="80"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
 
 ---
 
