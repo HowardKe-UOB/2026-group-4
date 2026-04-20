@@ -8,9 +8,9 @@
 
 [**🎮 Click this link to play our game 🎮**](https://uob-comsm0166.github.io/2026-group-4/)
 
-<img src="docs/assets/deepsea_prospector.png" alt="Game initial input page background" width="800">
+Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style.
 
-_Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style._
+<img src="docs/assets/deepsea_prospector.png" alt="Game initial input page background" width="800">
 
 <br>
 
@@ -42,13 +42,17 @@ _Figure 1: The initial game screen of Deep Sea Prospector, showing the mode sele
 ## 👨‍💻 1. Development Team
 
 <div align="center">
-  <img src="./GROUP4.png" alt="group picture" width="600">
+
+Figure 2: Group 4 development team members.
   
-  _Figure 2: Group 4 development team members._
+  <img src="./GROUP4.png" alt="group picture" width="600">
   
 </div>
 
 <div align="center">
+
+
+Table 1: Team Members
 
 
 | Name            | Email                 | Github                                                    | Role |
@@ -59,7 +63,6 @@ _Figure 1: The initial game screen of Deep Sea Prospector, showing the mode sele
 | **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/HowardKe-UOB)              | Test Engineer, Optimization Engineer |
 | **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | Backend Developer, UI Designer |
 
-Table 1: Team Members
 
 </div>
 
@@ -81,6 +84,8 @@ The game supports both single-player and two-player modes, as well as two diffic
 
 <div align="center">
 
+Table 2: Main Game Objects
+
 
 | Name | Image | Description |
 |------|------|------------|
@@ -93,7 +98,6 @@ The game supports both single-player and two-player modes, as well as two diffic
 | Shell | <img src="docs/assets/shell_4.png" height="70"/> | High-value item that is difficult to catch and requires precise timing. |
 | Treasure Chest | <img src="docs/assets/Treasure_Chest.png" height="70"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
 
-Table 2: Main Game Objects
 
 </div>
 
