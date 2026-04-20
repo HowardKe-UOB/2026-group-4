@@ -74,9 +74,6 @@ The game features a wide variety of collectible objects, including fish of diffe
 To enhance playability, a shop system is introduced between levels, where players can spend their accumulated score on items with diverse effects. At least three items are randomly generated in each visit, including both consumable and persistent upgrades. In addition, purchasing a submarine unlocks the “Deep Sea Mode,” a high-risk, high-reward environment featuring limited visibility, dangerous predators such as sharks, and more valuable targets.
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and encourage long-term engagement.
 
-
-_Table 2: Main Game Objects
-
 | Name | Image | Description |
 |------|------|------------|
 | Boat | <img src="docs/assets/boat.png" width="80"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
@@ -87,6 +84,8 @@ _Table 2: Main Game Objects
 | Rock | <img src="docs/assets/stone11.png" width="80"/> | Heavy and low-value obstacle that wastes time when captured. |
 | Shell | <img src="docs/assets/shell_4.png" width="80"/> | High-value item that is difficult to catch and requires precise timing. |
 | Treasure Chest | <img src="docs/assets/Treasure_Chest.png" width="80"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
+
+_Table 2: Main Game Objects
 
 ---
 
