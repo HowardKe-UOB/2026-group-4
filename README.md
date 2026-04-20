@@ -59,7 +59,7 @@ _Figure 1: The initial game screen of Deep Sea Prospector, showing the mode sele
 | **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/HowardKe-UOB)              | Test Engineer, Optimization Engineer |
 | **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | Backend Developer, UI Designer |
 
-_Table 1: Team Members
+Table 1: Team Members
 
 </div>
 
@@ -70,9 +70,17 @@ _Table 1: Team Members
 ## 🚀 2. Introduction
 
 Deep Sea Prospector is a 2D pixel-style casual resource collection game developed using the p5.js library. Inspired by the classic game Gold Miner, our project reinterprets the core gameplay within an ocean exploration setting. Players control a hook deployed from a boat to capture various underwater objects and accumulate as many points as possible within a limited time, progressing through increasingly challenging levels.
+
 The game features a wide variety of collectible objects, including fish of different sizes, shells, pearls, stone, and treasure chests. Each item is designed with distinct attributes such as weight, movement speed, and value. While high-value targets like large fish and pearls offer greater rewards, players must carefully avoid low-value or obstructive items such as rocks and fish bones, which can significantly reduce efficiency.
+
 To enhance playability, a shop system is introduced between levels, where players can spend their accumulated score on items with diverse effects. At least three items are randomly generated in each visit, including both consumable and persistent upgrades. In addition, purchasing a submarine unlocks the “Deep Sea Mode,” a high-risk, high-reward environment featuring limited visibility, dangerous predators such as sharks, and more valuable targets.
+
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and encourage long-term engagement.
+
+</div>
+
+<div align="center">
+
 
 | Name | Image | Description |
 |------|------|------------|
@@ -85,7 +93,9 @@ The game supports both single-player and two-player modes, as well as two diffic
 | Shell | <img src="docs/assets/shell_4.png" width="80"/> | High-value item that is difficult to catch and requires precise timing. |
 | Treasure Chest | <img src="docs/assets/Treasure_Chest.png" width="80"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
 
-_Table 2: Main Game Objects
+Table 2: Main Game Objects
+
+</div>
 
 ---
 
