@@ -139,7 +139,7 @@ User needs were formalized using the “As a…, I want…, so that…” struct
 
 <div align="center">
 
-Table 3: Stakeholder table
+Table 3: Stakeholder Table
 
 | Stakeholder                  | Epic                         | User Story                                                                                                                                              | Acceptance Criteria                                                                                                                                                                                                 |
 |-----------------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -157,17 +157,11 @@ Table 3: Stakeholder table
 
 ### 3.3 Reflection
 
-**1.** In the development project of this fishing game (Deep Sea Prospector), Value vs Effort Matrix is often considered to scientifically schedule the development sequence of tasks/functions. Avoid blindly investing and wasting resources on low value, high effort tasks such as complex 3D backgrounds. Ensure the smooth completion of software development.
+During the development of Deep Sea Prospector, our team adopted a Value vs Effort Matrix to prioritize tasks and guide decision-making. This approach allowed us to focus on high-value, low-effort features while avoiding unnecessary investment in low-value, high-effort elements, such as overly complex visual designs. As a result, we were able to manage our time effectively and ensure steady progress throughout the project.
 
-**2.** Determine user acceptance criteria:
+We also refined our understanding of user acceptance criteria to better define core gameplay requirements. For example, the hook must swing at a consistent speed and respond instantly to player input, ensuring responsive and intuitive controls. In addition, progression is determined by whether the player reaches the target score within the time limit, clearly defining success and failure conditions. Advanced gameplay elements, such as Deep Sea Mode, introduce additional challenges including reduced visibility and hostile creatures, enhancing the risk–reward dynamic. Special objectives, such as capturing rare targets within limited time, further increase gameplay depth.
 
-- **a.** Is the fish hook used by the player swinging evenly at a constant speed. When the player clicks the mouse, the hook should launch immediately without delay.
-- **b.** When players choose the slightly difficult "deep sea" mode, ocean currents, as the "x factor" in the sea, can change the movement trajectory of various fish. Another 'x factor' shark can damage ordinary fish hooks.
-- **c.** Before the countdown ends, the total value of all items captured must be equal to or greater than the target amount required for this level.
-- **d.** ✅ **Pass:** Score up to standard → Proceed to the next level/enter the mall to purchase equipment. <br> ❌ **Fail:** Score not met or time is up → Challenge this level again.
-- **e.** Special objective: Capture mobile golden koi purchased through the mall within a limited time and complete the capture.
-
-**3.** We not only include players, but also developers and UI designers in the identification of stakeholders. This makes us realize that demand cannot be driven solely by user experience, but also requires a balance between technical feasibility and the quality of artistic implementation.
+Finally, our stakeholder analysis highlighted the importance of balancing user experience with technical feasibility and visual design. By considering not only players but also developers and designers, we recognized that successful game development requires integrating usability, implementation constraints, and aesthetic quality into a coherent design.
 
 ### 3.4 Prioritised Feature Breakdown
 
@@ -176,6 +170,12 @@ A risk-managed development roadmap prioritising the core hook mechanic and level
 - **HIGH:** Realize the basic functions of the game
 - **MEDIUM:** Enhance the depth of gameplay
 - **LOW:** Extra point
+
+</div>
+
+<div align="center">
+
+Table 4: Prioritised Feature Breakdown
 
 | **Priority**            | **Systems / Features**                                                      | **Estimated Implementation Time** |
 | :---------------------- | :-------------------------------------------------------------------------- | :-------------------------------- |
@@ -202,6 +202,7 @@ A risk-managed development roadmap prioritising the core hook mechanic and level
 |                         | Procedural Level Variations (object distribution randomizer)                | 2–4 days                          |
 |                         | Visual Effects Polish (water distortion, glow, particle effects)            | 3+ days                           |
 
+</div>
 
 ---
 
