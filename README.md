@@ -51,11 +51,12 @@ _Figure 2: Group 4 development team members._
 
 | Name            | Email                 | Github                                                    | Role |
 | :-------------- | :-------------------- | :-------------------------------------------------------- | :--- |
-| **Weikai Mao**  | uz25020@bristol.ac.uk | [M1yanoShiho](https://github.com/M1yanoShiho)             | -    |
-| **Zenan Wu**    | jp25459@bristol.ac.uk | [zenanwu479-glitch](https://github.com/zenanwu479-glitch) | -    |
-| **Jianxing Li** | ue25937@bristol.ac.uk | [UoB26Git](https://github.com/UoB26Git)                   | -    |
-| **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/HowardKe-UOB)              | -    |
-| **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | -    |
+| **Weikai Mao**  | uz25020@bristol.ac.uk | [M1yanoShiho](https://github.com/M1yanoShiho)             | Gameplay Programmer, Level Designer |
+| **Zenan Wu**    | jp25459@bristol.ac.uk | [zenanwu479-glitch](https://github.com/zenanwu479-glitch) | Gameplay Programmer, Asset Creator |
+| **Jianxing Li** | ue25937@bristol.ac.uk | [UoB26Git](https://github.com/UoB26Git)                   | Gameplay Programmer, Asset Creator|
+| **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/HowardKe-UOB)              | Test Engineer, Optimization Engineer |
+| **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | Backend Developer, UI Designer |
+
 
 </div>
 
@@ -65,7 +66,6 @@ _Figure 2: Group 4 development team members._
 
 ## 🚀 2. Introduction
 
-A project template for the Software Engineering Discipline and Practice module (COMSM0166).
 
 ### ℹ️ Info
 
