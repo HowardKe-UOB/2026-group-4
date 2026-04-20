@@ -128,20 +128,30 @@ The paper prototyping phase played a crucial role in refining our concept. By si
 
 ### 3.2 Stakeholder table
 
+To support the development of Deep Sea Prospector, we identified key stakeholders and analyzed their needs to guide design decisions. Our primary focus was on different player types, including casual players, challenge seekers, and multiplayer users, each with distinct expectations regarding gameplay simplicity, difficulty, and interaction.
+
+We also considered internal stakeholders such as developers and designers, whose requirements influenced system implementation and visual design. In addition, evaluators (e.g., lecturers and playtesters) were treated as surrogate stakeholders, providing valuable feedback that reflects broader user perspectives.
+
+User needs were formalized using the “As a…, I want…, so that…” structure and translated into testable acceptance criteria with the Given–When–Then format. This approach ensured a clear, user-centered, and implementable design process.
+
+
 </div>
 
 <div align="center">
 
 Table 3: Stakeholder table
 
-| Stakeholder                 | Epic                        | User Story                                                                                                                                           | Acceptance Criteria                                                                                                                                                                                                   |
-| :-------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **User: Casual Player**     | Core Fishing Mechanics      | "As a casual player, I want to control the hook using a single key press, so that I can easily catch fish without learning complex controls."        | **Given** the hook is swinging back and forth,<br>**When** I press the 'Down Arrow Key',<br>**Then** the hook should stop swinging and extend in a straight line.                                                     |
-| **User: Challenge Seeker**  | Dynamic Ecosystem & Hazards | "As a challenge seeker, I want sharks to patrol the water and eat my catch, so that the game feels risky and exciting."                              | **Given** I am reeling in a captured fish,<br>**When** the shark's body collides with my fish,<br>**Then** the fish should be destroyed and I should earn $0.                                                         |
-| **User: Strategic Player**  | Dynamic Ecosystem & Hazards | "As a strategic player, I want ocean currents to affect the swimming speed of fish, so that I must predict their movement before launching my hook." | **Given** bubbles show the current is flowing to the Right,<br>**When** a fish swims to the Right (with the current),<br>**Then** its movement speed should increase by 50% compared to swimming against the current. |
-| **User: Progression Gamer** | Economy & Progression Loop  | "As a progression-focused gamer, I want to buy upgrades in a shop between levels, so that I can handle increasing difficulty."                       | **Given** I am in the shop screen with 500 gold,<br>**When** I click the 'Buy Laser Sight' button,<br>**Then** 500 gold is deducted and a trajectory line appears in the next level.                                  |
-| **User: Developer**         | Core Fishing Mechanics      | "As a developer, I want a collision detection system, so that the hook recognizes when it hits an object versus empty water."                        | **Given** the hook is extending,<br>**When** the hook collider touches a 'Rock' object,<br>**Then** the hook should stop extending and immediately begin retracting.                                                  |
-| **User: Artist**            | Visual Feedback & Immersion | "As an artist, I want distinct animations for different fish states, so that the player gets visual feedback on their actions."                      | **Given** a fish is idle swimming,<br>**When** the hook grabs the fish,<br>**Then** the fish sprite should switch to a 'struggling' animation.                                                                        |
+| Stakeholder                  | Epic                         | User Story                                                                                                                                              | Acceptance Criteria                                                                                                                                                                                                 |
+|-----------------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **User: Casual Player**     | Core Fishing Mechanics       | As a casual player, I want simple and intuitive controls, so that I can quickly understand the game and start playing without a tutorial.               | Given the hook is swinging,<br>When I press the "Down Arrow Key",<br>Then the hook should stop swinging and extend downward in a straight line.                                                                   |
+| **User: Challenge Seeker**  | Risk–Reward Gameplay         | As a challenge seeker, I want hazards such as sharks that can interfere with my progress, so that the game feels tense and rewarding.                   | Given I am reeling in a fish,<br>When a shark collides with the captured object,<br>Then the fish should be removed and no score is awarded.                                                                      |
+| **User: Strategic Player**  | Item Variety & Decision-Making | As a strategic player, I want different objects with varying weights and values, so that I must choose carefully when to hook targets.                  | Given multiple objects are present,<br>When I hook a heavy object,<br>Then the retraction speed should be slower compared to lighter objects.                                                                     |
+| **User: Progression Gamer** | Economy & Progression Loop   | As a progression-focused player, I want a shop system between levels, so that I can improve my performance in later stages.                              | Given I enter the shop,<br>When I purchase an item,<br>Then my score is deducted and the item effect is applied in the next level.                                                                                 |
+| **User: Multiplayer Player**| Cooperative Gameplay         | As a multiplayer player, I want to play with another player simultaneously, so that the game becomes more interactive and competitive.                  | Given two players are in the game,<br>When both players press their control keys,<br>Then two independent hooks should operate without interference.                                                               |
+| **User: Explorer**          | Deep Sea Mode                | As an advanced player, I want to unlock a more challenging mode, so that I can experience higher risk and reward.                                       | Given I purchase the submarine,<br>When the next level starts,<br>Then the environment should switch to limited visibility with new enemies and higher-value targets.                                              |
+| **Developer**               | Core System Implementation   | As a developer, I want a reliable collision detection system, so that interactions between hooks and objects are accurate and consistent.              | Given the hook intersects with an object,<br>When collision is detected,<br>Then the hook should attach to the object and begin retracting.                                                                        |
+| **Artist/Designer**         | Visual Feedback & UX         | As a designer, I want clear visual feedback for player actions, so that players can easily understand game states and outcomes.                         | Given an object is captured,<br>When the hook connects,<br>Then the object should display a distinct animation or visual response.                                                                                 |
+| **Evaluator (Lecturer)**    | Usability & Clarity          | As an evaluator, I want the game to demonstrate clear mechanics and progression, so that its design quality can be effectively assessed.               | Given a new player starts the game,<br>When they play without instructions,<br>Then they should understand the core gameplay loop within a short time.                                                              |
 
 </div>
 
@@ -192,10 +202,6 @@ A risk-managed development roadmap prioritising the core hook mechanic and level
 |                         | Procedural Level Variations (object distribution randomizer)                | 2–4 days                          |
 |                         | Visual Effects Polish (water distortion, glow, particle effects)            | 3+ days                           |
 
-### 📝 Report Guidance
-
-- 15% ~750 words
-- Early stages design. Ideation process. How did you decide as a team what to develop? Use case diagrams, user stories.
 
 ---
 
