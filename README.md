@@ -163,7 +163,26 @@ We also refined our understanding of user acceptance criteria to better define c
 
 Finally, our stakeholder analysis highlighted the importance of balancing user experience with technical feasibility and visual design. By considering not only players but also developers and designers, we recognized that successful game development requires integrating usability, implementation constraints, and aesthetic quality into a coherent design.
 
-### 3.4 Prioritised Feature Breakdown
+### 3.4 Use-Case Diagram
+
+We used a use case diagram to identify and structure the core functional components of Deep Sea Prospector, providing a clear overview of player interactions and system behavior. During the design phase, we discussed and defined the primary use cases based on our gameplay loop and user stories, ensuring that all essential features were captured.
+
+The diagram illustrates a primarily linear interaction flow. Players begin by starting the game, selecting the game mode (single-player or multiplayer), and choosing a difficulty level. Once the game starts, the core gameplay revolves around controlling the hook to capture objects, avoid hazards, and accumulate score within a limited time. These actions form the central gameplay loop and are represented as key use cases.
+
+Additional systems, such as the shop and progression mechanics, are also included. After completing a level, players can enter the shop to purchase items that enhance performance in subsequent levels. Furthermore, advanced features such as unlocking the “Deep Sea Mode,” as well as viewing the leaderboard and collection system, extend the gameplay experience beyond the core loop.
+
+Although additional features were introduced during development, the use case diagram remained a stable foundation, supporting iterative refinement while maintaining a clear structure of system functionality.
+
+<div align="center">
+
+Figure 3: Group 4 development team members.
+  
+  <img src="progress/week5/UseCase.png" alt="Use Case Diagram" width="800">
+  
+</div>
+
+
+### 3.5 Prioritised Feature Breakdown
 
 A risk-managed development roadmap prioritising the core hook mechanic and level progression before advanced systems and multiplayer features.
 
