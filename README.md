@@ -117,12 +117,22 @@ Table 2: Main Game Objects
 
 </div>
 
-Our initial motivation was to create a game with simple controls and an immediately responsive feedback loop, drawing inspiration from classic titles such as "Gold Miner". Building on these influences, we framed our core experience around intuitive interaction and instant feedback, using these principles as the foundation for our subsequent design decisions and prototype iterations.
+Our initial motivation was to create a game with simple controls and an immediately responsive feedback loop, drawing inspiration from classic arcade experiences. During the early ideation phase, each team member proposed different game concepts with varying levels of complexity. For example, one idea was inspired by Fruit Ninja, reimagined as a “cutting homework” game where players slice objects within a limited time. Another proposal was based on Contra, aiming to develop a 2D side-scrolling shooter with platforming elements.
 
-The paper prototyping phase allowed us to visualize the gameplay flow and refine the structured risk-reward loop. By stepping through the mechanics manually, we confirmed that the combination of precise aiming, strategic timing, and resource collection provided a compelling sense of progression. Feedback from peer groups further validated that this direction offered a clear purpose and satisfying player agency. Consequently, we focused our development on "Deep Sea Prospector," prioritizing a compact control scheme, tactile feedback, and the engaging collect-and-upgrade loop that defines the final experience.
+However, through group discussion and evaluation, we identified limitations in both approaches. The slicing game, while easy to implement, lacked sufficient depth and long-term engagement. In contrast, the Contra-style game introduced significant technical and design challenges, including complex level design, character movement systems, and a large demand for art assets, making it difficult to complete within the project scope.
+
+As a result, we shifted our focus toward an arcade-style resource collection game inspired by Gold Miner, which provided a balanced middle ground between simplicity and depth. This direction allowed us to emphasize core mechanics such as timing, precision, and risk–reward decision-making, while maintaining a manageable development scope.
+
+The paper prototyping phase played a crucial role in refining our concept. By simulating gameplay manually, we validated the effectiveness of the core loop and improved the balance between challenge and reward. Feedback from peer groups further confirmed the clarity and engagement of our design. Consequently, we finalized Deep Sea Prospector, focusing on intuitive controls, satisfying feedback, and a scalable gameplay loop.
 
 
 ### 3.2 Stakeholder table
+
+</div>
+
+<div align="center">
+
+Table 3: Stakeholder table
 
 | Stakeholder                 | Epic                        | User Story                                                                                                                                           | Acceptance Criteria                                                                                                                                                                                                   |
 | :-------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -132,6 +142,8 @@ The paper prototyping phase allowed us to visualize the gameplay flow and refine
 | **User: Progression Gamer** | Economy & Progression Loop  | "As a progression-focused gamer, I want to buy upgrades in a shop between levels, so that I can handle increasing difficulty."                       | **Given** I am in the shop screen with 500 gold,<br>**When** I click the 'Buy Laser Sight' button,<br>**Then** 500 gold is deducted and a trajectory line appears in the next level.                                  |
 | **User: Developer**         | Core Fishing Mechanics      | "As a developer, I want a collision detection system, so that the hook recognizes when it hits an object versus empty water."                        | **Given** the hook is extending,<br>**When** the hook collider touches a 'Rock' object,<br>**Then** the hook should stop extending and immediately begin retracting.                                                  |
 | **User: Artist**            | Visual Feedback & Immersion | "As an artist, I want distinct animations for different fish states, so that the player gets visual feedback on their actions."                      | **Given** a fish is idle swimming,<br>**When** the hook grabs the fish,<br>**Then** the fish sprite should switch to a 'struggling' animation.                                                                        |
+
+</div>
 
 ### 3.3 Reflection
 
