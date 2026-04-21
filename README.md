@@ -153,6 +153,8 @@ Table 3: Stakeholder Table
 | **Artist/Designer**         | Visual Feedback & UX         | As a designer, I want clear visual feedback for player actions, so that players can easily understand game states and outcomes.                         | Given an object is captured,<br>When the hook connects,<br>Then the object should display a distinct animation or visual response.                                                                                 |
 | **Evaluator (Lecturer)**    | Usability & Clarity          | As an evaluator, I want the game to demonstrate clear mechanics and progression, so that its design quality can be effectively assessed.               | Given a new player starts the game,<br>When they play without instructions,<br>Then they should understand the core gameplay loop within a short time.                                                              |
 
+<div align="center">
+  <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="80%">
 </div>
 
 ### 3.3 Reflection
