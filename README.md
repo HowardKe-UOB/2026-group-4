@@ -231,15 +231,19 @@ Table 4: Prioritised Feature Breakdown
 
 ### 4.1 System Architecture Overview
 
-Deep Sea Prospector employs a modular object-oriented architecture with clearly defined responsibilities, adhering to the Single Responsibility Principle and emphasizing high cohesion and low coupling for maintainability and extensibility. The architecture separates concerns into distinct layers: game state management, level logic, player data, and gameplay mechanics.
+Deep Sea Prospector adopts a modular, object-oriented architecture with clearly defined responsibilities. The design follows the Single Responsibility Principle, while emphasizing high cohesion and low coupling to ensure maintainability, scalability, and ease of future extension.
+
+The system is structured into several logical layers, including game state management, level control, player progression, and core gameplay mechanics. This separation of concerns allows each subsystem to evolve independently without affecting the overall stability of the application.
 
 Core components include:
 
-- **GameManager** — Central controller coordinating all subsystems and managing game flow transitions between states (title screen, gameplay, shop, results)
-- **LevelManager** — Handles level configuration, target scores, time limits, difficulty parameters, and dynamic sea creature spawning
-- **Player** — Manages player progression including gold currency, purchased upgrades, and input responses
-- **Hook** — Implements core gameplay mechanics: swinging, launching, collision detection, item grabbing, and retrieval with weight-based physics
-- **SeaItems** — Abstract base class providing unified interface for all catchable items (fish, treasures, obstacles) with polymorphic behavior
+- **GameManager** — Acts as the central controller of the system, coordinating all major subsystems and managing transitions between different game states, such as the title screen, gameplay, shop, and result screens. 
+- **LevelManager** — Responsible for configuring level-specific parameters, including target scores, time limits, difficulty scaling, and the dynamic spawning of sea creatures and items. 
+- **ShopManager** — Manages all shop-related functionalities, including refreshing available items, handling purchase transactions, and maintaining a record of items currently owned by the player.
+- **Player** — Handles player-related data and progression, including gold accumulation, upgrade management, and input handling during gameplay. 
+- **Hook** — Implements the core gameplay mechanics, including swinging motion, launch behavior, collision detection, item capture, and retrieval, incorporating weight-based physics for more realistic interactions. 
+- **SeaItems** — An abstract base class that defines a unified interface for all interactable objects (e.g., fish, treasures, and obstacles), enabling polymorphic behavior and consistent interaction handling across different item types.
+
 
 ### 4.2 Class Diagram
 
