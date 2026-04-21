@@ -293,12 +293,16 @@ This sequence diagram illustrates level completion logic: Game loop calls LevelM
 
 ### 4.4 Design Patterns and Principles
 
-Our architecture applies key design patterns: **State Pattern** for GameManager's flow control (TITLE, PLAYING, SHOP, LEVEL_RESULT) and Hook's behavior states (IDLE_SWINGING, MOVING_DOWN, MOVING_UP); **Factory Pattern** for LevelManager's dynamic SeaItems creation; **Inheritance Hierarchy** with SeaItems as base class for SmallFish, BigFish, Treasure, and ImaginaryFish; **Single Responsibility Principle** ensuring each class has focused functionality; **Observer Pattern** enabling loose coupling between Hook and TargetItem via event callbacks (onCollision, returnComplete). This modular design facilitates easy extension of new features and independent testing of components.
+Our architecture applies key design patterns:
 
-### 📝 Report Guidance
+**State Pattern**: To manage the complex game flow, the GameManager utilizes a flow control between states (TITLE, PLAYING, SHOP, LEVEL_RESULT). Similarly, the Hook employs behavior states—IDLE, MOVING_DOWN, and MOVING_UP—to encapsulate movement logic and prevent input conflicts during retrieval.
 
-- 15% ~750 words
-- System architecture. Class diagrams, behavioural diagrams.
+**Factory Pattern & Inheritance**: To facilitate Procedural Generation, the LevelManager uses a Factory Pattern for dynamic SeaItem creation. By establishing an inheritance hierarchy (with SeaItem as the base class for SmallFish, Treasure, etc.), we achieved high reusability and simplified the addition of new marine entities.
+
+**Observer Pattern**: Enabling loose coupling between Hook and TargetItem via event callbacks (onCollision, returnComplete). This modular design facilitates easy extension of new features and independent testing of components.
+
+Consistent with Agile methodologies, our design evolved through iterative testing. Initially, our controller logic was monolithic; however, we later separated rendering from core physics to ensure smooth performance in "Deep Sea Mode." This modular approach allowed for independent component testing and provided the flexibility to adjust the game's "risk-reward" balance without disrupting the foundational source code.
+
 
 ---
 
