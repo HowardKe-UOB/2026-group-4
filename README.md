@@ -504,7 +504,6 @@ Add your sustainability discussion here.
 
 ## 🔄 8. Process
 
-- 15% ~750 words (for the whole Process section)
 
 <a id="81-teamwork"></a>
 
@@ -528,8 +527,26 @@ Our GitHub version control also improved a lot over time. What started as a proc
 
 ### 8.2 Tools used
 
-- Which tools and methods supported your workflow (for example version control, issue tracking, communication, design or testing tools)?
-- How did you use them in practice (branching, reviews, stand-ups, Kanban, etc.)?
+**WeChat** as our primary communication tool:
+
+Used to keep all group members updated on weekly progress and task status  
+Used to quickly request support from teammates when blockers appeared  
+Used to arrange the time and place of our next meetings and coordinate deadlines
+
+**GitHub** for version control:
+
+Made sure we committed and pushed stable, working code to shared branches over time to reduce integration risks.  
+This also meant that when errors or conflicts appeared, we could always roll back or  refer to the most recent stable version.
+Kept commit history clear by using descriptive messages   
+Used multiple branches for feature and debug development  and merged changes after they were completed and reviewed/tested  
+Followed a structured integration workflow, including branch merges , so alway the latest updated version of working code would be merged to the main branch.
+**Kanban boards**:
+
+Tracked the overall progress of tasks that needed to be completed  
+Recorded which member completed each task, so ownership was clear when a finished task needed to be revisited  
+Used individual sprint boards to further prioritize the tasks needed for each work session
+
+Using these tools gave the team a clearer view of current priorities and individual responsibilities. With frequent board updates, we were able to monitor progress continuously and adjust plans when new challenges emerged. Open communication helped us understand each other's perspectives, strengthen collaboration, and coordinate our work more effectively.
 
 ---
 
