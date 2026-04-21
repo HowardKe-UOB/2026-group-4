@@ -263,33 +263,59 @@ For game entities, GameObject serves as the abstract base class for both Hook an
 
 #### 4.3.1 Game Initialization and Level Start
 
-_Figure 4: Sequence diagram illustrating the game initialization flow from difficulty selection to level start._
-
 <div align="center">
+
+Figure 5: Sequence diagram illustrating the game initialization flow from difficulty selection to level start.
+
   <img src="progress/week5/SequenceDiagram1.png" alt="Sequence Diagram 1 - Game Start" width="800">
 </div>
 
-This sequence diagram demonstrates the flow from game startup to level commencement: Player selects difficulty at the title screen; GameManager transitions to PLAYING state; LevelManager initializes level parameters (target score, time limit) based on difficulty; timer and score reset; Hook enters IDLE state and begins swinging awaiting input; SeaItems spawns sea creatures and treasures according to configuration; game loop begins.
+This sequence diagram demonstrates the transition from the UI menu to the active game state:
+
+•	State Transition: The process begins when the player confirms their selection; the GameManager calls changeState(GameState.PLAYING).
+
+•	Object Instantiation: The GameManager initializes a new LevelManager, passing parameters such as currentDifficulty, levelNum, and the player instance.
+
+•	Environment Configuration: The LevelManager calculates the targetScore and timeLimit based on the difficulty. It then checks player.hasSubmarine to set the isDeepSea flag and triggers the spawning of SeaItem subclasses (e.g., BaseFish, Treasure) according to the level configuration.
+
 
 #### 4.3.2 Hook Capture Mechanism
 
-_Figure 5: Sequence diagram showing the hook deployment, collision detection, and item retrieval process._
-
 <div align="center">
+
+Figure 6: Sequence diagram showing the hook deployment, collision detection, and item retrieval process.
+
   <img src="progress/week5/SequenceDiagram2.png" alt="Sequence Diagram 2 - Hook Capture" width="800">
 </div>
 
-This sequence diagram details the hook capture mechanism: Player presses down arrow; LevelManager invokes Hook's `deployDown()`; Hook transitions to MOVING_DOWN state and descends via `move()` in each frame; continuous collision detection with TargetItem triggers grabbing when `onCollision()` returns true; Hook calls `grabItem()` and transitions to MOVING_UP; during retrieval, Hook adjusts ascent speed based on item weight while calling `moveWithItem()`; upon reaching boat position, Hook calls `returnComplete()` to notify TargetItem; LevelManager adds item value to score; Hook resets to IDLE_SWINGING state; TargetItem calls `destroy()` to remove from scene.
+This sequence highlights the real-time physics interaction between the player’s input and game entities:
+
+•	Deployment: When a down-arrow input is detected, the GameManager triggers hook.deployDown(). The Hook transitions from IDLE_SWINGING to MOVING_DOWN, increasing its length each frame.
+
+•	Collision and Grabbing: The system performs continuous collision detection. Once a hit is confirmed, the Hook calls grabItem(item), attaches the SeaItem, and switches to the MOVING_UP state.
+
+•	Weighted Retrieval: During retrieval, the Hook executes moveWithItem(). The moveSpeed is dynamically adjusted based on the attached item's weight, simulating physical resistance.
+
+•	Data Synchronization: Upon reaching the origin, returnComplete() is triggered. The LevelManager calls player.addScore(item.scoreValue) to update the persistent score before the item is destroyed.
+
 
 #### 4.3.3 Level Completion and Result Evaluation
 
-_Figure 6: Sequence diagram depicting the level end condition checking and result screen transition._
-
 <div align="center">
+
+Figure 7: Sequence diagram depicting the level end condition checking and result screen transition.
+
   <img src="progress/week5/SequenceDiagram3.png" alt="Sequence Diagram 3 - Level End" width="800">
 </div>
 
-This sequence diagram illustrates level completion logic: Game loop calls LevelManager's `updateDeltaTime()` each frame to update remaining time; when `timeRemaining <= 0`, level end check triggers; LevelManager calls `checkWinCondition()` to compare current score against target; if successful, calls `reportLevelResult(SUCCESS)` and GameManager displays completion screen; if failed, calls `reportLevelResult(FAILURE)` and displays failure screen; GameManager calls `changeState(LEVEL_RESULT)` to switch to results state, awaiting player choice to continue or return to menu.
+This diagram illustrates the logic governing win/loss conditions and the subsequent state cleanup:
+
+•	Timer Monitoring: The LevelManager updates its internal timer during each update() cycle. When the time expires, it halts gameplay to evaluate the player's performance.
+
+•	Condition Checking: The system compares the player.totalScore against the required targetScore.
+
+•	State Finalization: The LevelManager communicates the outcome to the GameManager. The GameManager then calls changeState(GameState.LEVEL_RESULT), rendering the appropriate result screen. Finally, it interacts with the HighScoreManager to save the session data.
+
 
 ### 4.4 Design Patterns and Principles
 
