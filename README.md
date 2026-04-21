@@ -545,7 +545,46 @@ The SUS confirmed that both difficulty levels offered strong overall usability, 
 
 ## 🌱 7. Sustainability
 
-Add your sustainability discussion here.
+### 7.1 Sustainability Analysis Framework (SusAF) Results
+
+We evaluate Deep Sea Prospector using the Sustainability Awareness Framework (SusAF) across five dimensions: technical, environmental, individual, social, and economic.
+
+- **Technical sustainability.** Our object-oriented architecture (`GameManager`, `LevelManager`, `Hook`, `SeaItem` hierarchy) supports maintainability and controlled evolution. This modular design reduces technical debt and makes feature extension (new fish, hazards, and shop items) less costly over time.
+- **Environmental sustainability.** We reduce unnecessary computation during real-time rendering and interactions, which lowers device energy use. For example, resource-intensive visual effects are applied selectively, and gameplay logic avoids redundant checks for non-relevant objects.
+- **Individual sustainability.** We address privacy, wellbeing, and accessibility together. For privacy, leaderboard records only keep minimal non-sensitive fields (`player_name`, `score`, `levels_completed`, and structured catch data), with no email, location, or financial identifiers. For wellbeing, the game includes adjustable screen brightness (`brightnessLevel`) to reduce eye strain in long sessions. For accessibility and agency, controls remain simple (keyboard-first interaction, clear state transitions), lowering entry barriers for new players.
+- **Social sustainability.** Two-player mode and a shared leaderboard strengthen social interaction, comparison, and replay motivation. These systems support a sense of community by enabling cooperative/competitive play and allow players arond different location to be visible to compete .
+- **Economic sustainability.** Cloud data access is optimized through paginated leaderboard queries (`limit`/`offset`) and compact score records. This reduces unnecessary bandwidth and storage pressure, helping keep infrastructure usage and operating cost efficient.
+
+Overall, the system balances immediate playability goals with longer-term sustainability outcomes: lower technical maintenance overhead, lighter cloud usage, and inclusive player experience.
+
+### 7.2 Green Foundation Implementation Patterns
+
+Our implementation aligns with practical green software patterns that improve both performance and sustainability outcomes:
+
+- **Efficient algorithms:** Collision checks and state-driven update loops are designed to avoid redundant per-frame computation, especially in dense scenes.
+- **Minimal resource usage:** Rendering and UI overlays are applied according to current state (for example, brightness and deep-sea visibility logic), preventing unnecessary full-scene processing.
+- **Data minimisation:** Leaderboard records are stored as compact structured fields rather than large payloads, preserving essential analytics with lower transfer and storage cost.
+- **Network efficiency:** Supabase leaderboard reads use bounded result windows and incremental loading (`limit=50`, dynamic `offset`) to prevent over-fetching. The ranking endpoint only requests required columns and ordering (for example, `order=levels_completed.desc,score.desc`), which reduces transfer size and cloud query overhead.
+- **Modular architecture for sustainable evolution:** Class-based separation of concerns allows targeted optimisation without destabilising unrelated systems.
+
+These patterns jointly reduce computational waste, improve responsiveness on lower-end devices, and support scalable deployment.
+
+### 7.3 Sustainability User Stories and Green Software Foundation Patterns
+
+To operationalise sustainability, we map concrete sustainability user stories to implemented features and measurable outcomes:
+
+- **As a player, I want stable performance during gameplay, so that my device consumes less power and the game remains smooth.**  
+We support this through selective update/render logic and lightweight per-frame processing in core loops.
+- **As a privacy-conscious user, I want my gameplay data collected minimally, so that I can participate in rankings without exposing sensitive information.**  
+We only persist non-sensitive score metadata required for ranking and collection features, and leaderboard fetching is restricted to lightweight ranked fields instead of full user profiles.
+- **As a player, I want adjustable visual comfort settings, so that I can play for longer periods without unnecessary eye strain.**  
+We provide brightness control in-game and keep core interaction readable under both normal and deep-sea visual conditions.
+- **As a community player, I want fair shared progression systems, so that I can engage socially through competition and cooperation.**  
+Two-player mode and cloud leaderboard features provide this social layer without high data overhead.
+- **As a maintainer, I want code that is easy to extend and optimise, so that sustainability improvements remain feasible as the project grows.**  
+Our OOP modular design enables incremental optimisation and future sustainability-focused refactoring.
+
+For future work, we plan to formalise sustainability testing metrics (for example, frame-time stability, load-time targets, and API request efficiency) and include them in backlog and regression checks, ensuring sustainability remains a continuous engineering objective rather than a one-off report section.
 
 ---
 
@@ -553,8 +592,48 @@ Add your sustainability discussion here.
 
 ## 🔄 8. Process
 
-- 15% ~750 words
-- Teamwork. How did you work together, what tools and methods did you use? Did you define team roles? Reflection on how you worked together. Be honest, we want to hear about what didn't work as well as what did work, and importantly how your team adapted throughout the project.
+
+
+### 8.1 Teamwork
+
+We followed the course week by week and quickly applied what we learned to our team workflow and development process. For example, we kept each task small and specific, asked everyone to commit frequently even for very minor changes, and started creating weekly branches from the second week to manage the game’s versions.
+
+From the third week, we clearly defined the main entry points and scenes of the game, such as the start input page, the game shop, the game manager for score control, the sea item system for generating in-game objects, and the settlement page. Based on that structure, we first built the most basic code framework to make sure everyone worked from a shared standard when developing later on.
+
+During the first five weeks, we did not assign fixed roles in detail. Instead, we divided the work broadly by function: two members focused on the game start and end screens, as well as the early development of the game shop and backend setup, while three members worked on the core game mechanics such as difficulty levels, scene variation, random fish generation, and level design. At the same time, every team member kept playing the game, giving feedback, and asking the responsible person to improve the related part.
+
+As the project progressed, the game evolved from basic interaction logic into a pixel-art style from around week seven. After that, everyone began to optimize their own parts, and we also started sharing assets with one another to further unify the visual style and interaction design. Our roles gradually became more specialized, including front-end asset optimization, game mechanic algorithms, background sound effects, and backend development improvements.
+
+After two to three weeks of playtesting, especially when we moved into qualitative and quantitative evaluation, the whole team focused on improving the scoring system and the shop item exchange algorithm to balance difficulty and playability. We adjusted the game from a linear algorithm that was considered too easy to an exponential one that was then judged too difficult, and we also improved the page display and navigation between scenes so the game became more playable and reasonable.
+
+Because the tasks became more complex over time, there were not many conflicting opinions at the beginning. However, as different scenes and features started interacting with each other, more disagreements naturally appeared. In those situations, we communicated fully, exchanged opinions, explained our reasoning clearly, and finally reached a consensus version as the final one.
+
+Our GitHub version control also improved a lot over time. What started as a process where we were not very familiar with handling conflicts eventually became something we managed smoothly and confidently. Since we also deployed the backend database relatively early, the backend playtest data became our main source of quantitative evaluation for game balance and playability, and this provided the foundation for assessing whether the algorithms and overall design were reasonable.
+
+
+
+### 8.2 Tools used
+
+**WeChat** as our primary communication tool:
+
+Used to keep all group members updated on weekly progress and task status  
+Used to quickly request support from teammates when blockers appeared  
+Used to arrange the time and place of our next meetings and coordinate deadlines
+
+**GitHub** for version control:
+
+Made sure we committed and pushed stable, working code to shared branches over time to reduce integration risks.  
+This also meant that when errors or conflicts appeared, we could always roll back or  refer to the most recent stable version.
+Kept commit history clear by using descriptive messages  
+Used multiple branches for feature and debug development  and merged changes after they were completed and reviewed/tested  
+Followed a structured integration workflow, including branch merges , so alway the latest updated version of working code would be merged to the main branch.
+**Kanban boards**:
+
+Tracked the overall progress of tasks that needed to be completed  
+Recorded which member completed each task, so ownership was clear when a finished task needed to be revisited  
+Used individual sprint boards to further prioritize the tasks needed for each work session
+
+Using these tools gave the team a clearer view of current priorities and individual responsibilities. With frequent board updates, we were able to monitor progress continuously and adjust plans when new challenges emerged. Open communication helped us understand each other's perspectives, strengthen collaboration, and coordinate our work more effectively.
 
 ---
 
