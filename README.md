@@ -338,7 +338,7 @@ Consistent with Agile methodologies, our design evolved through iterative testin
 
 ### 5.1 Overview
 
-Deep Sea Prospector was implemented using P5.js, a JavaScript library providing comprehensive tools for creative coding and interactive graphics. The implementation focused on creating responsive physics-based mechanics, dynamic difficulty scaling across two distinct game modes (Shallow Water and Deep Sea), and a mathematically-driven game balance system. Our development process centered on two major technical challenges: implementing realistic hook physics with multi-state collision detection, and designing a comprehensive game balance framework using expected value optimization to ensure fair progression and meaningful strategic choices.
+Deep Sea Prospector was implemented using P5.js, a JavaScript library that provides comprehensive tools for creative coding and interactive graphics. The implementation focused on three connected goals: creating responsive physics-based hook mechanics, building a mathematically guided balance framework for progression across Shallow Water and Deep Sea modes, and adding a lightweight cloud-backed leaderboard with a fish collection index to strengthen replay motivation. Our development process therefore centered on three technical challenges: (1) implementing realistic hook physics with multi-state collision detection, (2) designing fair score and economy scaling using an expected-value perspective, and (3) structuring shared run records so players can compare results and collections without introducing heavy data-fetch overhead.
 
 ### 5.2 Technical Challenge 1: Physics-Based Hook Mechanics and Collision System
 
@@ -419,10 +419,37 @@ The numerator $S \cdot 60 \cdot R_{eff}$ represents theoretical score gain per m
 
 Using this framework, we systematically balanced all item scores. For example, SmallFish (70-110 pts, weight 2-3, speed 1.2-1.6) have high $EV$ due to abundance and easy capture, serving as reliable "filler" items. BigFish (220-340 pts, weight 6-9, speed 0.3-0.8) offer medium $EV$ with high risk-reward ratio, as heavy weight significantly reduces retrieval speed. AnglerFish (400-800 pts, weight 6-10, speed 0.2-0.5) provide highest $EV$ in deep sea mode, justified by limited visibility and increased difficulty. This mathematical approach ensured consistent difficulty scaling between Shallow Water and Deep Sea modes, validated through our NASA TLX evaluation showing appropriate workload increases without overwhelming players.
 
+### 5.4 Additional Implementation Point: Shared Leaderboard and Fish Collection Index
+
+Beyond the two core technical challenges above, we also implemented a shared leaderboard and a collection-style fish gallery to strengthen replay motivation and social comparison. The key design goal was to keep cloud synchronization lightweight while still preserving meaningful run history.
+
+**Cloud-Synced Score Records with Structured Catch Data**
+
+The leaderboard is managed by `HighScoreManager`, which persists local scores in `localStorage` and synchronizes to Supabase on the production deployment. Instead of uploading image assets or bulky binary payloads, each score entry stores structured JSON fields (player name, score, difficulty, mode, and `catch_history`). This design keeps API requests small and fast while preserving the data needed for post-run analysis and display.
+
+```javascript
+body: JSON.stringify({
+    player_name: name,
+    score: score,
+    levels_completed: levelsCompleted,
+    difficulty: d,
+    player_mode: p,
+    catch_history: ch,
+    per_level_earned: ple,
+    per_level_spawn_value: pls,
+}),
+```
+
+**Fish Collection Gallery via Indexed Keys**
+
+To support the gallery efficiently, catches are converted into stable indexed keys at runtime (for example, `fish1`–`fish64`, plus named special fish). `LevelManager` accumulates these counts in `fishCaught`, and `GameManager` merges them into session-wide history before submission. The gallery then maps those keys to preloaded sprite arrays (`imgSmallFishes`, `imgBigFishes`, and special fish assets), so rendering a player's collection requires only numeric counts from the database, not remote image downloads.
+
+This indexing approach gave us the “Pokemon-style” collection feedback loop while avoiding heavy fetch overhead, improving responsiveness on both desktop and lower-bandwidth connections.
+
 ### 📝 Report Guidance
 
 - 15% ~750 words
-- Describe implementation of your game, in particular highlighting the TWO areas of _technical challenge_ in developing your game.
+- Describe implementation of your game, in particular highlighting the TWO areas of *technical challenge* in developing your game.
 
 ---
 
