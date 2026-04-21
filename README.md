@@ -585,6 +585,7 @@ We evaluate Deep Sea Prospector using the Sustainability Awareness Framework (Su
 - **Economic sustainability.** Cloud data access is optimized through paginated leaderboard queries (`limit`/`offset`) and compact score records. This reduces unnecessary bandwidth and storage pressure, helping keep infrastructure usage and operating cost efficient.
 
 Overall, the system balances immediate playability goals with longer-term sustainability outcomes: lower technical maintenance overhead, lighter cloud usage, and inclusive player experience.
+![Social Sustainability Diagram](./docs/evaluation%20report%20figure/social.jpg)
 
 ### 7.2 Green Foundation Implementation Patterns
 
