@@ -155,9 +155,10 @@ Table 3: Stakeholder Table
 
 </div>
 
+<div align="center">
+
 Figure 3: Stakeholder Diagram
 
-<div align="center">
   <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="80%">
 </div>
 
