@@ -1,22 +1,23 @@
-<div align="center">
+
 
 # 🌊 2026-group-4
 
 ### 2026 COMSM0166 group 4
 
-[![p5.js](https://img.shields.io/badge/p5.js-ED225D?style=for-the-badge&logo=p5.js&logoColor=white)](https://p5js.org/)
+[p5.js](https://p5js.org/)
 
-[**🎮 Click this link to play our game 🎮**](https://uob-comsm0166.github.io/2026-group-4/)
+**[🎮 Click this link to play our game 🎮](https://uob-comsm0166.github.io/2026-group-4/)**
 
 Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style.
 
-<img src="docs/assets/deepsea_prospector.png" alt="Game initial input page background" width="800">
 
-<br>
+
+  
+
 
 **[📋 Group Kanban Board](https://github.com/orgs/UoB-COMSM0166/projects/158)**
 
-</div>
+
 
 ---
 
@@ -37,38 +38,37 @@ Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selec
 
 ---
 
-<a id="1-development-team"></a>
+
 
 ## 👨‍💻 1. Development Team
 
-<div align="center">
+
 
 Figure 2: Group 4 development team members.
-  
-  <img src="./GROUP4.png" alt="group picture" width="600">
-  
-</div>
 
-<div align="center">
+
+
+
+
 
 
 Table 1: Team Members
 
 
-| Name            | Email                 | Github                                                    | Role |
-| :-------------- | :-------------------- | :-------------------------------------------------------- | :--- |
-| **Weikai Mao**  | uz25020@bristol.ac.uk | [M1yanoShiho](https://github.com/M1yanoShiho)             | Gameplay Programmer, Level Designer |
-| **Zenan Wu**    | jp25459@bristol.ac.uk | [zenanwu479-glitch](https://github.com/zenanwu479-glitch) | Gameplay Programmer, Asset Creator |
-| **Jianxing Li** | ue25937@bristol.ac.uk | [UoB26Git](https://github.com/UoB26Git)                   | Gameplay Programmer, Asset Creator|
-| **Bingyu Ke**   | wp25446@bristol.ac.uk | [Howard Ke](https://github.com/HowardKe-UOB)              | Test Engineer, Optimization Engineer |
-| **Zeyu Guo**    | rp23254@bristol.ac.uk | [bytevostg](https://github.com/bytevostg)                 | Backend Developer, UI Designer |
+| Name            | Email                                                 | Github                                                    | Role                                 |
+| --------------- | ----------------------------------------------------- | --------------------------------------------------------- | ------------------------------------ |
+| **Weikai Mao**  | [uz25020@bristol.ac.uk](mailto:uz25020@bristol.ac.uk) | [M1yanoShiho](https://github.com/M1yanoShiho)             | Gameplay Programmer, Level Designer  |
+| **Zenan Wu**    | [jp25459@bristol.ac.uk](mailto:jp25459@bristol.ac.uk) | [zenanwu479-glitch](https://github.com/zenanwu479-glitch) | Gameplay Programmer, Asset Creator   |
+| **Jianxing Li** | [ue25937@bristol.ac.uk](mailto:ue25937@bristol.ac.uk) | [UoB26Git](https://github.com/UoB26Git)                   | Gameplay Programmer, Asset Creator   |
+| **Bingyu Ke**   | [wp25446@bristol.ac.uk](mailto:wp25446@bristol.ac.uk) | [Howard Ke](https://github.com/HowardKe-UOB)              | Test Engineer, Optimization Engineer |
+| **Zeyu Guo**    | [rp23254@bristol.ac.uk](mailto:rp23254@bristol.ac.uk) | [bytevostg](https://github.com/bytevostg)                 | Backend Developer, UI Designer       |
 
 
-</div>
+
 
 ---
 
-<a id="2-introduction"></a>
+
 
 ## 🚀 2. Introduction
 
@@ -80,42 +80,44 @@ To enhance playability and replayability, a shop system is introduced between le
 
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and promote long-term player engagement.
 
-</div>
 
-<div align="center">
+
+
 
 Table 2: Main Game Objects
 
 
-| Name | Image | Description |
-|------|------|------------|
-| Boat | <img src="docs/assets/boat.png" height="90"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
-| Small Fish | <img src="docs/assets/fish8_1.png" height="90"/> | Small, fast-moving fish with low weight and low value. |
-| Big Fish | <img src="docs/assets/fish59_1.png" height="70"/> | Large, slow-moving fish with high weight and high value. |
-| Koi Fish | <img src="docs/assets/koifish1.png" height="70"/> | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
-| Shark | <img src="docs/assets/shark_1.png" height="70"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
-| Rock | <img src="docs/assets/stone11.png" height="70"/> | Heavy and low-value obstacle that wastes time when captured. |
-| Shell | <img src="docs/assets/shell_4.png" height="70"/> | High-value item that is difficult to catch and requires precise timing. |
-| Treasure Chest | <img src="docs/assets/Treasure_Chest.png" height="70"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
+| Name           | Image | Description                                                                                                                            |
+| -------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Boat           |       | The player's base. The hook is deployed from the boat to capture underwater objects.                                                   |
+| Small Fish     |       | Small, fast-moving fish with low weight and low value.                                                                                 |
+| Big Fish       |       | Large, slow-moving fish with high weight and high value.                                                                               |
+| Koi Fish       |       | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
+| Shark          |       | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked.                                                   |
+| Rock           |       | Heavy and low-value obstacle that wastes time when captured.                                                                           |
+| Shell          |       | High-value item that is difficult to catch and requires precise timing.                                                                |
+| Treasure Chest |       | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move.                                                    |
 
 
-</div>
+
 
 ---
 
-<a id="3-requirements"></a>
+
 
 ## 📋 3. Requirements
 
 ### 3.1 Ideation Process
 
-<div align="center">
+
 
 **Paper Prototype of Deep Sea Prospector**
-<br><br>
-<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="600"></video>
+  
+  
 
-</div>
+
+
+
 
 Our initial motivation was to create a game with simple controls and an immediately responsive feedback loop, drawing inspiration from classic arcade experiences. During the early ideation phase, each team member proposed different game concepts with varying levels of complexity. For example, one idea was inspired by Fruit Ninja, reimagined as a “cutting homework” game where players slice objects within a limited time. Another proposal was based on Contra, aiming to develop a 2D side-scrolling shooter with platforming elements.
 
@@ -124,7 +126,6 @@ However, through group discussion and evaluation, we identified limitations in b
 As a result, we shifted our focus toward an arcade-style resource collection game inspired by Gold Miner, which provided a balanced middle ground between simplicity and depth. This direction allowed us to emphasize core mechanics such as timing, precision, and risk–reward decision-making, while maintaining a manageable development scope.
 
 The paper prototyping phase played a crucial role in refining our concept. By simulating gameplay manually, we validated the effectiveness of the core loop and improved the balance between challenge and reward. Feedback from peer groups further confirmed the clarity and engagement of our design. Consequently, we finalized Deep Sea Prospector, focusing on intuitive controls, satisfying feedback, and a scalable gameplay loop.
-
 
 ### 3.2 Stakeholder table
 
@@ -135,25 +136,26 @@ We also considered internal stakeholders such as developers and designers, whose
 User needs were formalized using the “As a…, I want…, so that…” structure and translated into testable acceptance criteria with the Given–When–Then format. This approach ensured a clear, user-centered, and implementable design process.
 
 
-</div>
 
-<div align="center">
+
 
 Table 3: Stakeholder Table
 
-| Stakeholder                  | Epic                         | User Story                                                                                                                                              | Acceptance Criteria                                                                                                                                                                                                 |
-|-----------------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **User: Casual Player**     | Core Fishing Mechanics       | As a casual player, I want simple and intuitive controls, so that I can quickly understand the game and start playing without a tutorial.               | Given the hook is swinging,<br>When I press the "Down Arrow Key",<br>Then the hook should stop swinging and extend downward in a straight line.                                                                   |
-| **User: Challenge Seeker**  | Risk–Reward Gameplay         | As a challenge seeker, I want hazards such as sharks that can interfere with my progress, so that the game feels tense and rewarding.                   | Given I am reeling in a fish,<br>When a shark collides with the captured object,<br>Then the fish should be removed and no score is awarded.                                                                      |
-| **User: Strategic Player**  | Item Variety & Decision-Making | As a strategic player, I want different objects with varying weights and values, so that I must choose carefully when to hook targets.                  | Given multiple objects are present,<br>When I hook a heavy object,<br>Then the retraction speed should be slower compared to lighter objects.                                                                     |
-| **User: Progression Gamer** | Economy & Progression Loop   | As a progression-focused player, I want a shop system between levels, so that I can improve my performance in later stages.                              | Given I enter the shop,<br>When I purchase an item,<br>Then my score is deducted and the item effect is applied in the next level.                                                                                 |
-| **User: Multiplayer Player**| Cooperative Gameplay         | As a multiplayer player, I want to play with another player simultaneously, so that the game becomes more interactive and competitive.                  | Given two players are in the game,<br>When both players press their control keys,<br>Then two independent hooks should operate without interference.                                                               |
-| **User: Explorer**          | Deep Sea Mode                | As an advanced player, I want to unlock a more challenging mode, so that I can experience higher risk and reward.                                       | Given I purchase the submarine,<br>When the next level starts,<br>Then the environment should switch to limited visibility with new enemies and higher-value targets.                                              |
-| **Developer**               | Core System Implementation   | As a developer, I want a reliable collision detection system, so that interactions between hooks and objects are accurate and consistent.              | Given the hook intersects with an object,<br>When collision is detected,<br>Then the hook should attach to the object and begin retracting.                                                                        |
-| **Artist/Designer**         | Visual Feedback & UX         | As a designer, I want clear visual feedback for player actions, so that players can easily understand game states and outcomes.                         | Given an object is captured,<br>When the hook connects,<br>Then the object should display a distinct animation or visual response.                                                                                 |
-| **Evaluator (Lecturer)**    | Usability & Clarity          | As an evaluator, I want the game to demonstrate clear mechanics and progression, so that its design quality can be effectively assessed.               | Given a new player starts the game,<br>When they play without instructions,<br>Then they should understand the core gameplay loop within a short time.                                                              |
 
-</div>
+| Stakeholder                  | Epic                           | User Story                                                                                                                                | Acceptance Criteria                                                                                                                                             |
+| ---------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **User: Casual Player**      | Core Fishing Mechanics         | As a casual player, I want simple and intuitive controls, so that I can quickly understand the game and start playing without a tutorial. | Given the hook is swinging, When I press the "Down Arrow Key", Then the hook should stop swinging and extend downward in a straight line.                       |
+| **User: Challenge Seeker**   | Risk–Reward Gameplay           | As a challenge seeker, I want hazards such as sharks that can interfere with my progress, so that the game feels tense and rewarding.     | Given I am reeling in a fish, When a shark collides with the captured object, Then the fish should be removed and no score is awarded.                          |
+| **User: Strategic Player**   | Item Variety & Decision-Making | As a strategic player, I want different objects with varying weights and values, so that I must choose carefully when to hook targets.    | Given multiple objects are present, When I hook a heavy object, Then the retraction speed should be slower compared to lighter objects.                         |
+| **User: Progression Gamer**  | Economy & Progression Loop     | As a progression-focused player, I want a shop system between levels, so that I can improve my performance in later stages.               | Given I enter the shop, When I purchase an item, Then my score is deducted and the item effect is applied in the next level.                                    |
+| **User: Multiplayer Player** | Cooperative Gameplay           | As a multiplayer player, I want to play with another player simultaneously, so that the game becomes more interactive and competitive.    | Given two players are in the game, When both players press their control keys, Then two independent hooks should operate without interference.                  |
+| **User: Explorer**           | Deep Sea Mode                  | As an advanced player, I want to unlock a more challenging mode, so that I can experience higher risk and reward.                         | Given I purchase the submarine, When the next level starts, Then the environment should switch to limited visibility with new enemies and higher-value targets. |
+| **Developer**                | Core System Implementation     | As a developer, I want a reliable collision detection system, so that interactions between hooks and objects are accurate and consistent. | Given the hook intersects with an object, When collision is detected, Then the hook should attach to the object and begin retracting.                           |
+| **Artist/Designer**          | Visual Feedback & UX           | As a designer, I want clear visual feedback for player actions, so that players can easily understand game states and outcomes.           | Given an object is captured, When the hook connects, Then the object should display a distinct animation or visual response.                                    |
+| **Evaluator (Lecturer)**     | Usability & Clarity            | As an evaluator, I want the game to demonstrate clear mechanics and progression, so that its design quality can be effectively assessed.  | Given a new player starts the game, When they play without instructions, Then they should understand the core gameplay loop within a short time.                |
+
+
+
 
 ### 3.3 Reflection
 
@@ -165,13 +167,13 @@ Finally, our stakeholder analysis highlighted the importance of balancing user e
 
 ### 3.4 Use-Case Diagram
 
-<div align="center">
+
 
 Figure 3: Use Case Diagram
-  
-  <img src="progress/week5/UseCase.png" alt="Use Case Diagram" width="800">
-  
-</div>
+
+
+
+
 
 We used a use case diagram to identify and structure the core functional components of Deep Sea Prospector, providing a clear overview of player interactions and system behavior. During the design phase, we discussed and defined the primary use cases based on our gameplay loop and user stories, ensuring that all essential features were captured.
 
@@ -181,7 +183,6 @@ Additional systems, such as the shop and progression mechanics, are also include
 
 Although additional features were introduced during development, the use case diagram remained a stable foundation, supporting iterative refinement while maintaining a clear structure of system functionality.
 
-
 ### 3.5 Prioritised Feature Breakdown
 
 A risk-managed development roadmap prioritising the core hook mechanic and level progression before advanced systems and multiplayer features.
@@ -190,14 +191,15 @@ A risk-managed development roadmap prioritising the core hook mechanic and level
 - **MEDIUM:** Enhance the depth of gameplay
 - **LOW:** Extra point
 
-</div>
 
-<div align="center">
+
+
 
 Table 4: Prioritised Feature Breakdown
 
+
 | **Priority**            | **Systems / Features**                                                      | **Estimated Implementation Time** |
-| :---------------------- | :-------------------------------------------------------------------------- | :-------------------------------- |
+| ----------------------- | --------------------------------------------------------------------------- | --------------------------------- |
 | **HIGH (MVP)**          | Hook Oscillation & Launch Mechanic (pivot rotation, trigger, reeling logic) | 2–3 days                          |
 |                         | Object Detection & Collision System (fish, treasure, rocks hitboxes)        | 2–3 days                          |
 |                         | Weight-Based Reeling Speed (heavier objects reel slower)                    | 1–2 days                          |
@@ -221,11 +223,12 @@ Table 4: Prioritised Feature Breakdown
 |                         | Procedural Level Variations (object distribution randomizer)                | 2–4 days                          |
 |                         | Visual Effects Polish (water distortion, glow, particle effects)            | 3+ days                           |
 
-</div>
+
+
 
 ---
 
-<a id="4-design"></a>
+
 
 ## 📐 4. Design
 
@@ -244,31 +247,27 @@ Core components include:
 - **Hook** — Implements the core gameplay mechanics, including swinging motion, launch behavior, collision detection, item capture, and retrieval, incorporating weight-based physics for more realistic interactions. 
 - **SeaItems** — An abstract base class that defines a unified interface for all interactable objects (e.g., fish, treasures, and obstacles), enabling polymorphic behavior and consistent interaction handling across different item types.
 
-
 ### 4.2 Class Diagram
 
-<div align="center">
+
 
 Figure 4: Class diagram showing the object-oriented structure of Deep Sea Prospector.
 
-  <img src="progress/week5/ClassDiagram.png" alt="Class Diagram" width="800">
-</div>
+
 
 The Deep Sea Prospector architecture follows a modular, object-oriented design to ensure system extensibility. GameManager acts as the central hub, coordinating the LevelManager (gameplay loop), Player (progression), and ShopManager (economy). It utilizes GameState and Difficulty enumerations to maintain logic consistency across different game phases.
 
 For game entities, GameObject serves as the abstract base class for both Hook and SeaItem. SeaItem leverages polymorphism, allowing subclasses to implement specific movement behaviors and weights. These physical attributes directly influence the Hook's retrieval speed, creating a satisfying risk-reward loop. This decoupled structure allows for seamless integration of new marine life or shop upgrades without altering core mechanics.
 
-
 ### 4.3 Sequence Diagrams
 
 #### 4.3.1 Game Initialization and Level Start
 
-<div align="center">
+
 
 Figure 5: Sequence diagram illustrating the game initialization flow from difficulty selection to level start.
 
-  <img src="progress/week5/SequenceDiagram1.png" alt="Sequence Diagram 1 - Game Start" width="800">
-</div>
+
 
 This sequence diagram demonstrates the transition from the UI menu to the active game state:
 
@@ -278,15 +277,13 @@ This sequence diagram demonstrates the transition from the UI menu to the active
 
 •	Environment Configuration: The LevelManager calculates the targetScore and timeLimit based on the difficulty. It then checks player.hasSubmarine to set the isDeepSea flag and triggers the spawning of SeaItem subclasses (e.g., BaseFish, Treasure) according to the level configuration.
 
-
 #### 4.3.2 Hook Capture Mechanism
 
-<div align="center">
+
 
 Figure 6: Sequence diagram showing the hook deployment, collision detection, and item retrieval process.
 
-  <img src="progress/week5/SequenceDiagram2.png" alt="Sequence Diagram 2 - Hook Capture" width="800">
-</div>
+
 
 This sequence highlights the real-time physics interaction between the player’s input and game entities:
 
@@ -298,15 +295,13 @@ This sequence highlights the real-time physics interaction between the player’
 
 •	Data Synchronization: Upon reaching the origin, returnComplete() is triggered. The LevelManager calls player.addScore(item.scoreValue) to update the persistent score before the item is destroyed.
 
-
 #### 4.3.3 Level Completion and Result Evaluation
 
-<div align="center">
+
 
 Figure 7: Sequence diagram depicting the level end condition checking and result screen transition.
 
-  <img src="progress/week5/SequenceDiagram3.png" alt="Sequence Diagram 3 - Level End" width="800">
-</div>
+
 
 This diagram illustrates the logic governing win/loss conditions and the subsequent state cleanup:
 
@@ -315,7 +310,6 @@ This diagram illustrates the logic governing win/loss conditions and the subsequ
 •	Condition Checking: The system compares the player.totalScore against the required targetScore.
 
 •	State Finalization: The LevelManager communicates the outcome to the GameManager. The GameManager then calls changeState(GameState.LEVEL_RESULT), rendering the appropriate result screen. Finally, it interacts with the HighScoreManager to save the session data.
-
 
 ### 4.4 Design Patterns and Principles
 
@@ -329,10 +323,9 @@ Our architecture applies key design patterns:
 
 Consistent with Agile methodologies, our design evolved through iterative testing. Initially, our controller logic was monolithic; however, we later separated rendering from core physics to ensure smooth performance in "Deep Sea Mode." This modular approach allowed for independent component testing and provided the flexibility to adjust the game's "risk-reward" balance without disrupting the foundational source code.
 
-
 ---
 
-<a id="5-implementation"></a>
+
 
 ## 💻 5. Implementation
 
@@ -449,11 +442,11 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 ### 📝 Report Guidance
 
 - 15% ~750 words
-- Describe implementation of your game, in particular highlighting the TWO areas of _technical challenge_ in developing your game.
+- Describe implementation of your game, in particular highlighting the TWO areas of *technical challenge* in developing your game.
 
 ---
 
-<a id="6-evaluation"></a>
+
 
 ## 📊 6. Evaluation
 
@@ -461,18 +454,20 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 
 #### Table - Heuristic Evaluation
 
+
 | Interface             | Issue                                                                                                                       | Heuristic(s)                    | Frequency (0–4) | Impact (0–4) | Persistence (0–4) | Severity = (F + I + P) / 3 |
-| :-------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :------------------------------ | :-------------: | :----------: | :---------------: | :------------------------: |
-| **Game Introduction** | There is no game introduction or tutorial screen, making it unclear how the game mechanics and items work.                  | Help and documentation          |        3        |      3       |         3         |          **3.00**          |
-| **Game UI**           | The font color of the current score and remaining time is too similar to the background, reducing readability.              | Aesthetic and minimalist design |        3        |      2       |         3         |          **2.67**          |
-| **Feedback System**   | After catching a fish, the value of the fish is not displayed, so players cannot immediately understand the reward gained.  | Visibility of system status     |        3        |      2       |         3         |          **2.67**          |
-| **Level Progression** | The interface does not show which level the player is currently in, causing confusion about progression.                    | Visibility of system status     |        2        |      2       |         3         |          **2.33**          |
-| **Controls**          | There is no pause function, so players cannot temporarily stop the game when needed.                                        | User control and freedom        |        2        |      2       |         3         |          **2.33**          |
-| **Game Objects**      | Some sea creatures look similar in color and shape, making it difficult to distinguish their value or function.             | Consistency and standards       |        2        |      2       |         2         |          **2.00**          |
-| **Rules Clarity**     | The special items (e.g., bombs or bonus items) lack clear visual explanation, leading to misunderstanding of their effects. | Recognition rather than recall  |        2        |      2       |         2         |          **2.00**          |
-| **Feedback System**   | Audio feedback is subtle, reducing perceived reward when catching rare fish.                                                | Aesthetic and minimalist design |        1        |      2       |         2         |          **1.67**          |
-| **End Game Feedback** | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached).                 | Visibility of system status     |        2        |      2       |         2         |          **2.00**          |
-| **Multiplayer**       | In two-player mode, it is unclear which hook belongs to which player.                                                       | Consistency and standards       |        2        |      2       |         2         |          **2.00**          |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------- | ------------ | ----------------- | -------------------------- |
+| **Game Introduction** | There is no game introduction or tutorial screen, making it unclear how the game mechanics and items work.                  | Help and documentation          | 3               | 3            | 3                 | **3.00**                   |
+| **Game UI**           | The font color of the current score and remaining time is too similar to the background, reducing readability.              | Aesthetic and minimalist design | 3               | 2            | 3                 | **2.67**                   |
+| **Feedback System**   | After catching a fish, the value of the fish is not displayed, so players cannot immediately understand the reward gained.  | Visibility of system status     | 3               | 2            | 3                 | **2.67**                   |
+| **Level Progression** | The interface does not show which level the player is currently in, causing confusion about progression.                    | Visibility of system status     | 2               | 2            | 3                 | **2.33**                   |
+| **Controls**          | There is no pause function, so players cannot temporarily stop the game when needed.                                        | User control and freedom        | 2               | 2            | 3                 | **2.33**                   |
+| **Game Objects**      | Some sea creatures look similar in color and shape, making it difficult to distinguish their value or function.             | Consistency and standards       | 2               | 2            | 2                 | **2.00**                   |
+| **Rules Clarity**     | The special items (e.g., bombs or bonus items) lack clear visual explanation, leading to misunderstanding of their effects. | Recognition rather than recall  | 2               | 2            | 2                 | **2.00**                   |
+| **Feedback System**   | Audio feedback is subtle, reducing perceived reward when catching rare fish.                                                | Aesthetic and minimalist design | 1               | 2            | 2                 | **1.67**                   |
+| **End Game Feedback** | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached).                 | Visibility of system status     | 2               | 2            | 2                 | **2.00**                   |
+| **Multiplayer**       | In two-player mode, it is unclear which hook belongs to which player.                                                       | Consistency and standards       | 2               | 2            | 2                 | **2.00**                   |
+
 
 ### 6.2 Quantitative Evaluation
 
@@ -492,39 +487,41 @@ These evaluations involved 10 participants, each trialing two difficulty modes. 
 
 Across all six subscales, the median scores for all participants illustrated a tiny increase with the variance in the level of difficulty (Table 1). The change in median scores only varies slightly.
 
-_Table 1: Median NASA TLX subscale scores for all participants_
+*Table 1: Median NASA TLX subscale scores for all participants*
+
 
 | Scale                          | Median (easy) | Median (Deep Sea) | Δ Median |
-| :----------------------------- | :-----------: | :---------------: | :------: |
-| Mental Demand                  |      11       |        20         |    9     |
-| Physical Demand                |      12       |        14         |    2     |
-| Temporal Demand                |      25       |        30         |    5     |
-| Frustration                    |      45       |        50         |    5     |
-| Effort                         |      35       |        45         |    10    |
-| Performance                    |      85       |        88         |    3     |
-| **Overall Perceived Workload** |    **36**     |      **38**       |  **2**   |
+| ------------------------------ | ------------- | ----------------- | -------- |
+| Mental Demand                  | 11            | 20                | 9        |
+| Physical Demand                | 12            | 14                | 2        |
+| Temporal Demand                | 25            | 30                | 5        |
+| Frustration                    | 45            | 50                | 5        |
+| Effort                         | 35            | 45                | 10       |
+| Performance                    | 85            | 88                | 3        |
+| **Overall Perceived Workload** | **36**        | **38**            | **2**    |
 
-> _Brief analysis: All 10 participants reported slight differences in overall workload in hard mode than in Easy mode (median 38 vs 36). The increase is small and consistent across participants; the Wilcoxon test (Table 2) found no statistically significant difference, suggesting the difficulty step did not substantially raise perceived workload._
 
-<div align="center">
-  <img src="docs/evaluation report figure/overal_workload.png" alt="NASA TLX Overall Workload by Participant" width="600">
-</div>
+> *Brief analysis: All 10 participants reported slight differences in overall workload in hard mode than in Easy mode (median 38 vs 36). The increase is small and consistent across participants; the Wilcoxon test (Table 2) found no statistically significant difference, suggesting the difficulty step did not substantially raise perceived workload.*
+
+
 
 **Statistical Analysis**
 
 A Wilcoxon Signed-Rank test was performed for each subscale and for overall workload (N = 10, α = 0.05, critical value = 8). As shown in Table 2, the W statistic exceeded the critical value for all seven scales, indicating that the increase in difficulty did not produce a statistically significant difference in perceived workload at either the subscale or overall level.
 
-_Table 2: Wilcoxon Signed-Rank Test Results (N = 10, α = 0.05, critical value = 8)_
+*Table 2: Wilcoxon Signed-Rank Test Results (N = 10, α = 0.05, critical value = 8)*
+
 
 | Scale                | W Statistic | Critical Value | Significant? |
-| :------------------- | :---------: | :------------: | :----------: |
-| Mental Demand        |     12      |       8        |      No      |
-| Physical Demand      |     15      |       8        |      No      |
-| Temporal Demand      |     14      |       8        |      No      |
-| Frustration          |     16      |       8        |      No      |
-| Effort               |     13      |       8        |      No      |
-| Performance          |     18      |       8        |      No      |
-| **Overall Workload** |   **11**    |     **8**      |    **No**    |
+| -------------------- | ----------- | -------------- | ------------ |
+| Mental Demand        | 12          | 8              | No           |
+| Physical Demand      | 15          | 8              | No           |
+| Temporal Demand      | 14          | 8              | No           |
+| Frustration          | 16          | 8              | No           |
+| Effort               | 13          | 8              | No           |
+| Performance          | 18          | 8              | No           |
+| **Overall Workload** | **11**      | **8**          | **No**       |
+
 
 **Solutions and Adjustments**
 
@@ -550,11 +547,9 @@ After finishing the NASA-TLX evaluation, all 10 participants filled out the SUS 
 - Mean SUS score (easy) — **88.25**
 - Mean SUS score (hard) — **75.0**
 
-<div align="center">
-  <img src="docs/evaluation report figure/sus_evaluation.png" alt="SUS Evaluation Results" width="600">
-</div>
 
-_Table 3: SUS evaluation results_
+
+*Table 3: SUS evaluation results*
 
 Based on our SUS results, all participants rated both difficulty levels above the standard usability benchmark of 68, with Shallow Water averaging 88.25 and Deep Sea averaging 75.0. These scores indicate excellent perceived usability for the easier condition and solidly above‑average usability even in the more challenging Deep Sea mode, suggesting that the game remains easy to use across difficulty levels.
 
@@ -568,20 +563,58 @@ The SUS confirmed that both difficulty levels offered strong overall usability, 
 
 ---
 
-<a id="7-sustainability"></a>
+
 
 ## 🌱 7. Sustainability
 
-Add your sustainability discussion here.
+### 7.1 Sustainability Analysis Framework (SusAF) Results
+
+We evaluate Deep Sea Prospector using the Sustainability Awareness Framework (SusAF) across five dimensions: technical, environmental, individual, social, and economic.
+
+- **Technical sustainability.** Our object-oriented architecture (`GameManager`, `LevelManager`, `Hook`, `SeaItem` hierarchy) supports maintainability and controlled evolution. This modular design reduces technical debt and makes feature extension (new fish, hazards, and shop items) less costly over time.
+- **Environmental sustainability.** We reduce unnecessary computation during real-time rendering and interactions, which lowers device energy use. For example, resource-intensive visual effects are applied selectively, and gameplay logic avoids redundant checks for non-relevant objects.
+- **Individual sustainability.** We address privacy, wellbeing, and accessibility together. For privacy, leaderboard records only keep minimal non-sensitive fields (`player_name`, `score`, `levels_completed`, and structured catch data), with no email, location, or financial identifiers. For wellbeing, the game includes adjustable screen brightness (`brightnessLevel`) to reduce eye strain in long sessions. For accessibility and agency, controls remain simple (keyboard-first interaction, clear state transitions), lowering entry barriers for new players.
+- **Social sustainability.** Two-player mode and a shared leaderboard strengthen social interaction, comparison, and replay motivation. These systems support a sense of community by enabling cooperative/competitive play and allow players arond different location to be visible to compete .
+- **Economic sustainability.** Cloud data access is optimized through paginated leaderboard queries (`limit`/`offset`) and compact score records. This reduces unnecessary bandwidth and storage pressure, helping keep infrastructure usage and operating cost efficient.
+
+Overall, the system balances immediate playability goals with longer-term sustainability outcomes: lower technical maintenance overhead, lighter cloud usage, and inclusive player experience.
+
+### 7.2 Green Foundation Implementation Patterns
+
+Our implementation aligns with practical green software patterns that improve both performance and sustainability outcomes:
+
+- **Efficient algorithms:** Collision checks and state-driven update loops are designed to avoid redundant per-frame computation, especially in dense scenes.
+- **Minimal resource usage:** Rendering and UI overlays are applied according to current state (for example, brightness and deep-sea visibility logic), preventing unnecessary full-scene processing.
+- **Data minimisation:** Leaderboard records are stored as compact structured fields rather than large payloads, preserving essential analytics with lower transfer and storage cost.
+- **Network efficiency:** Supabase leaderboard reads use bounded result windows and incremental loading (`limit=50`, dynamic `offset`) to prevent over-fetching. The ranking endpoint only requests required columns and ordering (for example, `order=levels_completed.desc,score.desc`), which reduces transfer size and cloud query overhead.
+- **Modular architecture for sustainable evolution:** Class-based separation of concerns allows targeted optimisation without destabilising unrelated systems.
+
+These patterns jointly reduce computational waste, improve responsiveness on lower-end devices, and support scalable deployment.
+
+### 7.3 Sustainability User Stories and Green Software Foundation Patterns
+
+To operationalise sustainability, we map concrete sustainability user stories to implemented features and measurable outcomes:
+
+- **As a player, I want stable performance during gameplay, so that my device consumes less power and the game remains smooth.**  
+We support this through selective update/render logic and lightweight per-frame processing in core loops.
+- **As a privacy-conscious user, I want my gameplay data collected minimally, so that I can participate in rankings without exposing sensitive information.**  
+We only persist non-sensitive score metadata required for ranking and collection features, and leaderboard fetching is restricted to lightweight ranked fields instead of full user profiles.
+- **As a player, I want adjustable visual comfort settings, so that I can play for longer periods without unnecessary eye strain.**  
+We provide brightness control in-game and keep core interaction readable under both normal and deep-sea visual conditions.
+- **As a community player, I want fair shared progression systems, so that I can engage socially through competition and cooperation.**  
+Two-player mode and cloud leaderboard features provide this social layer without high data overhead.
+- **As a maintainer, I want code that is easy to extend and optimise, so that sustainability improvements remain feasible as the project grows.**  
+Our OOP modular design enables incremental optimisation and future sustainability-focused refactoring.
+
+For future work, we plan to formalise sustainability testing metrics (for example, frame-time stability, load-time targets, and API request efficiency) and include them in backlog and regression checks, ensuring sustainability remains a continuous engineering objective rather than a one-off report section.
 
 ---
 
-<a id="8-process"></a>
+
 
 ## 🔄 8. Process
 
 
-<a id="81-teamwork"></a>
 
 ### 8.1 Teamwork
 
@@ -599,7 +632,7 @@ Because the tasks became more complex over time, there were not many conflicting
 
 Our GitHub version control also improved a lot over time. What started as a process where we were not very familiar with handling conflicts eventually became something we managed smoothly and confidently. Since we also deployed the backend database relatively early, the backend playtest data became our main source of quantitative evaluation for game balance and playability, and this provided the foundation for assessing whether the algorithms and overall design were reasonable.
 
-<a id="82-tools-used"></a>
+
 
 ### 8.2 Tools used
 
@@ -613,7 +646,7 @@ Used to arrange the time and place of our next meetings and coordinate deadlines
 
 Made sure we committed and pushed stable, working code to shared branches over time to reduce integration risks.  
 This also meant that when errors or conflicts appeared, we could always roll back or  refer to the most recent stable version.
-Kept commit history clear by using descriptive messages   
+Kept commit history clear by using descriptive messages  
 Used multiple branches for feature and debug development  and merged changes after they were completed and reviewed/tested  
 Followed a structured integration workflow, including branch merges , so alway the latest updated version of working code would be merged to the main branch.
 **Kanban boards**:
@@ -626,7 +659,7 @@ Using these tools gave the team a clearer view of current priorities and individ
 
 ---
 
-<a id="9-conclusion"></a>
+
 
 ## 🏁 9. Conclusion
 
@@ -635,15 +668,15 @@ Using these tools gave the team a clearer view of current priorities and individ
 
 ---
 
-<a id="10-contribution-statement"></a>
+
 
 ## 🤝 10. Contribution Statement
 
-- Provide a table of everyone's contribution, which _may_ be used to weight individual grades. We expect that the contribution will be split evenly across team-members in most cases. Please let us know as soon as possible if there are any issues with teamwork as soon as they are apparent and we will do our best to help your team work harmoniously together.
+- Provide a table of everyone's contribution, which *may* be used to weight individual grades. We expect that the contribution will be split evenly across team-members in most cases. Please let us know as soon as possible if there are any issues with teamwork as soon as they are apparent and we will do our best to help your team work harmoniously together.
 
 ---
 
-<a id="11-appendix"></a>
+
 
 ## 📎 11. Appendix
 
@@ -651,15 +684,14 @@ Additional marks guidance:
 You can delete this section in your own repo, it's just here for information. In addition to the marks above, we will be marking you on the following two points:
 
 - **Quality** of report writing, presentation, use of figures and visual material (5% of report grade)
-    - Please write in a clear concise manner suitable for an interested layperson. Write as if this repo was publicly available.
-
+  - Please write in a clear concise manner suitable for an interested layperson. Write as if this repo was publicly available.
 - **Documentation** of code (5% of report grade)
-    - Organise your code so that it could easily be picked up by another team in the future and developed further.
-    - Is your repo clearly organised? Is code well commented throughout?
+  - Organise your code so that it could easily be picked up by another team in the future and developed further.
+  - Is your repo clearly organised? Is code well commented throughout?
 
 ---
 
-<a id="12-references"></a>
+
 
 ## 📚 12. References
 
