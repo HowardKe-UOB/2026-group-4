@@ -155,6 +155,8 @@ Table 3: Stakeholder Table
 
 </div>
 
+Figure 3: Stakeholder Diagram
+
 <div align="center">
   <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="80%">
 </div>
@@ -171,7 +173,7 @@ Finally, our stakeholder analysis highlighted the importance of balancing user e
 
 <div align="center">
 
-Figure 3: Use Case Diagram
+Figure 4: Use Case Diagram
   
   <img src="progress/week5/UseCase.png" alt="Use Case Diagram" width="800">
   
@@ -253,7 +255,7 @@ Core components include:
 
 <div align="center">
 
-Figure 4: Class diagram showing the object-oriented structure of Deep Sea Prospector.
+Figure 5: Class diagram showing the object-oriented structure of Deep Sea Prospector.
 
   <img src="progress/week5/ClassDiagram.png" alt="Class Diagram" width="800">
 </div>
@@ -269,7 +271,7 @@ For game entities, GameObject serves as the abstract base class for both Hook an
 
 <div align="center">
 
-Figure 5: Sequence diagram illustrating the game initialization flow from difficulty selection to level start.
+Figure 6: Sequence diagram illustrating the game initialization flow from difficulty selection to level start.
 
   <img src="progress/week5/SequenceDiagram1.png" alt="Sequence Diagram 1 - Game Start" width="800">
 </div>
@@ -287,7 +289,7 @@ This sequence diagram demonstrates the transition from the UI menu to the active
 
 <div align="center">
 
-Figure 6: Sequence diagram showing the hook deployment, collision detection, and item retrieval process.
+Figure 7: Sequence diagram showing the hook deployment, collision detection, and item retrieval process.
 
   <img src="progress/week5/SequenceDiagram2.png" alt="Sequence Diagram 2 - Hook Capture" width="800">
 </div>
@@ -307,7 +309,7 @@ This sequence highlights the real-time physics interaction between the player’
 
 <div align="center">
 
-Figure 7: Sequence diagram depicting the level end condition checking and result screen transition.
+Figure 8: Sequence diagram depicting the level end condition checking and result screen transition.
 
   <img src="progress/week5/SequenceDiagram3.png" alt="Sequence Diagram 3 - Level End" width="800">
 </div>
