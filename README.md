@@ -268,7 +268,7 @@ Core components include:
 
 Figure 5: Class diagram showing the object-oriented structure of Deep Sea Prospector.
 
-  <img src="progress/week5/ClassDiagram.png" alt="Class Diagram" width="800">
+  <img src="progress/week5/LevelManager Player State-2026-04-21-135515.png" alt="Class Diagram" width="800">
 </div>
 
 The Deep Sea Prospector architecture follows a modular, object-oriented design to ensure system extensibility. GameManager acts as the central hub, coordinating the LevelManager (gameplay loop), Player (progression), and ShopManager (economy). It utilizes GameState and Difficulty enumerations to maintain logic consistency across different game phases.
