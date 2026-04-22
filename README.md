@@ -77,7 +77,7 @@ Table 1: Team Members
       <img src="docs/gif/fish.gif" width="350" height="240" alt="Classic Game">
     </td>
     <td align="center" width="50%">
-      <img src="docs/gif/gold.gif" width="350" height="240" alt="Our Game">
+      <img src="docs/gif/gold.gif" width="350" height="300" alt="Our Game">
     </td>
   </tr>
   <tr>
