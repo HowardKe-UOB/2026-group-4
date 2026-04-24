@@ -686,17 +686,18 @@ As the project progressed, the game evolved from basic interaction logic into a 
 After two to three weeks of playtesting, especially when we moved into qualitative and quantitative evaluation, the whole team focused on improving the scoring system and the shop item exchange algorithm to balance difficulty and playability. We adjusted the game from a linear algorithm that was considered too easy to an exponential one that was then judged too difficult, and we also improved the page display and navigation between scenes so the game became more playable and reasonable.
 
 Because the tasks became more complex over time, there were not many conflicting opinions at the beginning. However, as different scenes and features started interacting with each other, more disagreements naturally appeared. In those situations, we communicated fully, exchanged opinions, explained our reasoning clearly, and finally reached a consensus version as the final one.
-<br>
-<div align="center">
-
-  <font color="#888888">Figure x: Every Week Group Meeting</font><br><br>
-  <img src="docs/gif/meeting1.gif" width="45%" alt="Every Week Group Meeting">
-
-  <br><br> <font color="#888888">Figure x: Group Members Discussion</font><br><br>
-  <img src="docs/gif/meeting2.gif" width="45%" alt="Group Members Discussion">
-
-</div>
-<br>
+<br> 
+<p align="center">
+  <font color="#888888">Figure x:  Every Week Group Meeting</font>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <font color="#888888">Figure x:  Group Members Discussion</font>
+  <br>
+  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/gif/meeting1.gif" width="40%" alt="Figure x:  Every Week Group Meeting">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/gif/meeting2.gif" width="40%" alt="Figure x:  Group Members Discussion">
+</p>
 
 Our GitHub version control also improved a lot over time. What started as a process where we were not very familiar with handling conflicts eventually became something we managed smoothly and confidently. Since we also deployed the backend database relatively early, the backend playtest data became our main source of quantitative evaluation for game balance and playability, and this provided the foundation for assessing whether the algorithms and overall design were reasonable.
 
@@ -710,14 +711,18 @@ Used to keep all group members updated on weekly progress and task status
 Used to quickly request support from teammates when blockers appeared  
 Used to arrange the time and place of our next meetings and coordinate deadlines
 <br>
-<div align="left" style="white-space: nowrap; overflow-x: auto;">
-  <span style="display: inline-block; margin-right: 20px; text-align: center; vertical-align: top;">
+<div align="center">
+  
+  <div style="margin-bottom: 40px;">
     <font color="#888888">Figure X: Example of Daily Team Communication</font><br><br>
-    <img src="docs/evaluation%20report%20figure/wechat.jpg" height="280" alt="WeChat Communication">
-  </span><span style="display: inline-block; text-align: center; vertical-align: top;">
+    <img src="docs/evaluation%20report%20figure/wechat.jpg" width="40%" alt="WeChat Communication">
+  </div>
+  
+  <div>
     <font color="#888888">Figure X+1: Online video conference</font><br><br>
-    <img src="docs/evaluation%20report%20figure/video.jpg" height="280" alt="Online video conference">
-  </span>
+    <img src="docs/evaluation%20report%20figure/video.jpg" width="30%" alt="Online video conference">
+  </div>
+
 </div>
 <br>
 
