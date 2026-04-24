@@ -687,21 +687,17 @@ After two to three weeks of playtesting, especially when we moved into qualitati
 
 Because the tasks became more complex over time, there were not many conflicting opinions at the beginning. However, as different scenes and features started interacting with each other, more disagreements naturally appeared. In those situations, we communicated fully, exchanged opinions, explained our reasoning clearly, and finally reached a consensus version as the final one.
 <br>
-<div align="center" style="white-space: nowrap;">
-  <span style="display: inline-block; margin: 0 10px; text-align: center;">
-    <font color="#888888">Figure 11: Everyweek Group Meeting</font><br><br>
-    <img src="docs/gif/meeting1.gif" height="80" alt="Offline">
-  </span>
-  <span style="display: inline-block; margin: 0 10px; text-align: center;">
-    <font color="#888888">Figure 12: Online Group Meeting</font><br><br>
-    <img src="docs/evaluation%20report%20figure/video.jpg" height="80" alt="Online">
-  </span>
-  <span style="display: inline-block; margin: 0 10px; text-align: center;">
-    <font color="#888888">Figure 13: Group Members Discussion</font><br><br>
-    <img src="docs/gif/meeting2.gif" height="80" alt="Discussion">
+<div align="center" style="white-space: nowrap; overflow-x: auto;">
+  <span style="display: inline-block; margin: 0 10px; text-align: center; vertical-align: top;">
+    <font color="#888888">Figure x: Every Week Group Meeting</font><br><br>
+    <img src="docs/gif/meeting1.gif" height="220" alt="Every Week Group Meeting">
+  </span><span style="display: inline-block; margin: 0 10px; text-align: center; vertical-align: top;">
+    <font color="#888888">Figure x: Group Members Discussion</font><br><br>
+    <img src="docs/gif/meeting2.gif" height="220" alt="Group Members Discussion">
   </span>
 </div>
 <br>
+
 Our GitHub version control also improved a lot over time. What started as a process where we were not very familiar with handling conflicts eventually became something we managed smoothly and confidently. Since we also deployed the backend database relatively early, the backend playtest data became our main source of quantitative evaluation for game balance and playability, and this provided the foundation for assessing whether the algorithms and overall design were reasonable.
 
 
@@ -714,11 +710,14 @@ Used to keep all group members updated on weekly progress and task status
 Used to quickly request support from teammates when blockers appeared  
 Used to arrange the time and place of our next meetings and coordinate deadlines
 <br>
-<div align="center">
-  <font color="#888888">Figure X: Example of Daily Team Communication</font>
-  <br><br>
-  
-  <img src="docs/evaluation%20report%20figure/wechat.jpg" width="50%" alt="WeChat Communication">
+<div align="center" style="white-space: nowrap; overflow-x: auto;">
+  <span style="display: inline-block; margin: 0 10px; text-align: center; vertical-align: top;">
+    <font color="#888888">Figure X: Example of Daily Team Communication</font><br><br>
+    <img src="docs/evaluation%20report%20figure/wechat.jpg" height="280" alt="WeChat Communication">
+  </span><span style="display: inline-block; margin: 0 10px; text-align: center; vertical-align: top;">
+    <font color="#888888">Figure X+1: Online video conference</font><br><br>
+    <img src="docs/evaluation%20report%20figure/video.jpg" height="280" alt="Online video conference">
+  </span>
 </div>
 <br>
 
