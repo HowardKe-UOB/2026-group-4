@@ -686,18 +686,19 @@ As the project progressed, the game evolved from basic interaction logic into a 
 After two to three weeks of playtesting, especially when we moved into qualitative and quantitative evaluation, the whole team focused on improving the scoring system and the shop item exchange algorithm to balance difficulty and playability. We adjusted the game from a linear algorithm that was considered too easy to an exponential one that was then judged too difficult, and we also improved the page display and navigation between scenes so the game became more playable and reasonable.
 
 Because the tasks became more complex over time, there were not many conflicting opinions at the beginning. However, as different scenes and features started interacting with each other, more disagreements naturally appeared. In those situations, we communicated fully, exchanged opinions, explained our reasoning clearly, and finally reached a consensus version as the final one.
-<br> 
-<p align="center">
-  <font color="#888888">Figure x:  Every Week Group Meeting</font>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <font color="#888888">Figure x:  Group Members Discussion</font>
-  <br>
+<br>
+<div align="center" style="white-space: nowrap;">
   
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/gif/meeting1.gif" width="40%" alt="Figure x:  Every Week Group Meeting">
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/gif/meeting2.gif" width="40%" alt="Figure x:  Group Members Discussion">
-</p>
+  <div align="center" style="display: inline-block; margin: 0 10px; vertical-align: top;">
+    <font color="#888888">Figure x: Every Week Group Meeting</font><br><br>
+    <img src="docs/gif/meeting1.gif" height="220" alt="Every Week Group Meeting">
+  </div><div align="center" style="display: inline-block; margin: 0 10px; vertical-align: top;">
+    <font color="#888888">Figure x: Group Members Discussion</font><br><br>
+    <img src="docs/gif/meeting2.gif" height="220" alt="Group Members Discussion">
+  </div>
+
+</div>
+<br>
 
 Our GitHub version control also improved a lot over time. What started as a process where we were not very familiar with handling conflicts eventually became something we managed smoothly and confidently. Since we also deployed the backend database relatively early, the backend playtest data became our main source of quantitative evaluation for game balance and playability, and this provided the foundation for assessing whether the algorithms and overall design were reasonable.
 
