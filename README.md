@@ -452,7 +452,7 @@ Using this framework, we systematically balanced all item scores. For example, S
   <font color="#888888">Figure 8: Deep Sea Mode with Limited Visibility</font>
   <br><br>
   
-  <img src="docs/gif/deep.gif" width="50%" alt="Deep Sea Mode">
+  <img src="docs/gif/deep.gif" width="60%" alt="Deep Sea Mode">
 </div>
 <br>
 ### 5.4 Additional Implementation Point: Shared Leaderboard and Fish Collection Index
@@ -486,7 +486,7 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
   <font color="#888888">Figure 9: Fish Gallery (Fish collected by players)</font>
   <br><br>
   
-  <img src="docs/gif/gallery.gif" width="50%" alt="Fish Gallery">
+  <img src="docs/gif/gallery.gif" width="60%" alt="Fish Gallery">
 </div>
 <br>
 
@@ -689,16 +689,16 @@ Because the tasks became more complex over time, there were not many conflicting
 <br>
 <div align="center" style="white-space: nowrap;">
   <span style="display: inline-block; margin: 0 10px; text-align: center;">
-    <font color="#888888">Figure 11: Offline Group Meeting</font><br><br>
-    <img src="docs/gif/meeting1.gif" height="170" alt="Offline">
+    <font color="#888888">Figure 11: Everyweek Group Meeting</font><br><br>
+    <img src="docs/gif/meeting1.gif" height="130" alt="Offline">
   </span>
   <span style="display: inline-block; margin: 0 10px; text-align: center;">
     <font color="#888888">Figure 12: Online Group Meeting</font><br><br>
-    <img src="docs/evaluation%20report%20figure/video.jpg" height="170" alt="Online">
+    <img src="docs/evaluation%20report%20figure/video.jpg" height="130" alt="Online">
   </span>
   <span style="display: inline-block; margin: 0 10px; text-align: center;">
     <font color="#888888">Figure 13: Group Members Discussion</font><br><br>
-    <img src="docs/gif/meeting2.gif" height="170" alt="Discussion">
+    <img src="docs/gif/meeting2.gif" height="130" alt="Discussion">
   </span>
 </div>
 <br>
@@ -713,6 +713,14 @@ Our GitHub version control also improved a lot over time. What started as a proc
 Used to keep all group members updated on weekly progress and task status  
 Used to quickly request support from teammates when blockers appeared  
 Used to arrange the time and place of our next meetings and coordinate deadlines
+<br>
+<div align="center">
+  <font color="#888888">Figure X: Example of Daily Team Communication</font>
+  <br><br>
+  
+  <img src="docs/evaluation%20report%20figure/wechat.jpg" width="50%" alt="WeChat Communication">
+</div>
+<br>
 
 **GitHub** for version control:
 
@@ -721,11 +729,26 @@ This also meant that when errors or conflicts appeared, we could always roll bac
 Kept commit history clear by using descriptive messages  
 Used multiple branches for feature and debug development  and merged changes after they were completed and reviewed/tested  
 Followed a structured integration workflow, including branch merges , so alway the latest updated version of working code would be merged to the main branch.
+<br>
+<div align="center">
+  <font color="#888888">Figure 14: Project Git Branching and Merge History</font>
+  <br><br>
+  
+  <img src="docs/evaluation%20report%20figure/list.png" width="40%" alt="Git Branch History">
+</div>
+<br>
 **Kanban boards**:
 
 Tracked the overall progress of tasks that needed to be completed  
 Recorded which member completed each task, so ownership was clear when a finished task needed to be revisited  
 Used individual sprint boards to further prioritize the tasks needed for each work session
+<div align="center">
+  <font color="#888888">Figure 15: Project Kanban Board</font>
+  <br><br>
+  
+  <img src="docs/evaluation%20report%20figure/kanban.png" width="50%" alt="Kanban Board">
+</div>
+<br>
 
 Using these tools gave the team a clearer view of current priorities and individual responsibilities. With frequent board updates, we were able to monitor progress continuously and adjust plans when new challenges emerged. Open communication helped us understand each other's perspectives, strengthen collaboration, and coordinate our work more effectively.
 
