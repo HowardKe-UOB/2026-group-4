@@ -72,27 +72,35 @@ Table 1: Team Members
 
 ## 🚀 2. Introduction
 
-<table width="100%">
-  <tr>
-    <td width="50%" align="center">
-      <img src="docs/gif/gold.gif" width="100%" alt="Figure 3: Classic Game">
-    </td>
-    <td width="50%" align="center">
-      <img src="docs/gif/fish.gif" width="100%" alt="Figure 4: Our Game Demo">
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><b>Figure 3: Classic Game</b></td>
-    <td align="center"><b>Figure 4: Our Game Demo</b></td>
-  </tr>
-</table>
+<p align="center">
+  <font color="#888888">Figure 3: Classic Game</font>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <font color="#888888">Figure 4: Our Game Demo</font>
+  <br>
+  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/gif/gold.gif" width="40%" alt="Figure 3: Classic Game">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/gif/fish.gif" width="40%" alt="Figure 4: Our Game Demo">
+</p>
 
 Deep Sea Prospector is a 2D pixel-style casual resource collection game developed using the p5.js library. Inspired by the classic game Gold Miner, our project reinterprets the core gameplay within an ocean exploration setting. Players control a hook deployed from a boat to capture various underwater objects and accumulate as many points as possible within a limited time, progressing through increasingly challenging levels with higher score requirements.
 
 The game features a wide variety of collectible objects, including fish of different sizes, shells, pearls, stones, and treasure chests. Each item is designed with distinct attributes such as weight, movement speed, and value, creating a dynamic and strategic gameplay experience. While high-value targets like large fish and pearls offer greater rewards, players must carefully avoid low-value or obstructive items such as rocks and fish bones, which can significantly reduce efficiency and waste valuable time.
 
 To enhance playability and replayability, a shop system is introduced between levels, where players can spend their accumulated score on items with diverse effects. At least three items are randomly generated in each visit, including both consumable and persistent upgrades, encouraging strategic resource management. In addition, purchasing a submarine unlocks the “Deep Sea Mode,” a high-risk, high-reward environment featuring limited visibility, dangerous predators such as sharks, and more valuable targets.
-
+<br> 
+<p align="center">
+  <font color="#888888">Figure 5: Store interface</font>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <font color="#888888">Figure 6: Two-Player Mode</font>
+  <br>
+  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/gif/shop.gif" width="40%" alt="Figure 5: Store interface">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/gif/two.gif" width="40%" alt="Figure 6: Two-Player Mode">
+</p>
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and promote long-term player engagement.
 
 </div>
@@ -174,7 +182,7 @@ Table 3: Stakeholder Table
 
 Figure 3: Stakeholder Diagram
 
-  <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="80%">
+  <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="45%">
 </div>
 
 ### 3.3 Reflection
@@ -440,7 +448,13 @@ The numerator $S \cdot 60 \cdot R_{eff}$ represents theoretical score gain per m
 **Practical Application: Score Balancing**
 
 Using this framework, we systematically balanced all item scores. For example, SmallFish (70-110 pts, weight 2-3, speed 1.2-1.6) have high $EV$ due to abundance and easy capture, serving as reliable "filler" items. BigFish (220-340 pts, weight 6-9, speed 0.3-0.8) offer medium $EV$ with high risk-reward ratio, as heavy weight significantly reduces retrieval speed. AnglerFish (400-800 pts, weight 6-10, speed 0.2-0.5) provide highest $EV$ in deep sea mode, justified by limited visibility and increased difficulty. This mathematical approach ensured consistent difficulty scaling between Shallow Water and Deep Sea modes, validated through our NASA TLX evaluation showing appropriate workload increases without overwhelming players.
-
+<div align="center">
+  <font color="#888888">Figure 8: Deep Sea Mode with Limited Visibility</font>
+  <br><br>
+  
+  <img src="docs/gif/deep.gif" width="50%" alt="Deep Sea Mode">
+</div>
+<br>
 ### 5.4 Additional Implementation Point: Shared Leaderboard and Fish Collection Index
 
 Beyond the two core technical challenges above, we also implemented a shared leaderboard and a collection-style fish gallery to strengthen replay motivation and social comparison. The key design goal was to keep cloud synchronization lightweight while still preserving meaningful run history.
@@ -467,6 +481,14 @@ body: JSON.stringify({
 To support the gallery efficiently, catches are converted into stable indexed keys at runtime (for example, `fish1`–`fish64`, plus named special fish). `LevelManager` accumulates these counts in `fishCaught`, and `GameManager` merges them into session-wide history before submission. The gallery then maps those keys to preloaded sprite arrays (`imgSmallFishes`, `imgBigFishes`, and special fish assets), so rendering a player's collection requires only numeric counts from the database, not remote image downloads.
 
 This indexing approach gave us the “Pokemon-style” collection feedback loop while avoiding heavy fetch overhead, improving responsiveness on both desktop and lower-bandwidth connections.
+<br>
+<div align="center">
+  <font color="#888888">Figure 9: Fish Gallery (Fish collected by players)</font>
+  <br><br>
+  
+  <img src="docs/gif/gallery.gif" width="50%" alt="Fish Gallery">
+</div>
+<br>
 
 ### 📝 Report Guidance
 
@@ -605,7 +627,14 @@ We evaluate Deep Sea Prospector using the Sustainability Awareness Framework (Su
 - **Economic sustainability.** Cloud data access is optimized through paginated leaderboard queries (`limit`/`offset`) and compact score records. This reduces unnecessary bandwidth and storage pressure, helping keep infrastructure usage and operating cost efficient.
 
 Overall, the system balances immediate playability goals with longer-term sustainability outcomes: lower technical maintenance overhead, lighter cloud usage, and inclusive player experience.
-![Social Sustainability Diagram](./docs/evaluation%20report%20figure/social.jpg)
+<br>
+<div align="center">
+  <font color="#888888">Figure 9. The Sustainability Awareness Diagram</font>
+  <br><br>
+  
+  <img src="./docs/evaluation%20report%20figure/social.jpg" width="50%" alt="Sustainability Awareness Diagram">
+</div>
+<br>
 
 ### 7.2 Green Foundation Implementation Patterns
 
@@ -657,7 +686,22 @@ As the project progressed, the game evolved from basic interaction logic into a 
 After two to three weeks of playtesting, especially when we moved into qualitative and quantitative evaluation, the whole team focused on improving the scoring system and the shop item exchange algorithm to balance difficulty and playability. We adjusted the game from a linear algorithm that was considered too easy to an exponential one that was then judged too difficult, and we also improved the page display and navigation between scenes so the game became more playable and reasonable.
 
 Because the tasks became more complex over time, there were not many conflicting opinions at the beginning. However, as different scenes and features started interacting with each other, more disagreements naturally appeared. In those situations, we communicated fully, exchanged opinions, explained our reasoning clearly, and finally reached a consensus version as the final one.
-
+<br>
+<div align="center" style="white-space: nowrap;">
+  <span style="display: inline-block; margin: 0 10px; text-align: center;">
+    <font color="#888888">Figure 11: Offline Group Meeting</font><br><br>
+    <img src="docs/gif/meeting1.gif" height="170" alt="Offline">
+  </span>
+  <span style="display: inline-block; margin: 0 10px; text-align: center;">
+    <font color="#888888">Figure 12: Online Group Meeting</font><br><br>
+    <img src="docs/evaluation%20report%20figure/video.jpg" height="170" alt="Online">
+  </span>
+  <span style="display: inline-block; margin: 0 10px; text-align: center;">
+    <font color="#888888">Figure 13: Group Members Discussion</font><br><br>
+    <img src="docs/gif/meeting2.gif" height="170" alt="Discussion">
+  </span>
+</div>
+<br>
 Our GitHub version control also improved a lot over time. What started as a process where we were not very familiar with handling conflicts eventually became something we managed smoothly and confidently. Since we also deployed the backend database relatively early, the backend playtest data became our main source of quantitative evaluation for game balance and playability, and this provided the foundation for assessing whether the algorithms and overall design were reasonable.
 
 
