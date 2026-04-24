@@ -74,9 +74,9 @@ Table 1: Team Members
 
 <br>
 <p align="center">
-  <font color="#888888"><b>Figure 3: Classic Game (Left) &nbsp; vs &nbsp; Figure 4: Our Game Demo (Right)</b></font><br><br>
-  <img src="docs/gif/gold.gif" width="48%">
-  <img src="docs/gif/fish.gif" width="48%">
+  <font color="#888888"><b>Figure 3: Classic Game (Left) &nbsp; & &nbsp; Figure 4: Our Game Demo (Right)</b></font><br><br>
+  <img src="docs/gif/gold.gif" width="45%">
+  <img src="docs/gif/fish.gif" width="45%">
 </p>
 <br>
 
@@ -94,7 +94,7 @@ To enhance playability and replayability, a shop system is introduced between le
   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="docs/gif/shop.gif" width="40%" alt="Figure 5: Store interface">
-  &nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="docs/gif/two.gif" width="40%" alt="Figure 6: Two-Player Mode">
 </p>
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and promote long-term player engagement.
