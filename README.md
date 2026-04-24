@@ -690,15 +690,15 @@ Because the tasks became more complex over time, there were not many conflicting
 <div align="center" style="white-space: nowrap;">
   <span style="display: inline-block; margin: 0 10px; text-align: center;">
     <font color="#888888">Figure 11: Everyweek Group Meeting</font><br><br>
-    <img src="docs/gif/meeting1.gif" height="130" alt="Offline">
+    <img src="docs/gif/meeting1.gif" height="80" alt="Offline">
   </span>
   <span style="display: inline-block; margin: 0 10px; text-align: center;">
     <font color="#888888">Figure 12: Online Group Meeting</font><br><br>
-    <img src="docs/evaluation%20report%20figure/video.jpg" height="130" alt="Online">
+    <img src="docs/evaluation%20report%20figure/video.jpg" height="80" alt="Online">
   </span>
   <span style="display: inline-block; margin: 0 10px; text-align: center;">
     <font color="#888888">Figure 13: Group Members Discussion</font><br><br>
-    <img src="docs/gif/meeting2.gif" height="130" alt="Discussion">
+    <img src="docs/gif/meeting2.gif" height="80" alt="Discussion">
   </span>
 </div>
 <br>
