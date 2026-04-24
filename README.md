@@ -71,17 +71,10 @@ Table 1: Team Members
 <a id="2-introduction"></a>
 
 ## 🚀 2. Introduction
-<p align="center">
-  <img src="docs/gif/fish.gif" width="48%" alt="Figure 3: Classic Game">
-  &nbsp;
-  <img src="docs/gif/gold.gif" width="48%" alt="Figure 4: Our Game Demo">
-</p>
 
-<p align="center">
-  <b>Figure 3: Classic Game</b> 
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-  <b>Figure 4: Our Game Demo</b>
-</p>
+| <img src="docs/gif/fish.gif" width="100%"> | <img src="docs/gif/gold.gif" width="100%"> |
+| :---: | :---: |
+| **Figure 3: Classic Game** | **Figure 4: Our Game Demo** |
 Deep Sea Prospector is a 2D pixel-style casual resource collection game developed using the p5.js library. Inspired by the classic game Gold Miner, our project reinterprets the core gameplay within an ocean exploration setting. Players control a hook deployed from a boat to capture various underwater objects and accumulate as many points as possible within a limited time, progressing through increasingly challenging levels with higher score requirements.
 
 The game features a wide variety of collectible objects, including fish of different sizes, shells, pearls, stones, and treasure chests. Each item is designed with distinct attributes such as weight, movement speed, and value, creating a dynamic and strategic gameplay experience. While high-value targets like large fish and pearls offer greater rewards, players must carefully avoid low-value or obstructive items such as rocks and fish bones, which can significantly reduce efficiency and waste valuable time.
