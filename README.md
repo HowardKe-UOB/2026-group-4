@@ -45,7 +45,7 @@ Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selec
 
 Figure 2: Group 4 development team members.
   
-  <img src="./GROUP4.png" alt="group picture" width="600">
+  <img src="./GROUP4.png" alt="group picture" width="700">
   
 </div>
 
@@ -74,8 +74,7 @@ Table 1: Team Members
 
 <br>
 <p align="center">
-  <font color="#888888">Figure 3: Classic Game &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Figure 4: Our Game Demo</font>
-  <br><br>
+  <font color="#888888"><b>Figure 3: Classic Game (Gold Miner) &nbsp;&nbsp;&nbsp;&nbsp; & &nbsp;&nbsp;&nbsp;&nbsp; Figure 4: Our Game Demo</b></font><br><br>
   <img src="docs/gif/gold.gif" width="48%">
   <img src="docs/gif/fish.gif" width="48%">
 </p>
@@ -86,20 +85,20 @@ Deep Sea Prospector is a 2D pixel-style casual resource collection game develope
 The game features a wide variety of collectible objects, including fish of different sizes, shells, pearls, stones, and treasure chests. Each item is designed with distinct attributes such as weight, movement speed, and value, creating a dynamic and strategic gameplay experience. While high-value targets like large fish and pearls offer greater rewards, players must carefully avoid low-value or obstructive items such as rocks and fish bones, which can significantly reduce efficiency and waste valuable time.
 
 To enhance playability and replayability, a shop system is introduced between levels, where players can spend their accumulated score on items with diverse effects. At least three items are randomly generated in each visit, including both consumable and persistent upgrades, encouraging strategic resource management. In addition, purchasing a submarine unlocks the “Deep Sea Mode,” a high-risk, high-reward environment featuring limited visibility, dangerous predators such as sharks, and more valuable targets.
-<br> 
+<br>
 <p align="center">
+  <img src="docs/gif/shop.gif" width="60%" alt="Store interface">
+  <br><br>
   <font color="#888888">Figure 5: Store interface</font>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <font color="#888888">Figure 6: Two-Player Mode</font>
-  <br>
-  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/gif/shop.gif" width="45%" alt="Figure 5: Store interface">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/gif/two.gif" width="45%" alt="Figure 6: Two-Player Mode">
 </p>
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and promote long-term player engagement.
-
+<br>
+<p align="center">
+  <img src="docs/gif/two.gif" width="60%" alt="Two-Player Mode">
+  <br><br>
+  <font color="#888888">Figure 6: Two-Player Mode</font>
+</p>
+<br>
 </div>
 
 <div align="center">
@@ -713,12 +712,12 @@ Used to arrange the time and place of our next meetings and coordinate deadlines
   
   <div style="margin-bottom: 40px;">
     <font color="#888888">Figure X: Example of Daily Team Communication</font><br><br>
-    <img src="docs/evaluation%20report%20figure/wechat.jpg" width="40%" alt="WeChat Communication">
+    <img src="docs/evaluation%20report%20figure/wechat.jpg" width="50%" alt="WeChat Communication">
   </div>
   
   <div>
     <font color="#888888">Figure X+1: Online video conference</font><br><br>
-    <img src="docs/evaluation%20report%20figure/video.jpg" width="30%" alt="Online video conference">
+    <img src="docs/evaluation%20report%20figure/video.jpg" width="50%" alt="Online video conference">
   </div>
 
 </div>
@@ -736,7 +735,7 @@ Followed a structured integration workflow, including branch merges , so alway t
   <font color="#888888">Figure 14: Project Git Branching and Merge History</font>
   <br><br>
   
-  <img src="docs/evaluation%20report%20figure/list.png" width="40%" alt="Git Branch History">
+  <img src="docs/evaluation%20report%20figure/list.png" width="60%" alt="Git Branch History">
 </div>
 <br>
 **Kanban boards**:
@@ -748,7 +747,7 @@ Used individual sprint boards to further prioritize the tasks needed for each wo
   <font color="#888888">Figure 15: Project Kanban Board</font>
   <br><br>
   
-  <img src="docs/evaluation%20report%20figure/kanban.png" width="50%" alt="Kanban Board">
+  <img src="docs/evaluation%20report%20figure/kanban.png" width="60%" alt="Kanban Board">
 </div>
 <br>
 
