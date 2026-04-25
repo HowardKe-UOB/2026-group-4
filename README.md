@@ -73,25 +73,12 @@ Table 1: Team Members
 ## 🚀 2. Introduction
 
 <br>
-<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; border: none;">
-  <tr style="border: none;">
-    <td align="center" width="50%" style="border: none;">
-      <font color="#888888">Figure 3: Classic Game</font>
-    </td>
-    <td align="center" width="50%" style="border: none;">
-      <font color="#888888">Figure 4: Our Game Demo</font>
-    </td>
-  </tr>
-  
-  <tr style="border: none;">
-    <td align="center" style="border: none;">
-      <img src="docs/gif/gold.gif" width="95%" alt="Classic Game">
-    </td>
-    <td align="center" style="border: none;">
-      <img src="docs/gif/fish.gif" width="95%" alt="Our Game Demo">
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <font color="#888888">Figure 3: Classic Game &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Figure 4: Our Game Demo</font>
+  <br><br>
+  <img src="docs/gif/gold.gif" width="48%">
+  <img src="docs/gif/fish.gif" width="48%">
+</p>
 <br>
 
 Deep Sea Prospector is a 2D pixel-style casual resource collection game developed using the p5.js library. Inspired by the classic game Gold Miner, our project reinterprets the core gameplay within an ocean exploration setting. Players control a hook deployed from a boat to capture various underwater objects and accumulate as many points as possible within a limited time, progressing through increasingly challenging levels with higher score requirements.
