@@ -645,7 +645,7 @@ Overall, the system balances immediate playability goals with longer-term sustai
   <font color="#888888">Figure 9. The Sustainability Awareness Diagram</font>
   <br><br>
   
-  <img src="./docs/evaluation%20report%20figure/social.jpg" width="50%" alt="Sustainability Awareness Diagram">
+  <img src="./docs/evaluation%20report%20figure/social.jpg" width="70%" alt="Sustainability Awareness Diagram">
 </div>
 <br>
 
