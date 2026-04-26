@@ -477,7 +477,12 @@ body: JSON.stringify({
     per_level_spawn_value: pls,
 }),
 ```
-
+<br>
+<p align="center">
+  <font color="#888888">Figure X: Cloud-synced leaderboard data structure</font><br><br>
+  <img src="docs/gif/board.gif" width="50%" alt="Leaderboard Database Demo">
+</p>
+<br>
 **Fish Collection Gallery via Indexed Keys**
 
 To support the gallery efficiently, catches are converted into stable indexed keys at runtime (for example, `fish1`–`fish64`, plus named special fish). `LevelManager` accumulates these counts in `fishCaught`, and `GameManager` merges them into session-wide history before submission. The gallery then maps those keys to preloaded sprite arrays (`imgSmallFishes`, `imgBigFishes`, and special fish assets), so rendering a player's collection requires only numeric counts from the database, not remote image downloads.
@@ -718,7 +723,7 @@ Used to arrange the time and place of our next meetings and coordinate deadlines
   
   <div style="margin-bottom: 40px;">
     <font color="#888888">Figure X: Example of Daily Team Communication</font><br><br>
-    <img src="docs/evaluation%20report%20figure/wechat.jpg" width=80%" alt="WeChat Communication">
+    <img src="docs/evaluation%20report%20figure/wechat.jpg" width=90%" alt="WeChat Communication">
   </div>
   
   <div>
