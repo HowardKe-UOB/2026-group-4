@@ -776,8 +776,17 @@ Using these tools gave the team a clearer view of current priorities and individ
 
 ## 🏁 9. Conclusion
 
-- 10% ~500 words
-- Reflect on the project as a whole. Lessons learnt. Reflect on challenges. Future work, describe both immediate next steps for your current game and also what you would potentially do if you had chance to develop a sequel.
+The development of our game project has been a comprehensive and rewarding experience that significantly enhanced our technical skills, teamwork, and understanding of software engineering practices. Throughout the project, we successfully implemented a range of core features, including the game shop system, leaderboard functionality, and a settings panel for audio and brightness control. These components not only improved the overall gameplay experience but also demonstrated our ability to design and integrate user-focused features within a cohesive system.
+
+One of the key strengths of our project was the use of a modular and incremental development approach. By breaking the system into manageable features—such as shop display optimization, item management, and UI enhancements—we were able to develop, test, and refine each component effectively. The use of GitHub Projects and a Kanban workflow allowed us to track progress clearly, assign responsibilities, and maintain a steady development pace. This agile-inspired process ensured that tasks were completed efficiently and transparently, as reflected in our consistent issue tracking and updates.
+
+However, the project was not without challenges. We encountered difficulties in areas such as UI consistency, feature integration, and debugging unexpected issues (e.g., display bugs and data synchronization problems). In some cases, limited initial planning led to rework, particularly when refining the shop interface and optimizing user interaction. Additionally, we found that more structured testing strategies—such as earlier adoption of systematic testing or clearer separation of logic and presentation—could have reduced debugging time and improved code reliability.
+
+Despite these challenges, our team adapted effectively through regular communication and collaborative problem-solving. By leveraging each member’s strengths and maintaining active discussions, we were able to resolve issues quickly and continue progressing. The project also highlighted the importance of clear task allocation and documentation, especially when working in a shared codebase.
+
+Looking forward, there are several opportunities to further enhance our project. Potential improvements include expanding gameplay features, refining UI/UX design, adding more interactive elements (such as animations and sound effects), and improving system scalability. Additional testing and performance optimization would also help ensure a smoother and more robust user experience across different platforms.
+
+Overall, this project has provided valuable hands-on experience in developing a complete software system within a team environment. It has strengthened our abilities in coding, debugging, version control, and collaborative development. More importantly, it has deepened our appreciation for user-centered design and iterative improvement.
 
 ---
 
