@@ -718,7 +718,7 @@ Used to arrange the time and place of our next meetings and coordinate deadlines
   
   <div style="margin-bottom: 40px;">
     <font color="#888888">Figure X: Example of Daily Team Communication</font><br><br>
-    <img src="docs/evaluation%20report%20figure/wechat.jpg" width="75%" alt="WeChat Communication">
+    <img src="docs/evaluation%20report%20figure/wechat.jpg" width=80%" alt="WeChat Communication">
   </div>
   
   <div>
@@ -741,7 +741,7 @@ Followed a structured integration workflow, including branch merges , so alway t
   <font color="#888888">Figure 14: Project Git Branching and Merge History</font>
   <br><br>
   
-  <img src="docs/evaluation%20report%20figure/list.png" width="60%" alt="Git Branch History">
+  <img src="docs/evaluation%20report%20figure/list.png" width="65%" alt="Git Branch History">
 </div>
 <br>
 **Kanban boards**:
