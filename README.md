@@ -410,6 +410,13 @@ retrievalSpeed = baseSpeed / (1 + itemWeight * weightFactor);
 ```
 
 This creates strategic depth as players must balance the value of heavy items against the time cost of retrieving them, especially when approaching the level time limit.
+<br>
+<p align="center">
+  <font color="#888888">Figure 12: Collision detection debug view showing visual bounds vs. physical hitboxes (catchRadius = width * 0.35)</font>
+  <br><br>
+  <img src="docs/gif/converter.gif" width="60%" alt="Hitbox Debug View">
+</p>
+<br>
 
 ### 5.3 Technical Challenge 2: Mathematical Game Balance and Expected Value Framework
 
@@ -711,7 +718,7 @@ Used to arrange the time and place of our next meetings and coordinate deadlines
   
   <div style="margin-bottom: 40px;">
     <font color="#888888">Figure X: Example of Daily Team Communication</font><br><br>
-    <img src="docs/evaluation%20report%20figure/wechat.jpg" width="65%" alt="WeChat Communication">
+    <img src="docs/evaluation%20report%20figure/wechat.jpg" width="75%" alt="WeChat Communication">
   </div>
   
   <div>
@@ -746,7 +753,7 @@ Used individual sprint boards to further prioritize the tasks needed for each wo
   <font color="#888888">Figure 15: Project Kanban Board</font>
   <br><br>
   
-  <img src="docs/evaluation%20report%20figure/kanban.png" width="60%" alt="Kanban Board">
+  <img src="docs/evaluation%20report%20figure/kanban.png" width="75%" alt="Kanban Board">
 </div>
 <br>
 
