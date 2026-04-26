@@ -528,10 +528,9 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 <br>
 <p align="center">
   <font color="#888888">Figure X: Heuristic Evaluation Feedback Map</font><br><br>
-  <img src="docs/evaluation%20report%20figure/feedback.png" width="95%" alt="Heuristic Evaluation Mind Map">
+  <img src="docs/evaluation%20report%20figure/feedback.png" width="100%" alt="Heuristic Evaluation Mind Map">
 </p>
 <br>
-
 ### 6.2 Quantitative Evaluation
 
 We evaluated usability quantitatively, using two well-established, validated questionnaires and statistical analyses, to ensure the game was both sufficiently challenging and easy to use.
