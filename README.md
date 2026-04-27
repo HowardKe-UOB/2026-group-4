@@ -829,8 +829,6 @@ All core gameplay programming, object-oriented architecture design, level balanc
 
 ## 📚 12. References
 
-## 📚 12. References
-
 * Beck, K. (2002) *Test-Driven Development: By Example*. Boston: Addison-Wesley.
 * Chacon, S. and Straub, B. (2014) *Pro Git*. 2nd edn. New York: Apress.
 * Gamma, E., Helm, R., Johnson, R. and Vlissides, J. (1995) *Design Patterns: Elements of Reusable Object-Oriented Software*. Reading, MA: Addison-Wesley.
