@@ -810,11 +810,12 @@ Throughout the development of Deep Sea Prospector, Artificial Intelligence (AI) 
 We utilized generative Nanobanana2 to assist in the ideation and creation of 2D visual assets. AI was primarily used to draft initial concepts and generate raw image sprites for certain in-game elements, such as specific marine life and background textures. Following generation, all AI-assisted assets were heavily modified, cropped, and colour-corrected manually by our Asset Creators to ensure they matched our cohesive pixel-art aesthetic and met the precise hitbox requirements of our collision system.
 <div align="center">
 
+<br>
+  <i>Figure 16: raw AI-generated assets.</i>
+
   <img src="docs\assets\AnglerFish_1.png" alt="AI Generated Concept" width="400">
   &nbsp; &nbsp; &nbsp; <img src="docs\assets\boat2.png" alt="Final Edited Asset" width="400">
 
-  <br>
-  <i>Figure X: Comparison of raw AI-generated assets and the final manually edited sprites.</i>
   
 </div>
 
