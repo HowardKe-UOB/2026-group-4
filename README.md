@@ -416,7 +416,7 @@ This creates strategic depth as players must balance the value of heavy items ag
 <p align="center">
   <font color="#888888">Figure 12: Collision detection debug view showing visual bounds vs. physical hitboxes (catchRadius = width * 0.35)</font>
   <br><br>
-  <img src="docs/gif/converter.gif" width="60%" alt="Hitbox Debug View">
+  <img src="docs/gif/converter.gif" width="80%" alt="Hitbox Debug View">
 </p>
 <br>
 
