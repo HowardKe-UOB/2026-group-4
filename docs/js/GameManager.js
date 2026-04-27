@@ -2741,7 +2741,7 @@ changeState(newState) {
         if (this.currentState === GameState.NAME_ENTRY) {
             this.nameInputFocused = true;
             
-            // 🌟 双保险：同时检测数字代号(8)和真实键名('Backspace')
+            // 双保险：同时检测数字代号(8)和真实键名('Backspace')
             if (keyCode === 8 || key === 'Backspace') {
                 // 加个保护：只有当框里有字的时候才删，防止报错
                 if (this.inputText.length > 0) {
@@ -2765,6 +2765,13 @@ changeState(newState) {
                 if (this.inputText.length < 12) {
                     this.inputText += key;
                 }
+            }
+        }
+
+        // 商店界面按 P 键呼出作弊按钮
+        if (this.currentState === GameState.SHOP) {
+            if (key === 'p' || key === 'P') {
+                this.shopManager.showCheatBtn = !this.shopManager.showCheatBtn; 
             }
         }
      }

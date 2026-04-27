@@ -3,3 +3,4 @@ node_modules/
 **/LevelManager.backup.js
 docs/clear_scores.html
 *.flac
+progress/vedio/*.mp4

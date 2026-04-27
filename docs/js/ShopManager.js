@@ -34,6 +34,13 @@ class ShopManager {
         this.hitRadius = 60; // 判定范围
         this.availableItems = [];
 
+        // 作弊按钮
+        this.hitRadius = 60; // 判定范围
+        this.availableItems = [];
+
+        // 控制作弊按钮是否显示
+        this.showCheatBtn = false; 
+
         this.resetShop(1, null);  // 初始化时，因为还没有获取到玩家，传 null 进去
     }
 
@@ -87,56 +94,6 @@ class ShopManager {
         });
     }
 
-    // 旧版resetshop
-    // resetShop(levelNum = 1, player = null) {
-    //     this.availableItems = [
-    //         new ShopItem(
-    //             "Strength Potion",
-    //             225,
-    //             "A potion can bestow you with magical power!\nPulls items 1.5x faster.\n[period: 1 level]",
-    //             levelNum, player
-    //         ),
-    //         new ShopItem(
-    //             "Laser Sight",
-    //             175,
-    //             "Often miss? Buy Laser Sight now!\nAdd aiming assistance, swing speed -40%.\n[period: 1 level]",
-    //             levelNum, player
-    //         ),
-    //         new ShopItem(
-    //             "Sand Clock",
-    //             175,
-    //             "A fisher is never late!\nAdd 8~15 seconds based on level.\n[period: 1 level]",
-    //             levelNum, player
-    //         ),
-    //         new ShopItem(
-    //             "Submarine",
-    //             1000,
-    //             "Prove to yourself that you have the strength\nand courage to explore the deep sea.\n[Permanent upgrade]",
-    //             levelNum, player
-    //         ),
-    //         new ShopItem("Four-Leaf Clover",
-    //             500,
-    //             "You will encounter rarer treasure!\nTreasures worth 35% more.\n[Permanent upgrade]",
-    //             levelNum, player
-    //         ),
-    //         new ShopItem("Fishbone Collector",
-    //             400,
-    //             "Museum love old fishbone and stone!\nFishbone:$20~$50, Stone value+100%.\n[Permanent upgrade]",
-    //             levelNum, player
-    //         ),
-    //         new ShopItem("Lucky Coin",
-    //             300,
-    //             "A rare Koi Fish will appear\nat 10s in the next level!\nSpecial sound effects included!\n[period: 1 level]",
-    //             levelNum, player
-    //         ),
-    //         new ShopItem("Club Card", 
-    //             500, 
-    //             "Exclusive member benefits!\nGet 10%~30% off all items.\n[Permanent upgrade]",
-    //             levelNum, player
-    //         )
-    //     ];
-    // }
-
     // playerMode 参数：用于双人模式下显示各自余额及差异化扣款
     draw(player, playerMode = PlayerMode.SINGLE, levelNum = 1) {
         // 绘制背景（使用覆盖模式以防止拉伸）
@@ -162,7 +119,6 @@ class ShopManager {
             background(40, 40, 60);
         }
         pop();
-
 
         // ── 金额显示 ──────────────────────────────────────────────────
         push();
@@ -380,12 +336,48 @@ class ShopManager {
             }
             pop();
         }
+        // 绘制作弊按钮 (按P键后显示)
+        if (this.showCheatBtn) {
+            push();
+            let cheatBtnX = 100;
+            let cheatBtnY = height - 40; // 左下角
+            let cheatBtnW = 120;
+            let cheatBtnH = 35;
+
+            const mx = this.scaledMouseX ?? (typeof mouseX !== "undefined" ? mouseX : 0);
+            const my = this.scaledMouseY ?? (typeof mouseY !== "undefined" ? mouseY : 0);
+            let isHovered = abs(mx - cheatBtnX) < cheatBtnW / 2 && abs(my - cheatBtnY) < cheatBtnH / 2;
+
+            rectMode(CENTER);
+            fill(isHovered ? color(255, 80, 80) : color(200, 40, 40));
+            rect(cheatBtnX, cheatBtnY, cheatBtnW, cheatBtnH, 8);
+
+            fill(255);
+            textAlign(CENTER, CENTER);
+            textSize(12);
+            textStyle(BOLD);
+            if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
+            text("Cheating", cheatBtnX, cheatBtnY);
+
+            pop();
+        }           
     }
 
     // playerMode 参数：用于双人模式下的差异化扣款逻辑
     handleMousePress(player, playerMode = PlayerMode.SINGLE) {
         const mx = this.scaledMouseX ?? (typeof mouseX !== "undefined" ? mouseX : 0);
         const my = this.scaledMouseY ?? (typeof mouseY !== "undefined" ? mouseY : 0);
+
+        // 作弊按钮点击检测
+        if (this.showCheatBtn) {
+            let cheatBtnX = 100;
+            let cheatBtnY = height - 50;
+            if (abs(mx - cheatBtnX) < 60 && abs(my - cheatBtnY) < 17.5) {
+                this.activateCheat(player);
+                return "CHEAT_ACTIVATED";
+            }
+        }
+
         if (abs(mx - this.nextLevelBoxX) < 100 && abs(my - this.nextLevelBoxY) < 35) {
             return "NEXT_LEVEL";
         }
@@ -446,4 +438,31 @@ class ShopManager {
         }
         return "NONE";
     }
+
+    // 作弊：一键上架所有商品并打 1 折
+    activateCheat(player) {
+        this.showCheatBtn = false; // 点完后隐藏按钮
+        this.availableItems = [];  // 清空当前商店
+
+        // 遍历所有商品配置，全部上架
+        this.itemConfigs.forEach(config => {
+            let item = new ShopItem(
+                config.name,
+                config.basePrice,
+                config.desc,
+                1, // levelNum fallback
+                player
+            );
+            item.slotIndex = config.slotIndex; 
+            
+            // 价格变为 1 折 (10%)
+            item.costPrice = Math.max(1, Math.floor(config.basePrice * 0.1)); 
+            
+            // 利用你原本给会员卡准备的橙色文字提示位，显示作弊特效字
+            item.clubDiscountText = "DEV CHEAT: 90% OFF!"; 
+            
+            this.availableItems.push(item);
+        });
+    }
+
 }
