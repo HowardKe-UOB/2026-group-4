@@ -8,6 +8,8 @@
 
 [**🎮 Click this link to play our game 🎮**](https://uob-comsm0166.github.io/2026-group-4/)
 
+[**🎬 Click this link to watch our game video 🎬**](https://youtu.be/wD5Q11uhiyU)
+
 Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style.
 
 <img src="docs/assets/deepsea_prospector.png" alt="Game initial input page background" width="800">
@@ -800,17 +802,26 @@ Overall, this project has provided valuable hands-on experience in developing a 
 
 <a id="11-appendix"></a>
 
-## 📎 11. Appendix
+## 🤖 11. AI Statement
 
-Additional marks guidance:
-You can delete this section in your own repo, it's just here for information. In addition to the marks above, we will be marking you on the following two points:
+Throughout the development of Deep Sea Prospector, Artificial Intelligence (AI) tools were utilized selectively to assist with specific aspects of the project, ensuring efficiency while maintaining human creative control over the core design and mechanics. In accordance with academic integrity guidelines, our use of AI was transparently limited to the following two areas:
 
-- **Quality** of report writing, presentation, use of figures and visual material (5% of report grade)
-    - Please write in a clear concise manner suitable for an interested layperson. Write as if this repo was publicly available.
+1. Game Asset Generation
+We utilized generative Nanobanana2 to assist in the ideation and creation of 2D visual assets. AI was primarily used to draft initial concepts and generate raw image sprites for certain in-game elements, such as specific marine life and background textures. Following generation, all AI-assisted assets were heavily modified, cropped, and colour-corrected manually by our Asset Creators to ensure they matched our cohesive pixel-art aesthetic and met the precise hitbox requirements of our collision system.
+<div align="center">
 
-- **Documentation** of code (5% of report grade)
-    - Organise your code so that it could easily be picked up by another team in the future and developed further.
-    - Is your repo clearly organised? Is code well commented throughout?
+  <img src="docs\assets\AnglerFish_1.png" alt="AI Generated Concept" width="400">
+  &nbsp; &nbsp; &nbsp; <img src="docs\assets\boat2.png" alt="Final Edited Asset" width="400">
+
+  <br>
+  <i>Figure X: Comparison of raw AI-generated assets and the final manually edited sprites.</i>
+  
+</div>
+
+2. Test Script Generation
+We employed Claude code to support our quality assurance process by assisting with the drafting of test code. AI tools were used to quickly generate boilerplate code, format test structures, and suggest edge-case scenarios for our physics and collision boundary tests. All AI-generated test scripts were strictly reviewed, refined, and verified by our Test Engineer to ensure they accurately reflected our system architecture and evaluated the correct acceptance criteria.
+
+All core gameplay programming, object-oriented architecture design, level balancing (including the Expected Value Framework), and the drafting of this report were completed entirely by the human development team.
 
 ---
 
