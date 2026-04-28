@@ -134,7 +134,7 @@ Table 2: Main Game Objects
 
 **Paper Prototype of Deep Sea Prospector**
 <br><br>
-<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="1000"></video>
+<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="1200"></video>
 
 </div>
 
@@ -531,7 +531,7 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 <br>
 <p align="center">
   <font color="#888888">Figure X: Heuristic Evaluation Feedback Map</font><br><br>
-  <img src="docs/evaluation%20report%20figure/feedback.png" width="100%" alt="Heuristic Evaluation Mind Map">
+  <img src="docs/evaluation%20report%20figure/feedback.png" width="120%" alt="Heuristic Evaluation Mind Map">
 </p>
 <br>
 ### 6.2 Quantitative Evaluation
@@ -648,7 +648,7 @@ Overall, the system balances immediate playability goals with longer-term sustai
   <font color="#888888">Figure 9. The Sustainability Awareness Diagram</font>
   <br><br>
   
-  <img src="./docs/evaluation%20report%20figure/social.jpg" width="60%" alt="Sustainability Awareness Diagram">
+  <img src="./docs/evaluation%20report%20figure/social.jpg" width="80%" alt="Sustainability Awareness Diagram">
 </div>
 <br>
 
