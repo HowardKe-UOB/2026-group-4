@@ -108,15 +108,16 @@ Table 2: Main Game Objects
 
 
 | Name | Image | Description |
-|------|------|------------|
-| Boat | <img src="docs/assets/boat.png" height="90"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
-| Small Fish | <img src="docs/assets/fish8_1.png" height="90"/> | Small, fast-moving fish with low weight and low value. |
-| Big Fish | <img src="docs/assets/fish59_1.png" height="70"/> | Large, slow-moving fish with high weight and high value. |
-| Koi Fish | <img src="docs/assets/koifish1.png" height="70"/> | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
-| Shark | <img src="docs/assets/shark_1.png" height="70"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
-| Rock | <img src="docs/assets/stone11.png" height="70"/> | Heavy and low-value obstacle that wastes time when captured. |
-| Shell | <img src="docs/assets/shell_4.png" height="70"/> | High-value item that is difficult to catch and requires precise timing. |
-| Treasure Chest | <img src="docs/assets/Treasure_Chest.png" height="70"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
+| :--- | :---: | :--- |
+| Boat | <img src="docs/gif/boat.gif" height="90"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
+| Small Fish | <img src="docs/gif/Small%20Fish.gif" height="60"/> | Small, fast-moving fish with low weight and low value. |
+| Big Fish | <img src="docs/gif/Big%20Fish.gif" height="60"/> | Large, slow-moving fish with high weight and high value. |
+| Koi Fish | <img src="docs/gif/Koi%20Fish.gif" height="40"/> | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
+| Shark | <img src="docs/gif/Shark.gif" height="75"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
+| Rock | <img src="docs/assets/stone9.png" height="60"/> | Heavy and low-value obstacle that wastes time when captured. |
+| Shell | <img src="docs/gif/Shell.gif" height="60"/> | High-value item that is difficult to catch and requires precise timing. |
+| Treasure Chest | <img src="docs/gif/Treasure%20Chest.gif" height="60"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
+| AnglerFish | <img src="docs/gif/AnglerFish.gif" height="60"/> | Appears in deep-sea mode. A rare glowing fish, highly valuable, requires precise timing to catch. |
 
 
 </div>
@@ -795,9 +796,37 @@ Overall, this project has provided valuable hands-on experience in developing a 
 <a id="10-contribution-statement"></a>
 
 ## 🤝 10. Contribution Statement
-
-- Provide a table of everyone's contribution, which _may_ be used to weight individual grades. We expect that the contribution will be split evenly across team-members in most cases. Please let us know as soon as possible if there are any issues with teamwork as soon as they are apparent and we will do our best to help your team work harmoniously together.
-
+<table style="border-collapse: collapse; width: 300px; font-family: Arial, sans-serif; font-size: 14px; background-color: transparent;">
+  <caption style="caption-side: top; padding-bottom: 10px; font-weight: bold; text-align: center;">Table 1: Team Members Contribution</caption>
+  <thead>
+    <tr>
+      <th style="border: 1px solid #dcdcdc; padding: 12px 10px; font-weight: bold; text-align: center;">Name</th>
+      <th style="border: 1px solid #dcdcdc; padding: 12px 10px; font-weight: bold; text-align: center;">Contribution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">Weikai Mao</td>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">20%</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">Zenan Wu</td>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">20%</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">Jianxing Li</td>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">20%</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">Bingyu Ke</td>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">20%</td>
+    </tr>
+    <tr>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">Zeyu Guo</td>
+      <td style="border: 1px solid #dcdcdc; padding: 12px 10px; text-align: center;">20%</td>
+    </tr>
+  </tbody>
+</table>
 ---
 
 <a id="11-appendix"></a>
