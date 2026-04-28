@@ -3,11 +3,6 @@
 
 [![p5.js](https://img.shields.io/badge/p5.js-ED225D?style=for-the-badge&logo=p5.js&logoColor=white)](https://p5js.org/)
 
-[**🎮 Click this link to play our game 🎮**](https://uob-comsm0166.github.io/2026-group-4/)
-
-[**🎬 Click this link to watch our game video 🎬**](https://youtu.be/wD5Q11uhiyU)
-
-[**📋 Group Kanban Board 📋**](https://github.com/orgs/UoB-COMSM0166/projects/158)
 
 Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style.
 
@@ -17,7 +12,17 @@ Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selec
 
 </div>
 
----
+<div align="center">
+
+<a href="https://uob-comsm0166.github.io/2026-group-4/">**🎮 Click this link to play our game 🎮**</a>
+<br><br>
+<a href="https://youtu.be/wD5Q11uhiyU">**🎬 Click this link to watch our game video 🎬**</a>
+<br><br>
+<a href="https://github.com/orgs/UoB-COMSM0166/projects/158">**📋 Group Kanban Board 📋**</a>
+<br><br>
+<a href="./progress/">**📁 Click here to view our Weekly Progress 📁**</a>
+
+</div>
 
 ## 📑 Table of Contents
 
@@ -175,7 +180,7 @@ Table 3: Stakeholder Table
 
 <div align="center">
 
-Figure 3: Stakeholder Diagram
+Figure 7: Stakeholder Diagram
 
   <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="45%">
 </div>
@@ -192,7 +197,7 @@ Finally, our stakeholder analysis highlighted the importance of balancing user e
 
 <div align="center">
 
-Figure 4: Use Case Diagram
+Figure 8: Use Case Diagram
   
   <img src="progress/week5/UseCase.png" alt="Use Case Diagram" width="800">
   
@@ -274,7 +279,7 @@ Core components include:
 
 <div align="center">
 
-Figure 5: Class diagram showing the object-oriented structure of Deep Sea Prospector.
+Figure 9: Class diagram showing the object-oriented structure of Deep Sea Prospector.
 
   <img src="progress/week5/LevelManager Player State-2026-04-21-135515.png" alt="Class Diagram" width="800">
 </div>
@@ -290,7 +295,7 @@ For game entities, GameObject serves as the abstract base class for both Hook an
 
 <div align="center">
 
-Figure 6: Sequence diagram illustrating the game initialization flow from difficulty selection to level start.
+Figure 10: Sequence diagram illustrating the game initialization flow from difficulty selection to level start.
 
   <img src="progress/week5/SequenceDiagram1.png" alt="Sequence Diagram 1 - Game Start" width="800">
 </div>
@@ -308,7 +313,7 @@ This sequence diagram demonstrates the transition from the UI menu to the active
 
 <div align="center">
 
-Figure 7: Sequence diagram showing the hook deployment, collision detection, and item retrieval process.
+Figure 11: Sequence diagram showing the hook deployment, collision detection, and item retrieval process.
 
   <img src="progress/week5/SequenceDiagram2.png" alt="Sequence Diagram 2 - Hook Capture" width="800">
 </div>
@@ -328,7 +333,7 @@ This sequence highlights the real-time physics interaction between the player’
 
 <div align="center">
 
-Figure 8: Sequence diagram depicting the level end condition checking and result screen transition.
+Figure 12: Sequence diagram depicting the level end condition checking and result screen transition.
 
   <img src="progress/week5/SequenceDiagram3.png" alt="Sequence Diagram 3 - Level End" width="800">
 </div>
@@ -412,7 +417,7 @@ retrievalSpeed = baseSpeed / (1 + itemWeight * weightFactor);
 This creates strategic depth as players must balance the value of heavy items against the time cost of retrieving them, especially when approaching the level time limit.
 <br>
 <p align="center">
-  <font color="#888888">Figure 12: Collision detection debug view showing visual bounds vs. physical hitboxes (catchRadius = width * 0.35)</font>
+  <font color="#888888">Figure 13: Collision detection debug view showing visual bounds vs. physical hitboxes (catchRadius = width * 0.35)</font>
   <br><br>
   <img src="docs/gif/converter.gif" width="80%" alt="Hitbox Debug View">
 </p>
@@ -451,7 +456,7 @@ The numerator $S \cdot 60 \cdot R_{eff}$ represents theoretical score gain per m
 
 Using this framework, we systematically balanced all item scores. For example, SmallFish (70-110 pts, weight 2-3, speed 1.2-1.6) have high $EV$ due to abundance and easy capture, serving as reliable "filler" items. BigFish (220-340 pts, weight 6-9, speed 0.3-0.8) offer medium $EV$ with high risk-reward ratio, as heavy weight significantly reduces retrieval speed. AnglerFish (400-800 pts, weight 6-10, speed 0.2-0.5) provide highest $EV$ in deep sea mode, justified by limited visibility and increased difficulty. This mathematical approach ensured consistent difficulty scaling between Shallow Water and Deep Sea modes, validated through our NASA TLX evaluation showing appropriate workload increases without overwhelming players.
 <div align="center">
-  <font color="#888888">Figure 8: Deep Sea Mode with Limited Visibility</font>
+  <font color="#888888">Figure 14: Deep Sea Mode with Limited Visibility</font>
   <br><br>
   
   <img src="docs/gif/deep.gif" width="80%" alt="Deep Sea Mode">
@@ -462,12 +467,12 @@ Using this framework, we systematically balanced all item scores. For example, S
 Beyond the two core technical challenges above, we also implemented a shared leaderboard and a collection-style fish gallery to strengthen replay motivation and social comparison. The key design goal was to keep cloud synchronization lightweight while still preserving meaningful run history.
 <br>
 <div align="center">
-  <font color="#888888">Figure X: Database schema design of the scores table in Supabase</font><br><br>
+  <font color="#888888">Figure 15: Database schema design of the scores table in Supabase</font><br><br>
   <img src="docs/evaluation report figure/table.png" width="80%" alt="Database Schema">
   
   <br><br><br>
 
-  <font color="#888888">Figure Y: Cloud-synced player records with structured JSON data in Supabase</font><br><br>
+  <font color="#888888">Figure 16: Cloud-synced player records with structured JSON data in Supabase</font><br><br>
   <img src="docs/evaluation report figure/data.png" width="80%" alt="Live Database Records">
 </div>
 <br>
@@ -489,7 +494,7 @@ body: JSON.stringify({
 ```
 <br>
 <p align="center">
-  <font color="#888888">Figure X: Cloud-synced leaderboard data structure</font><br><br>
+  <font color="#888888">Figure 17: Cloud-synced leaderboard data structure</font><br><br>
   <img src="docs/gif/board.gif" width="70%" alt="Leaderboard Database Demo">
 </p>
 <br>
@@ -500,19 +505,13 @@ To support the gallery efficiently, catches are converted into stable indexed ke
 This indexing approach gave us the “Pokemon-style” collection feedback loop while avoiding heavy fetch overhead, improving responsiveness on both desktop and lower-bandwidth connections.
 <br>
 <div align="center">
-  <font color="#888888">Figure 9: Fish Gallery (Fish collected by players)</font>
+  <font color="#888888">Figure 18: Fish Gallery (Fish collected by players)</font>
   <br><br>
   
   <img src="docs/gif/gallery.gif" width="80%" alt="Fish Gallery">
 </div>
 <br>
 
-### 📝 Report Guidance
-
-- 15% ~750 words
-- Describe implementation of your game, in particular highlighting the TWO areas of *technical challenge* in developing your game.
-
----
 
 <a id="6-evaluation"></a>
 
@@ -520,7 +519,8 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 
 ### 6.1 Qualitative Evaluation
 
-#### Table - Heuristic Evaluation
+<div align="center"><i>Table 4: Results of the Heuristic Evaluation and Severity Ratings</i></div>
+<br>
 
 | Interface             | Issue                                                                                                                       | Heuristic(s)                    | Frequency (0–4) | Impact (0–4) | Persistence (0–4) | Severity = (F + I + P) / 3 |
 | :-------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :------------------------------ | :-------------: | :----------: | :---------------: | :------------------------: |
@@ -537,7 +537,7 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 
 <br>
 <p align="center">
-  <font color="#888888">Figure X: Heuristic Evaluation Feedback Map</font><br><br>
+  <font color="#888888">Figure 19: Heuristic Evaluation Feedback Map</font><br><br>
   <img src="docs/evaluation%20report%20figure/feedback.png" width="120%" alt="Heuristic Evaluation Mind Map">
 </p>
 <br>
@@ -557,9 +557,9 @@ These evaluations involved 10 participants, each trialing two difficulty modes. 
 
 **Subscale Workload Scores**
 
-Across all six subscales, the median scores for all participants illustrated a tiny increase with the variance in the level of difficulty (Table 1). The change in median scores only varies slightly.
+Across all six subscales, the median scores for all participants illustrated a tiny increase with the variance in the level of difficulty (Table 5). The change in median scores only varies slightly.
 
-_Table 1: Median NASA TLX subscale scores for all participants_
+Table 5: Median NASA TLX subscale scores for all participants
 
 | Scale                          | Median (easy) | Median (Deep Sea) | Δ Median |
 | :----------------------------- | :-----------: | :---------------: | :------: |
@@ -574,14 +574,17 @@ _Table 1: Median NASA TLX subscale scores for all participants_
 > _Brief analysis: All 10 participants reported slight differences in overall workload in hard mode than in Easy mode (median 38 vs 36). The increase is small and consistent across participants; the Wilcoxon test (Table 2) found no statistically significant difference, suggesting the difficulty step did not substantially raise perceived workload._
 
 <div align="center">
-  <img src="docs/evaluation report figure/overal_workload.png" alt="NASA TLX Overall Workload by Participant" width="600">
+  <img src="docs/evaluation report figure/overal_workload.png" alt="NASA TLX Overall Workload by Participant" width="80%">
+  <br><br>
+  <font color="#888888">Figure 20: Comparison of NASA TLX overall perceived workload scores across 10 participants (Easy vs. Deep Sea mode)</font>
 </div>
+<br>
 
 **Statistical Analysis**
 
-A Wilcoxon Signed-Rank test was performed for each subscale and for overall workload (N = 10, α = 0.05, critical value = 8). As shown in Table 2, the W statistic exceeded the critical value for all seven scales, indicating that the increase in difficulty did not produce a statistically significant difference in perceived workload at either the subscale or overall level.
+A Wilcoxon Signed-Rank test was performed for each subscale and for overall workload (N = 10, α = 0.05, critical value = 8). As shown in Table 6, the W statistic exceeded the critical value for all seven scales, indicating that the increase in difficulty did not produce a statistically significant difference in perceived workload at either the subscale or overall level.
 
-_Table 2: Wilcoxon Signed-Rank Test Results (N = 10, α = 0.05, critical value = 8)_
+Table 6: Wilcoxon Signed-Rank Test Results (N = 10, α = 0.05, critical value = 8)
 
 | Scale                | W Statistic | Critical Value | Significant? |
 | :------------------- | :---------: | :------------: | :----------: |
@@ -618,10 +621,11 @@ After finishing the NASA-TLX evaluation, all 10 participants filled out the SUS 
 - Mean SUS score (hard) — **75.0**
 
 <div align="center">
-  <img src="docs/evaluation report figure/sus_evaluation.png" alt="SUS Evaluation Results" width="600">
+  <img src="docs/evaluation%20report%20figure/sus_evaluation.png" alt="SUS Evaluation Results" width="80%">
+  <br><br>
+  <font color="#888888">Figure 21: Comparison of System Usability Scale (SUS) scores across 10 participants (Easy vs. Hard mode)</font>
 </div>
-
-_Table 3: SUS evaluation results_
+<br>
 
 Based on our SUS results, all participants rated both difficulty levels above the standard usability benchmark of 68, with Shallow Water averaging 88.25 and Deep Sea averaging 75.0. These scores indicate excellent perceived usability for the easier condition and solidly above‑average usability even in the more challenging Deep Sea mode, suggesting that the game remains easy to use across difficulty levels.
 
@@ -652,7 +656,7 @@ We evaluate Deep Sea Prospector using the Sustainability Awareness Framework (Su
 Overall, the system balances immediate playability goals with longer-term sustainability outcomes: lower technical maintenance overhead, lighter cloud usage, and inclusive player experience.
 <br>
 <div align="center">
-  <font color="#888888">Figure 9. The Sustainability Awareness Diagram</font>
+  <font color="#888888">Figure 22. The Sustainability Awareness Diagram</font>
   <br><br>
   
   <img src="./docs/evaluation%20report%20figure/social.jpg" width="75%" alt="Sustainability Awareness Diagram">
@@ -713,10 +717,10 @@ Because the tasks became more complex over time, there were not many conflicting
 <div align="center" style="white-space: nowrap;">
   
   <div align="center" style="display: inline-block; margin: 0 10px; vertical-align: top;">
-    <font color="#888888">Figure x: Every Week Group Meeting</font><br><br>
+    <font color="#888888">Figure 23: Every Week Group Meeting</font><br><br>
     <img src="docs/gif/meeting1.gif" height="220" alt="Every Week Group Meeting">
   </div><div align="center" style="display: inline-block; margin: 0 10px; vertical-align: top;">
-    <font color="#888888">Figure x: Group Members Discussion</font><br><br>
+    <font color="#888888">Figure 24: Group Members Discussion</font><br><br>
     <img src="docs/gif/meeting2.gif" height="220" alt="Group Members Discussion">
   </div>
 
@@ -738,12 +742,12 @@ Used to arrange the time and place of our next meetings and coordinate deadlines
 <div align="center">
   
   <div style="margin-bottom: 40px;">
-    <font color="#888888">Figure X: Example of Daily Team Communication</font><br><br>
+    <font color="#888888">Figure 25: Example of Daily Team Communication</font><br><br>
     <img src="docs/evaluation%20report%20figure/wechat.jpg" width=90%" alt="WeChat Communication">
   </div>
   
   <div>
-    <font color="#888888">Figure X+1: Online video conference</font><br><br>
+    <font color="#888888">Figure 26: Online video conference</font><br><br>
     <img src="docs/evaluation%20report%20figure/video.jpg" width="50%" alt="Online video conference">
   </div>
 
@@ -759,7 +763,7 @@ Used multiple branches for feature and debug development  and merged changes aft
 Followed a structured integration workflow, including branch merges , so alway the latest updated version of working code would be merged to the main branch.
 <br>
 <div align="center">
-  <font color="#888888">Figure 14: Project Git Branching and Merge History</font>
+  <font color="#888888">Figure 27: Project Git Branching and Merge History</font>
   <br><br>
   
   <img src="docs/evaluation%20report%20figure/list.png" width="65%" alt="Git Branch History">
@@ -771,7 +775,7 @@ Tracked the overall progress of tasks that needed to be completed
 Recorded which member completed each task, so ownership was clear when a finished task needed to be revisited  
 Used individual sprint boards to further prioritize the tasks needed for each work session
 <div align="center">
-  <font color="#888888">Figure 15: Project Kanban Board</font>
+  <font color="#888888">Figure 28: Project Kanban Board</font>
   <br><br>
   
   <img src="docs/evaluation%20report%20figure/kanban.png" width="75%" alt="Kanban Board">
@@ -804,7 +808,7 @@ Overall, this project has provided valuable hands-on experience in developing a 
 
 ## 🤝 10. Contribution Statement
 <table style="border-collapse: collapse; width: 300px; font-family: Arial, sans-serif; font-size: 14px; background-color: transparent;">
-  <caption style="caption-side: top; padding-bottom: 10px; font-weight: bold; text-align: center;">Table 1: Team Members Contribution</caption>
+  <caption style="caption-side: top; padding-bottom: 10px; font-weight: bold; text-align: center;">Table 7: Team Members Contribution</caption>
   <thead>
     <tr>
       <th style="border: 1px solid #dcdcdc; padding: 12px 10px; font-weight: bold; text-align: center;">Name</th>
@@ -845,13 +849,12 @@ Throughout the development of Deep Sea Prospector, Artificial Intelligence (AI) 
 1. Game Asset Generation
 We utilized generative Nanobanana2 to assist in the ideation and creation of 2D visual assets. AI was primarily used to draft initial concepts and generate raw image sprites for certain in-game elements, such as specific marine life and background textures. Following generation, all AI-assisted assets were heavily modified, cropped, and colour-corrected manually by our Asset Creators to ensure they matched our cohesive pixel-art aesthetic and met the precise hitbox requirements of our collision system.
 <div align="center">
-
-  <img src="docs\assets\AnglerFish_1.png" alt="Final Edited Asset" width="400">
-  &nbsp; &nbsp; &nbsp; <img src="docs\assets\koifish2.png" alt="Final Edited Asset" width="400">
-
-  <br>
-  <i>Figure 16: the final manually edited sprites.</i>
+  <i>Figure 29: the final manually edited sprites.</i>
+  <br><br>
   
+  <img src="docs/assets/AnglerFish_1.png" alt="Final Edited Asset" width="400">
+  &nbsp; &nbsp; &nbsp; 
+  <img src="docs/assets/koifish2.png" alt="Final Edited Asset" width="400">
 </div>
 
 2. Test Script Generation
