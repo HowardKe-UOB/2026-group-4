@@ -538,7 +538,7 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 <br>
 <p align="center">
   <font color="#888888">Figure 19: Heuristic Evaluation Feedback Map</font><br><br>
-  <img src="docs/evaluation%20report%20figure/feedback.png" width="120%" alt="Heuristic Evaluation Mind Map">
+  <img src="docs/evaluation%20report%20figure/feedback.png" style="width: 120%; max-width: none;" alt="Heuristic Evaluation Mind Map">
 </p>
 <br>
 ### 6.2 Quantitative Evaluation
