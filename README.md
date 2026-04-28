@@ -90,14 +90,14 @@ To enhance playability and replayability, a shop system is introduced between le
 <br>
 <p align="center">
   <font color="#888888">Figure 5: Store interface</font><br><br>
-  <img src="docs/gif/shop.gif" width="60%" alt="Store interface">
+  <img src="docs/gif/shop.gif" width="80%" alt="Store interface">
 </p>
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and promote long-term player engagement.
 <br>
 
 <p align="center">
   <font color="#888888">Figure 6: Two-Player Mode</font><br><br>
-  <img src="docs/gif/two.gif" width="60%" alt="Two-Player Mode">
+  <img src="docs/gif/two.gif" width="80%" alt="Two-Player Mode">
 </p>
 <br>
 </div>
@@ -456,7 +456,7 @@ Using this framework, we systematically balanced all item scores. For example, S
   <font color="#888888">Figure 8: Deep Sea Mode with Limited Visibility</font>
   <br><br>
   
-  <img src="docs/gif/deep.gif" width="60%" alt="Deep Sea Mode">
+  <img src="docs/gif/deep.gif" width="80%" alt="Deep Sea Mode">
 </div>
 <br>
 ### 5.4 Additional Implementation Point: Shared Leaderboard and Fish Collection Index
@@ -482,7 +482,7 @@ body: JSON.stringify({
 <br>
 <p align="center">
   <font color="#888888">Figure X: Cloud-synced leaderboard data structure</font><br><br>
-  <img src="docs/gif/board.gif" width="50%" alt="Leaderboard Database Demo">
+  <img src="docs/gif/board.gif" width="70%" alt="Leaderboard Database Demo">
 </p>
 <br>
 **Fish Collection Gallery via Indexed Keys**
@@ -495,7 +495,7 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
   <font color="#888888">Figure 9: Fish Gallery (Fish collected by players)</font>
   <br><br>
   
-  <img src="docs/gif/gallery.gif" width="60%" alt="Fish Gallery">
+  <img src="docs/gif/gallery.gif" width="80%" alt="Fish Gallery">
 </div>
 <br>
 
