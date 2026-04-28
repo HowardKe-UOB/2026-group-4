@@ -858,4 +858,8 @@ All core gameplay programming, object-oriented architecture design, level balanc
 
 ## 📚 12. References
 
-Add your references here.
+* Beck, K. (2002) *Test-Driven Development: By Example*. Boston: Addison-Wesley.
+* Chacon, S. and Straub, B. (2014) *Pro Git*. 2nd edn. New York: Apress.
+* Gamma, E., Helm, R., Johnson, R. and Vlissides, J. (1995) *Design Patterns: Elements of Reusable Object-Oriented Software*. Reading, MA: Addison-Wesley.
+* Rubin, K.S. (2012) *Essential Scrum: A Practical Guide to the Most Popular Agile Process*. Upper Saddle River, NJ: Addison-Wesley.
+* Schell, J. (2019) *The Art of Game Design: A Book of Lenses*. 3rd edn. Boca Raton, FL: CRC Press.
