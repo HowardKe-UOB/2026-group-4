@@ -134,7 +134,7 @@ Table 2: Main Game Objects
 
 **Paper Prototype of Deep Sea Prospector**
 <br><br>
-<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="1200"></video>
+<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="1400"></video>
 
 </div>
 
