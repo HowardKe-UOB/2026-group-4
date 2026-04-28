@@ -1,8 +1,5 @@
 <div align="center">
 
-# 🌊 2026-group-4
-
-### 2026 COMSM0166 group 4
 
 [![p5.js](https://img.shields.io/badge/p5.js-ED225D?style=for-the-badge&logo=p5.js&logoColor=white)](https://p5js.org/)
 
