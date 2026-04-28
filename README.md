@@ -108,16 +108,16 @@ Table 2: Main Game Objects
 
 
 | Name | Image | Description |
-| :--- | :---: | :--- |
-| Boat | <img src="docs/gif/boat.gif" height="90"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
-| Small Fish | <img src="docs/gif/Small%20Fish.gif" height="60"/> | Small, fast-moving fish with low weight and low value. |
-| Big Fish | <img src="docs/gif/Big%20Fish.gif" height="60"/> | Large, slow-moving fish with high weight and high value. |
-| Koi Fish | <img src="docs/gif/Koi%20Fish.gif" height="40"/> | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
-| Shark | <img src="docs/gif/Shark.gif" height="75"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
-| Rock | <img src="docs/assets/stone9.png" height="60"/> | Heavy and low-value obstacle that wastes time when captured. |
-| Shell | <img src="docs/gif/Shell.gif" height="60"/> | High-value item that is difficult to catch and requires precise timing. |
-| Treasure Chest | <img src="docs/gif/Treasure%20Chest.gif" height="60"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
-| AnglerFish | <img src="docs/gif/AnglerFish.gif" height="60"/> | Appears in deep-sea mode. A rare glowing fish, highly valuable, requires precise timing to catch. |
+| :---: | :---: | :---: |
+| Boat | <img src="docs/gif/boat.gif" height="180"/> | The player's base. The hook is deployed from the boat to capture underwater objects. |
+| Small Fish | <img src="docs/gif/Small%20Fish.gif" height="120"/> | Small, fast-moving fish with low weight and low value. |
+| Big Fish | <img src="docs/gif/Big%20Fish.gif" height="120"/> | Large, slow-moving fish with high weight and high value. |
+| Koi Fish | <img src="docs/gif/Koi%20Fish.gif" height="80"/> | A rare species of fish. Moves very fast, medium size and weight, but extremely valuable. If it escapes the screen, it will not return. |
+| Shark | <img src="docs/gif/Shark.gif" height="150"/> | Appears in Deep Sea Mode. A predator that can steal captured fish. Cannot be hooked. |
+| Rock | <img src="docs/assets/stone9.png" height="120"/> | Heavy and low-value obstacle that wastes time when captured. |
+| Shell | <img src="docs/gif/Shell.gif" height="120"/> | High-value item that is difficult to catch and requires precise timing. |
+| Treasure Chest | <img src="docs/gif/Treasure%20Chest.gif" height="120"/> | Found at the seabed. Very heavy but highly valuable. Unlike fish, it does not move. |
+| AnglerFish | <img src="docs/gif/AnglerFish.gif" height="120"/> | Appears in deep-sea mode. A rare glowing fish, highly valuable, requires precise timing to catch. |
 
 
 </div>
@@ -134,7 +134,7 @@ Table 2: Main Game Objects
 
 **Paper Prototype of Deep Sea Prospector**
 <br><br>
-<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="600"></video>
+<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="800"></video>
 
 </div>
 
