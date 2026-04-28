@@ -7,13 +7,13 @@
 
 [**🎬 Click this link to watch our game video 🎬**](https://youtu.be/wD5Q11uhiyU)
 
+[**📋 Group Kanban Board 📋**](https://github.com/orgs/UoB-COMSM0166/projects/158)
+
 Figure 1: The initial game screen of Deep Sea Prospector, showing the mode selection interface (Shallow Water / Deep Sea) and the submarine-themed visual style.
 
 <img src="docs/assets/deepsea_prospector.png" alt="Game initial input page background" width="800">
 
 <br>
-
-**[📋 Group Kanban Board](https://github.com/orgs/UoB-COMSM0166/projects/158)**
 
 </div>
 
