@@ -11,7 +11,7 @@ class GameManager {
 
         this.inputText = ''; // For entering the name
 
-        // 名字重复检测：null=未检测/检测中, true=已存在, false=不存在
+        // Duplicate-name check: null = unchecked/checking, true = exists, false = not found
         this.nameExistsCheck = null;
         this.lastCheckedName = '';
 
@@ -25,10 +25,10 @@ class GameManager {
         // Fish gallery: ScoreEntry when a leaderboard row is clicked, null otherwise
         this.fishGalleryEntry = null;
 
-        // 游戏失败后进入排行榜时，用不同颜色高亮最新玩家
+        // Highlight the latest player with a different color after a failed run
         this.lastGameFailed = false;
 
-        // 设置（从 localStorage 恢复）
+        // Settings (restored from localStorage)
         this.settingsOpen = false;
         const savedVol = parseFloat(localStorage.getItem('ds_volume'));
         const savedSfx = parseFloat(localStorage.getItem('ds_sfx_volume'));
@@ -42,14 +42,14 @@ class GameManager {
         this.scaledMouseX = 0;
         this.scaledMouseY = 0;
         this.nameInputFocused = false;
-        /** NAME_ENTRY：按空格时显示提示，frameCount 在此之前一直显示 */
+        /** NAME_ENTRY: show warning on space key; frameCount keeps showing before that */
         this._nameEntrySpaceWarningUntilFrame = 0;
 
-        /** 每关进入 PLAYING 时的 totalScore（index = levelNum - 1） */
+        /** totalScore when entering PLAYING each level (index = levelNum - 1) */
         this.perLevelScoreAtStart = [];
-        /** 每关增收：离开 PLAYING 时 totalScore − 关初（含失败前已打的钱） */
+        /** Per-level earnings: totalScore on leaving PLAYING - level start score */
         this.perLevelEarned = [];
-        /** 每关开局生成时 activeItems 的 scoreValue 总和（与上一字段同下标） */
+        /** Sum of activeItems scoreValue at level start (same index as above) */
         this.perLevelSpawnValue = [];
     }
 
@@ -201,12 +201,12 @@ class GameManager {
 
     startGame() {
         this.player.totalScore = 0;
-        this.player.p1Score = 0;  // 重置双人各自余额
+        this.player.p1Score = 0;  // Reset each player's balance in two-player mode
         this.player.p2Score = 0;
-        this.player.hasSubmarine = false;  // 避免沿用上一局的潜水艇
-        this.player.hasClover = false;  // 避免沿用上一局的四叶草
-        this.player.hasFishboneCollector = false;   // 避免沿用上一局的鱼骨收藏书
-        this.player.hasClubCard = false;  // 避免沿用上一局的会员卡
+        this.player.hasSubmarine = false;  // Prevent carrying over submarine from the previous run
+        this.player.hasClover = false;  // Prevent carrying over clover from the previous run
+        this.player.hasFishboneCollector = false;   // Prevent carrying over fishbone collector from the previous run
+        this.player.hasClubCard = false;  // Prevent carrying over club card from the previous run
         this.gameSessionFishCaught = {};
         this.levelNum = 1;
         this.perLevelScoreAtStart = [];
@@ -215,10 +215,10 @@ class GameManager {
         const buttonOverlay = document.getElementById('button-overlay');
         if (buttonOverlay) {
             buttonOverlay.classList.add('hidden');
-            buttonOverlay.classList.remove('active'); // 确保完全禁用点击
+            buttonOverlay.classList.remove('active'); // Ensure clicks are fully disabled
         }
 
-        // 先展示操作说明，点击后再真正开始
+        // Show the how-to-play screen first; start after user confirms
         this.changeState(GameState.HOW_TO_PLAY);
     }
 
@@ -233,7 +233,7 @@ class GameManager {
         this.levelManager.gameManager = this;
         this.gamePaused = false;
 
-        // 如果上面 ShopItem 报错，下面这行就永远跑不到
+        // If ShopItem fails above, this line will never execute
         this.player.consumeItems(this.levelManager);
         this._recordLevelSpawnTotal();
         this._snapshotLevelStartScore();
@@ -272,7 +272,7 @@ class GameManager {
 
 changeState(newState) {
         this.currentState = newState;
-        // 只有状态改变时，才主动调用一次 UI 同步
+        // Only trigger UI sync when the state changes
         if (this._syncOverlay) {
             this._syncOverlay();
         }
@@ -297,11 +297,11 @@ changeState(newState) {
         }
 
         // ==========================================
-        // 🎵 统一音乐大管家 (彻底解决音乐打架)
+        // 🎵 Centralized music controller (prevents track conflicts)
         // ==========================================
-        this._applyVolume(); // 统一在这里刷新一次音量，下面就不写了
+        this._applyVolume(); // Refresh volume once here for all tracks below
 
-        // 1. 首页背景音乐
+        // 1. Main menu background music
         const menuStates = [
             GameState.NAME_ENTRY,
             GameState.DIFFICULTY_SELECT,
@@ -310,28 +310,28 @@ changeState(newState) {
         if (menuStates.includes(this.currentState)) {
             if (typeof titleBgm !== 'undefined' && titleBgm && !titleBgm.isPlaying()) titleBgm.loop();
         } else {
-            // 只要不是首页这三个状态，立刻闭嘴！(下面都是纯 else)
+            // Stop immediately when leaving menu states
             if (typeof titleBgm !== 'undefined' && titleBgm && titleBgm.isPlaying()) titleBgm.stop();
         }
 
-        // 2. 游戏中背景音乐
+        // 2. In-game background music
         if (this.currentState === GameState.PLAYING) {
             if (typeof gameplayBgm !== 'undefined' && gameplayBgm && !gameplayBgm.isPlaying()) gameplayBgm.loop();
         } else {
             if (typeof gameplayBgm !== 'undefined' && gameplayBgm && gameplayBgm.isPlaying()) gameplayBgm.stop();
         }
 
-        // 3. 商店音乐
+        // 3. Shop music
         if (this.currentState === GameState.SHOP) {
             if (typeof shopBgm !== 'undefined' && shopBgm && !shopBgm.isPlaying()) shopBgm.loop();
         } else {
             if (typeof shopBgm !== 'undefined' && shopBgm && shopBgm.isPlaying()) shopBgm.stop();
         }
 
-        // 4. 通关结算页面音乐
-        // 在 changeState(newState) 里的胜利音乐部分：
+        // 4. Level-pass result music
+        // Victory music block inside changeState(newState):
         if (this.currentState === GameState.LEVEL_PASS_CELEBRATION) {
-             // 延迟 0.1 秒播放，给玩家一个心理准备
+             // Delay playback by 0.1s to make the transition smoother
              setTimeout(() => {
                  if (typeof victoryBgm !== 'undefined' && victoryBgm && !victoryBgm.isPlaying()) {
                      victoryBgm.loop(); 
@@ -343,7 +343,7 @@ changeState(newState) {
             }
         }
 
-        // 5. 目标分数展示页音乐
+        // 5. Next-level target screen music
         if (this.currentState === GameState.NEXT_LEVEL_TARGET) {
             if (typeof targetBgm !== 'undefined' && targetBgm && !targetBgm.isPlaying()) targetBgm.loop(); 
         } else {
@@ -363,7 +363,7 @@ changeState(newState) {
         }
     }
 
-    // 名字重复检测：优先 fetch 远程，失败则用 localStorage
+    // Duplicate-name check: try remote fetch first, fallback to localStorage
     _triggerNameCheck() {
         const name = (this.inputText || '').trim();
         if (!name) {
@@ -407,7 +407,7 @@ changeState(newState) {
                     return names.includes(n);
                 }
             } catch (_e) {
-                /* Supabase fetch 失败，回退到 localStorage */
+                /* Supabase fetch failed, fallback to localStorage */
             }
         }
 
@@ -417,7 +417,7 @@ changeState(newState) {
         );
     }
 
-    // 图片背景：按比例缩放填满画布（cover）
+    // Background image: scale proportionally to cover the canvas
     drawCoverBackground(img) {
         if (!img || !img.width) return;
         let scale = max(width / img.width, height / img.height);
@@ -431,42 +431,42 @@ changeState(newState) {
         push();
         imageMode(CORNER);
 
-        // 保持你原来调好的尺寸
+        // Keep the tuned size values
         const btnW = 170;
         const btnH = 60;
         const btnX = 20; 
         const btnY = height - 20 - btnH; 
 
-        // 1. 判断鼠标有没有悬浮和按下
+        // 1. Check whether the mouse is hovering/pressed
         let isHovered = mouseX >= btnX && mouseX <= btnX + btnW && mouseY >= btnY && mouseY <= btnY + btnH;
         let isPressed = isHovered && mouseIsPressed;
         
-        // 2. 如果按下了，往下偏移 4 像素
+        // 2. If pressed, shift down by 4 pixels
         let pressOffset = isPressed ? 4 : 0;
 
-        // 3. 画出你的图片
+        // 3. Draw the button image
         if (typeof backImg !== 'undefined' && backImg) {
             if (isPressed) {
-                tint(180); // 🌟 按下时稍微变暗
+                tint(180); // Slightly darken when pressed
             } else {
-                noTint();  // 正常时不改变颜色
+                noTint();  // Keep original color normally
             }
             
-            // 画出带有向下偏移量 (pressOffset) 的图片
+            // Draw image with downward press offset
             image(backImg, btnX, btnY + pressOffset, btnW, btnH);
             
-            noTint(); // 🌟 极其重要：画完立刻重置颜色！不然会导致整个游戏的背景变成纯黑或者消失！
+            noTint(); // Important: reset tint immediately after drawing
         }
 
-        // 4. 热区保持死死不动，保证点击有效
+        // 4. Keep hitbox fixed to ensure reliable clicks
         this._menuBackBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
         pop()
 
-        // ⛔ 重点：物理判定区（热区）绝对不能跟着平移！不然按下去的一瞬间鼠标就不在判定区内了，会导致按钮疯狂抽搐
+        // Critical: hitbox must not move with visual press offset
         this._menuBackBtnBounds = { x: btnX, y: btnY, w: btnW, h: btnH };
         pop();
     }
-    // 海洋主题菜单背景：渐变 + 气泡 + 波浪底
+    // Ocean-themed menu background: gradient + bubbles + waves
     drawOceanMenuBackground() {
         push();
         rectMode(CORNER);
@@ -476,7 +476,7 @@ changeState(newState) {
             fill(lerpColor(color(8, 28, 55), color(30, 100, 160), t));
             rect(0, y, width, 3);
         }
-        // 底部波浪/海床
+        // Bottom waves / seabed
         fill(30, 80, 60);
         beginShape();
         vertex(0, height);
@@ -488,7 +488,7 @@ changeState(newState) {
         vertex(width + 50, height + 50);
         vertex(-10, height + 50);
         endShape(CLOSE);
-        // 浮动气泡
+        // Floating bubbles
         for (let i = 0; i < 12; i++) {
             let px = ((i * 73 + frameCount * 0.5) % (width + 40)) - 20;
             let py = height - ((i * 47 + frameCount * 0.3) % (height + 30));
@@ -497,7 +497,7 @@ changeState(newState) {
             ellipse(px, py, r * 2, r * 2);
         }
 
-        // 游动的鱼
+        // Swimming fish
         const fishData = [
             {
                 seed: 11,
@@ -557,7 +557,7 @@ changeState(newState) {
             this.drawDecorFish(fx, fy, f.len, f.dir, f.col);
         }
 
-        // 含珍珠的贝壳（贴近底部）
+        // Pearl shell near the bottom
         const shellData = [
             { x: width * 0.15, y: height - 45 },
             { x: width * 0.55, y: height - 50 },
@@ -568,7 +568,7 @@ changeState(newState) {
             this.drawDecorShell(s.x, sy);
         }
 
-        // 金币
+        // Coins
         for (let i = 0; i < 8; i++) {
             let cx = ((i * 97 + 31) % (width - 40)) + 20;
             let cy =
@@ -577,7 +577,7 @@ changeState(newState) {
             this.drawDecorCoin(cx, cy);
         }
 
-        // 宝箱
+        // Treasure chest
         this.drawDecorChest(
             width * 0.3,
             height - 75 + sin(frameCount * 0.02) * 4,
@@ -2427,7 +2427,7 @@ changeState(newState) {
                 if (this._menuBackBtnBounds && 
                     mouseX >= this._menuBackBtnBounds.x && mouseX <= this._menuBackBtnBounds.x + this._menuBackBtnBounds.w && 
                     mouseY >= this._menuBackBtnBounds.y && mouseY <= this._menuBackBtnBounds.y + this._menuBackBtnBounds.h) {
-                    this.changeState(GameState.DIFFICULTY_SELECT); // 退回到选择难度
+                    this.changeState(GameState.DIFFICULTY_SELECT); // Go back to difficulty selection
                     break;
                 }
                 if (
@@ -2441,7 +2441,7 @@ changeState(newState) {
                     )
                 ) {
                     this.currentPlayerMode = PlayerMode.SINGLE;
-                    this.startGame(); // 去掉了只允许 Easy 的限制
+                    this.startGame(); // Removed the Easy-only restriction
                 } else if (
                     this.isPointInRect(
                         mouseX,
@@ -2453,11 +2453,11 @@ changeState(newState) {
                     )
                 ) {
                     this.currentPlayerMode = PlayerMode.TWO_PLAYER;
-                    this.startGame(); // 【新增】：让双人模式也能启动游戏！
+                    this.startGame(); // Added: allow two-player mode to start the game
                 }
                 break;
             case GameState.HOW_TO_PLAY:
-                // 点击任意位置开始游戏
+                // Click anywhere to start the game
                 this.startLevel();
                 break;
             case GameState.PLAYING: {
@@ -2466,16 +2466,16 @@ changeState(newState) {
                     const b1 = this._pauseMenuBtn1;
                     const b2 = this._pauseMenuBtn2;
                     
-                    // 1. 点击了“继续游戏”的 X 按钮
+                    // 1. Clicked the "Resume Game" X button
                     if (bc && mouseX >= bc.x && mouseX <= bc.x + bc.w && mouseY >= bc.y && mouseY <= bc.y + bc.h) {
                         this.gamePaused = false;
-                        // 🎵 恢复音乐播放
+                        // 🎵 Resume background music
                         if (typeof gameplayBgm !== 'undefined' && gameplayBgm && !gameplayBgm.isPlaying()) {
                             gameplayBgm.loop();
                         }
                         break;
                     }
-                    // 2. 点击了“结束当前关卡/放弃游戏”
+                    // 2. Clicked "End Current Level / Quit Game"
                     if (b1 && mouseX >= b1.x && mouseX <= b1.x + b1.w && mouseY >= b1.y && mouseY <= b1.y + b1.h) {
                         this.gamePaused = false;
                         this._finalizeCurrentLevelEarnings();
@@ -2495,7 +2495,7 @@ changeState(newState) {
                         this.changeState(GameState.LEVEL_RESULT);
                         break;
                     }
-                    // 3. 点击了“重新开始游戏” (返回主菜单)
+                    // 3. Clicked "Restart Game" (return to main menu)
                     if (b2 && mouseX >= b2.x && mouseX <= b2.x + b2.w && mouseY >= b2.y && mouseY <= b2.y + b2.h) {
                         this.gamePaused = false;
                         this.changeState(GameState.NAME_ENTRY);
@@ -2503,22 +2503,22 @@ changeState(newState) {
                     }
                 } else {
                     const pb = this.levelManager._pauseBtnBounds;
-                    // 4. 点击了右上角的【暂停按钮】
+                    // 4. Clicked the top-right pause button
                     if (
                         pb &&
                         this.isPointInRect(mouseX, mouseY, pb.cx, pb.cy, pb.w, pb.h)
                     ) {
-                        this.gamePaused = !this.gamePaused; // 切换暂停状态
+                        this.gamePaused = !this.gamePaused; // Toggle pause state
                         
-                        // 🎵 处理音乐的停止与恢复
+                        // 🎵 Handle pausing/resuming music
                         if (typeof gameplayBgm !== 'undefined' && gameplayBgm) {
                             if (this.gamePaused) {
-                                // 如果进入暂停，停止音乐
+                                // If entering pause, stop the music
                                 if (gameplayBgm.isPlaying()) {
                                     gameplayBgm.pause(); 
                                 }
                             } else {
-                                // 取消暂停时恢复
+                                // Resume when unpausing
                                 if (!gameplayBgm.isPlaying()) {
                                     gameplayBgm.loop(); 
                                 }
@@ -2532,7 +2532,7 @@ changeState(newState) {
                 let shopResult = this.shopManager.handleMousePress(this.player, this.currentPlayerMode);
                 if (shopResult === 'NEXT_LEVEL') {
                     this.levelNum++;
-                    // 🌟 重点：这里不要直接调用 startLevel，而是切到目标展示页
+                    // Key point: do not call startLevel directly; switch to target screen first
                     this.changeState(GameState.NEXT_LEVEL_TARGET); 
                 }
                 break;
@@ -2544,7 +2544,7 @@ changeState(newState) {
                 break;
             }
             case GameState.LEVEL_PASS_CELEBRATION:
-                // 🌟 改为触发过场动画：屏幕渐黑后再进入商城
+                // Trigger transition animation: fade to black before entering shop
                 triggerTransition(GameState.SHOP); 
                 break;
             case GameState.LEVEL_RESULT:
@@ -2708,16 +2708,16 @@ changeState(newState) {
         }
 
         if (this.currentState === GameState.PLAYING) {
-            // --- 1. 双人模式逻辑 (不分难度) ---
+            // --- 1. Two-player mode logic (independent of difficulty) ---
             if (this.currentPlayerMode === PlayerMode.TWO_PLAYER) {
-                // 左边玩家 P1：只能用 S 键
+                // Left player (P1): S key only
                 if (key === 's' || key === 'S') {
                     if (this.levelManager && this.levelManager.hook1) {
                         this.levelManager.hook1.deployDown();
                     }
                     return;
                 }
-                // 右边玩家 P2：只能用 向下键
+                // Right player (P2): Down Arrow only
                 if (keyCode === DOWN_ARROW) {
                     if (this.levelManager && this.levelManager.hook2) {
                         this.levelManager.hook2.deployDown();
@@ -2725,9 +2725,9 @@ changeState(newState) {
                     return;
                 }
             }
-            // --- 2. 单人模式逻辑 (不分难度) ---
+            // --- 2. Single-player mode logic (independent of difficulty) ---
             else {
-                // 只能使用 向下键，去掉了对 S 键的判定
+                // Down Arrow only; S key input is disabled here
                 if (keyCode === DOWN_ARROW) {
                     if (this.levelManager && this.levelManager.hook) {
                         this.levelManager.hook.deployDown();
@@ -2737,13 +2737,13 @@ changeState(newState) {
             }
         }
 
-        // --- 3. 姓名输入界面逻辑 ---
+        // --- 3. Name-entry screen logic ---
         if (this.currentState === GameState.NAME_ENTRY) {
             this.nameInputFocused = true;
             
-            // 双保险：同时检测数字代号(8)和真实键名('Backspace')
+            // Double check: detect both keyCode (8) and key name ('Backspace')
             if (keyCode === 8 || key === 'Backspace') {
-                // 加个保护：只有当框里有字的时候才删，防止报错
+                // Guard: delete only when input is non-empty
                 if (this.inputText.length > 0) {
                     this.inputText = this.inputText.substring(0, this.inputText.length - 1);
                 }
@@ -2768,7 +2768,7 @@ changeState(newState) {
             }
         }
 
-        // 商店界面按 P 键呼出作弊按钮
+        // Press P in shop to toggle the cheat button
         if (this.currentState === GameState.SHOP) {
             if (key === 'p' || key === 'P') {
                 this.shopManager.showCheatBtn = !this.shopManager.showCheatBtn; 
