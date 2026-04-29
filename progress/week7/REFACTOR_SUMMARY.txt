@@ -1,21 +1,21 @@
-# 🎮 DEEP SEA PROSPECTOR - 重构完成度检查
+# 🎮 DEEP SEA PROSPECTOR - Refactoring Completion Check
 
-✅ 已自动完成：
-  1. sketch.js: 画布改为 1280x720
-  2. sketch.js: 添加 bgImageDeepSea 预加载
-  3. LevelManager.js: 添加深海检测 (this.isDeepSea)
-  4. LevelManager.js: 调整小船位置 Y=160
+✅ Automatically Completed:
+  1. sketch.js: Canvas changed to 1280x720
+  2. sketch.js: Added bgImageDeepSea preloading
+  3. LevelManager.js: Added deep sea detection (this.isDeepSea)
+  4. LevelManager.js: Adjusted boat position to Y=160
 
-⚠️  需要手动完成以下 8 项关键修改：
-  [] 在 spawnItems() 添加环保常量（WATER_LEVEL, MAX_ITEMS等）
-  [] 重构 treasureCount 生成逻辑（深海增加宝箱）
-  [] 重构 looseStoneCount 生成逻辑（深海减少障碍）
-  [] 调整石头生成高度：从 Y=250 改为 Y=350+
-  [] 【关键】重构鱼类生成：Y坐标/数量上限/深海概率
-  [] 修改 draw() 背景逻辑支持深海背景切换
-  [] 调整 UI 布局：goalX 改为 width-180
-  [] 添加深海模式标记文本显示
+⚠️ Manually Complete the Following 8 Key Modifications:
+  [ ] Add environment constants in spawnItems() (WATER_LEVEL, MAX_ITEMS, etc.)
+  [ ] Refactor treasureCount generation logic (Increase treasure chests in deep sea)
+  [ ] Refactor looseStoneCount generation logic (Decrease obstacles in deep sea)
+  [ ] Adjust stone spawn height: From Y=250 to Y=350+
+  [ ] [Key] Refactor fish generation: Y-coordinate / Spawn limit / Deep sea probability
+  [ ] Modify draw() background logic to support deep sea background switching
+  [ ] Adjust UI layout: goalX changed to width-180
+  [ ] Add deep sea mode marker text display
 
-📊 重构优先级：关键改进 > 次要调整 > 视觉增强
+📊 Refactoring Priority: Key Improvements > Minor Adjustments > Visual Enhancements
 
-当前进度: 4/12 (33%)
+Current Progress: 4/12 (33%)

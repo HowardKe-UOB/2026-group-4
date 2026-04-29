@@ -535,11 +535,10 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 | **End Game Feedback** | The game over screen does not clearly summarize performance (e.g., total score breakdown or level reached).                 | Visibility of system status     |        2        |      2       |         2         |          **2.00**          |
 | **Multiplayer**       | In two-player mode, it is unclear which hook belongs to which player.                                                       | Consistency and standards       |        2        |      2       |         2         |          **2.00**          |
 
-<br>
-<p align="center">
+<div align="center">
   <font color="#888888">Figure 19: Heuristic Evaluation Feedback Map</font><br><br>
-  <img src="docs/evaluation%20report%20figure/feedback.png" style="width: 120%; max-width: none;" alt="Heuristic Evaluation Mind Map">
-</p>
+  <img src="docs/evaluation%20report%20figure/feedback.png" style="max-width: 100%; height: auto;" alt="Heuristic Evaluation Mind Map">
+</div>
 <br>
 ### 6.2 Quantitative Evaluation
 
