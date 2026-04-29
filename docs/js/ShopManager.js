@@ -5,7 +5,7 @@ class ShopManager {
         this.nextLevelBoxX = 1020;
         this.nextLevelBoxY = 70;
 
-        //道具在柜台上的位置
+        // Item positions on the counter
         this.itemPositions = [
             { x: width / 2 - 180, y: height / 2 + 110 }, // Strength Potion
             { x: width / 2 - 60, y: height / 2 + 110 }, // Laser Sight
@@ -17,9 +17,9 @@ class ShopManager {
             { x: width / 2 + 120, y: height / 2 - 140 } // Club Card
         ];
 
-        // 1. 定义道具的基础配置 (通过 slotIndex 绑定到上面固定的位置)
-        // 非永久道具：baseProb 高，maxProb 高
-        // 永久道具：baseProb 低，maxProb 较低
+        // 1. Define base item configs (bind to fixed positions via slotIndex)
+        // Non-permanent items: higher baseProb and maxProb
+        // Permanent items: lower baseProb and maxProb
         this.itemConfigs = [
             { slotIndex: 0, name: "Strength Potion", basePrice: 225, baseProb: 0.5, maxProb: 0.7, desc: "A potion can bestow you with magical power!\nPulls items 1.5x faster.\n[period: 1 level]" },
             { slotIndex: 1, name: "Laser Sight", basePrice: 175, baseProb: 0.5, maxProb: 0.7, desc: "Often miss? Buy Laser Sight now!\nAdd aiming assistance, swing speed -40%.\n[period: 1 level]" },
@@ -31,36 +31,36 @@ class ShopManager {
             { slotIndex: 7, name: "Club Card", basePrice: 500, baseProb: 0.15, maxProb: 0.4, desc: "Exclusive member benefits!\nGet 10%~30% off all items.\n[Permanent upgrade]" }
         ];
 
-        this.hitRadius = 60; // 判定范围
+        this.hitRadius = 60; // Hit detection radius
         this.availableItems = [];
 
-        // 作弊按钮
-        this.hitRadius = 60; // 判定范围
+        // Cheat button
+        this.hitRadius = 60; // Hit detection radius
         this.availableItems = [];
 
-        // 控制作弊按钮是否显示
+        // Toggle cheat button visibility
         this.showCheatBtn = false; 
 
-        this.resetShop(1, null);  // 初始化时，因为还没有获取到玩家，传 null 进去
+        this.resetShop(1, null);  // On init, pass null because player is not available yet
     }
 
     resetShop(levelNum = 1, player = null) {
         this.availableItems = [];
         let pool = [];
 
-        // 1. 强制添加潜水艇（每关必出）
+        // 1. Force-add Submarine (always appears every level)
         let subConfig = this.itemConfigs.find(c => c.name === "Submarine");
         pool.push(subConfig);
 
-        // 2. 处理其他道具的动态概率
-        // 线性增长计算：从第1关到第6关增长，6关后固定
+        // 2. Apply dynamic probabilities to other items
+        // Linear ramp: grows from level 1 to 6, then stays fixed
         let progress = Math.min(levelNum, 6);
-        let ratio = (progress - 1) / 5; // 0.0 (L1) 到 1.0 (L6)
+        let ratio = (progress - 1) / 5; // 0.0 (L1) to 1.0 (L6)
 
         this.itemConfigs.forEach(config => {
-            if (config.name === "Submarine") return; // 跳过潜水艇
+            if (config.name === "Submarine") return; // Skip submarine
 
-            // 计算当前关卡的动态概率
+            // Compute dynamic probability for current level
             let currentProb = config.baseProb + (config.maxProb - config.baseProb) * ratio;
 
             if (Math.random() < currentProb) {
@@ -68,19 +68,19 @@ class ShopManager {
             }
         });
 
-        // 3. 保底机制：如果道具少于3个（含潜水艇），随机补齐
+        // 3. Fallback: if fewer than 3 items (including submarine), fill randomly
         while (pool.length < 3) {
             let remainConfigs = this.itemConfigs.filter(c => !pool.includes(c));
             if (remainConfigs.length === 0) break;
-            // 随机抽取一个补入
+            // Randomly pick one item to fill
             let randomConfig = remainConfigs[Math.floor(Math.random() * remainConfigs.length)];
             pool.push(randomConfig);
         }
 
-        // 4. 按原始 slotIndex 排序，保持视觉位置绝对不打乱
+        // 4. Sort by original slotIndex to keep visual positions stable
         pool.sort((a, b) => a.slotIndex - b.slotIndex);
 
-        // 5. 实例化道具，并记录它们对应的位置索引
+        // 5. Instantiate items and store their slot indices
         pool.forEach(config => {
             let item = new ShopItem(
                 config.name,
@@ -89,14 +89,14 @@ class ShopManager {
                 levelNum,
                 player
             );
-            item.slotIndex = config.slotIndex; // 关键：绑定到原有的柜台位置
+            item.slotIndex = config.slotIndex; // Key: bind to original counter position
             this.availableItems.push(item);
         });
     }
 
-    // playerMode 参数：用于双人模式下显示各自余额及差异化扣款
+    // playerMode parameter: used for two-player balance display and purchase logic
     draw(player, playerMode = PlayerMode.SINGLE, levelNum = 1) {
-        // 绘制背景（使用覆盖模式以防止拉伸）
+        // Draw background (cover mode to avoid stretching)
         push();
         if (typeof shopBgImg !== "undefined" && shopBgImg) {
             let imgRatio = shopBgImg.width / shopBgImg.height;
@@ -120,29 +120,29 @@ class ShopManager {
         }
         pop();
 
-        // ── 金额显示 ──────────────────────────────────────────────────
+        // Money display
         push();
         textAlign(CENTER, CENTER);
         textStyle(BOLD);
         textFont(pixelFont);
 
         if (playerMode === PlayerMode.TWO_PLAYER) {
-            // 双人模式：分别显示 P1 / P2 余额，及合计
+            // Two-player mode: show P1/P2 balances and total
             textSize(10);
             textStyle(NORMAL);
-            fill(255, 150, 50); // P1 橙色
+            fill(255, 150, 50); // P1 orange
             text("P1:$" + player.p1Score, this.goldBoxX, this.goldBoxY-20);
-            fill(80, 160, 255); // P2 蓝色
+            fill(80, 160, 255); // P2 blue
             text("P2:$" + player.p2Score, this.goldBoxX, this.goldBoxY+5);
             textSize(12);
             textStyle(NORMAL);
-            fill(255, 165, 0); // 合计金色
+            fill(255, 165, 0); // Total in gold color
             text("Total:$" + player.totalScore, this.goldBoxX, this.goldBoxY + 30);
         } else {
-            // 单人模式
+            // Single-player mode
             textSize(14);
             textStyle(NORMAL);
-            fill(64, 64, 64); //深灰色
+            fill(64, 64, 64); // dark gray
             text("Gold:$" + player.totalScore, this.goldBoxX, this.goldBoxY);
         }
         pop();
@@ -150,11 +150,11 @@ class ShopManager {
         const mx = this.scaledMouseX ?? (typeof mouseX !== "undefined" ? mouseX : 0);
         const my = this.scaledMouseY ?? (typeof mouseY !== "undefined" ? mouseY : 0);
 
-        // Next Level button 检测区域
+        // Next Level button hit area
         let isNextHovered =
             abs(mx - this.nextLevelBoxX) < 80 &&
             abs(my - this.nextLevelBoxY) < 35;
-        // 高亮区域
+        // Highlight area
         if (isNextHovered) {
             noStroke();
             fill(255, 255, 255, 120);
@@ -193,7 +193,7 @@ class ShopManager {
             imageMode(CENTER);
             let imgSize = 80;
             if (item.name === "Submarine") {
-                imgSize = 110;  //专门增加潜水艇大小
+                imgSize = 110;  // Increase submarine icon size only
             }
             if (
                 item.name === "Strength Potion" &&
@@ -275,14 +275,14 @@ class ShopManager {
             textAlign(CENTER, CENTER);
             let infoY = height - 90;
 
-            // 商品名称 和 商品打折显示
+            // Item name and discount display
             fill(60, 40, 20);
             textSize(16);
             textStyle(BOLD);
             if(hoveredItem.isDiscounted){
                 fill(255, 50, 50);
                 textStyle(BOLD);
-                // Fishbone Collector 打折时名称较长，缩小字体避免溢出
+                // Name is long when discounted; reduce font size to avoid overflow
                 if (hoveredItem.name === "Fishbone Collector" || hoveredItem.name === "Four-Leaf Clover") {
                     textSize(14);
                 } else {
@@ -294,26 +294,26 @@ class ShopManager {
                 text(hoveredItem.name + " - $" + hoveredItem.costPrice, width / 2, infoY - 55);
             }
 
-            // 商品描述-字体缩小避免溢出
+            // Item description: reduce font size to avoid overflow
             textSize(10);
             textStyle(NORMAL);
             fill(100, 80, 60);
             text(hoveredItem.description, width / 2, infoY - 20);
 
-            // 如果触发了会员卡折扣，显示橘色提示文字
+            // If Club Card discount is active, show orange hint text
             let promptY = infoY + 20;
             if (hoveredItem.clubDiscountText !== "") {
-                fill(230, 120, 0); // 橘色
+                fill(230, 120, 0); // Orange
                 textSize(12);
                 text(hoveredItem.clubDiscountText, width / 2, infoY + 10);
-                promptY += 10; // 把购买提示稍微往下一点，防止重叠
+                promptY += 10; // Move purchase hint down slightly to avoid overlap
             }
 
-            // 购买提示
+            // Purchase hint
             textSize(16);
             textStyle(NORMAL);
 
-            // 双人模式：现在只看共享的 totalScore 是否够钱
+            // Two-player mode: only check shared totalScore affordability
             let canAfford = player.totalScore >= hoveredItem.costPrice;
 
             let alreadyOwned =
@@ -330,17 +330,17 @@ class ShopManager {
                 fill(180, 50, 50);
                 text("Not enough Gold!", width / 2, promptY);
             } else {
-                // 因为是共享钱包，提示统一改为 Click to buy 即可
+                // Shared wallet: unified hint is simply "Click to buy"
                 fill(35, 140, 35);
                 text("Click to buy", width / 2, promptY);
             }
             pop();
         }
-        // 绘制作弊按钮 (按P键后显示)
+        // Draw cheat button (shown after pressing P)
         if (this.showCheatBtn) {
             push();
             let cheatBtnX = 100;
-            let cheatBtnY = height - 40; // 左下角
+            let cheatBtnY = height - 40; // Bottom-left corner
             let cheatBtnW = 120;
             let cheatBtnH = 35;
 
@@ -363,12 +363,12 @@ class ShopManager {
         }           
     }
 
-    // playerMode 参数：用于双人模式下的差异化扣款逻辑
+    // playerMode parameter: used for two-player differentiated purchase deduction
     handleMousePress(player, playerMode = PlayerMode.SINGLE) {
         const mx = this.scaledMouseX ?? (typeof mouseX !== "undefined" ? mouseX : 0);
         const my = this.scaledMouseY ?? (typeof mouseY !== "undefined" ? mouseY : 0);
 
-        // 作弊按钮点击检测
+        // Cheat button click detection
         if (this.showCheatBtn) {
             let cheatBtnX = 100;
             let cheatBtnY = height - 50;
@@ -388,9 +388,9 @@ class ShopManager {
 
             let d = dist(mx, my, pos.x, pos.y);
             if (d < this.hitRadius) {
-                // 单人，双人模式都由totalScore判断
+                // Both single and two-player modes use totalScore for affordability
                 let canAfford = player.totalScore >= item.costPrice;
-                // 双人模式：用两人合计判断；单人模式：用 totalScore
+                // Two-player: combined balance check; single-player: totalScore check
                 // let canAfford = playerMode === PlayerMode.TWO_PLAYER
                 //     ? (player.p1Score + player.p2Score >= item.costPrice)
                 //     : (player.totalScore >= item.costPrice);
@@ -403,25 +403,25 @@ class ShopManager {
                     (item.name === "Club Card" && player.hasClubCard);
 
                 if (!alreadyOwned && canAfford) {
-                    // 双人：优先扣 P1，不足从 P2 补；单人：原逻辑
+                    // Two-player: original design was P1-first then P2; single-player: original logic
                     let purchased = playerMode === PlayerMode.TWO_PLAYER
                         ? player.purchaseItemTwoPlayer(item)
                         : player.purchaseItem(item);
 
                     if (purchased) {
                         item.purchased = true;
-                        // 潜水艇是永久升级，立即生效
+                        // Submarine is a permanent upgrade; apply immediately
                         if (item.name === "Submarine") {
                             player.hasSubmarine = true;
                         }
-                        // 购买会员卡后，立即标记玩家拥有会员卡
+                        // After buying Club Card, mark player as owning it immediately
                         else if (item.name === "Club Card") {
                             player.hasClubCard = true;
                             
-                            // 让当前店里的其他商品立即享受折扣
+                            // Apply discounts to other current shop items immediately
                             this.availableItems.forEach(shopItem => {
                                 if (shopItem !== item && !shopItem.purchased) {
-                                    // 立即重新计算该商品的折扣价
+                                    // Recalculate discounted price immediately
                                     shopItem.applyClubCardDiscount(player);
                                 }
                             });
@@ -439,12 +439,12 @@ class ShopManager {
         return "NONE";
     }
 
-    // 作弊：一键上架所有商品并打 1 折
+    // Cheat: list all items and set to 10% price
     activateCheat(player) {
-        this.showCheatBtn = false; // 点完后隐藏按钮
-        this.availableItems = [];  // 清空当前商店
+        this.showCheatBtn = false; // Hide button after click
+        this.availableItems = [];  // Clear current shop
 
-        // 遍历所有商品配置，全部上架
+        // Iterate all item configs and list all items
         this.itemConfigs.forEach(config => {
             let item = new ShopItem(
                 config.name,
@@ -455,10 +455,10 @@ class ShopManager {
             );
             item.slotIndex = config.slotIndex; 
             
-            // 价格变为 1 折 (10%)
+            // Set price to 10% (1 discount fold)
             item.costPrice = Math.max(1, Math.floor(config.basePrice * 0.1)); 
             
-            // 利用你原本给会员卡准备的橙色文字提示位，显示作弊特效字
+            // Reuse Club Card orange hint slot to show cheat effect text
             item.clubDiscountText = "DEV CHEAT: 90% OFF!"; 
             
             this.availableItems.push(item);
