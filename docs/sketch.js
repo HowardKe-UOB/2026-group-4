@@ -1,6 +1,6 @@
 // ============================================================
-// 🌟 核心修改：真正的像素风格深海过场动画全案 🌟
-// 包含：2秒硬停顿、像素气泡、像素硬边声纳、像素浮动文字
+// 🌟 Core update: complete pixel-style deep-sea transition plan 🌟
+// Includes: 2s hard hold, pixel bubbles, hard-edge pixel sonar, floating pixel text
 // ============================================================
 
 let sceneTransition = {
@@ -9,155 +9,155 @@ let sceneTransition = {
     fadeType: 'OUT', 
     targetState: null,
     
-    // 1. 🌟 修改：速度降得极低，让淡出/淡入过程极其缓慢优雅
-    // 以前是4，现在改成 2。让 Stakeholder 感受大洋的压迫感。
+    // 1. 🌟 Updated: much lower speed for very slow, elegant fade-out/fade-in
+    // Previously 4, now 2. This enhances deep-ocean pressure.
     speed: 2, 
     
-    // 2. 🌟 新增：2秒硬停顿控制
-    holdDuration: 2000, // 完全黑透后暂停 2000 毫秒 (2秒)
+    // 2. 🌟 Added: 2-second hard hold control
+    holdDuration: 2000, // Pause for 2000 ms (2s) after full black
     holdStartTime: 0,
     
     baseColor: [30, 90, 140],
     
-    // 🌟 新增：用于复杂像素 UI 的变量
-    pixelParticles: [], // 像素气泡系统
+    // 🌟 Added: variables used by complex pixel UI
+    pixelParticles: [], // Pixel bubble system
     pixelSonarPulseSize: 0,
     pixelSonarPulseAlpha: 0,
-    textOffset: 0 // 文字上下浮动
+    textOffset: 0 // Vertical text floating offset
 };
 
-// 🌟 新增：初始化硬边像素气泡（从底部冒泡）
+// 🌟 Added: initialize hard-edge pixel bubbles (rising from bottom)
 function initPixelParticles() {
     sceneTransition.pixelParticles = [];
-    for (let i = 0; i < 50; i++) { // 50个像素气泡
+    for (let i = 0; i < 50; i++) { // 50 pixel bubbles
         sceneTransition.pixelParticles.push({
             x: random(width),
-            y: random(height + 100, height + 500), // 在屏幕底部下方生成
-            vy: random(-1, -3), // 向上漂浮
-            // 🌟 核心：气泡必须是固定的像素大小，没有小数，不平滑
-            size: floor(random(2, 5)) * 2, // 生成 4, 6, 8 像素大小的气泡
-            color: [180, 230, 255], // 亮蓝色
+            y: random(height + 100, height + 500), // Spawn below screen bottom
+            vy: random(-1, -3), // Float upward
+            // 🌟 Core: fixed integer pixel sizes only; no smoothing
+            size: floor(random(2, 5)) * 2, // Bubble sizes: 4, 6, 8 pixels
+            color: [180, 230, 255], // Bright blue
             opacity: 0, 
-            sinOffset: random(TWO_PI) // 用于左右摆动
+            sinOffset: random(TWO_PI) // Used for horizontal sway
         });
     }
 }
 
-// 🌟 新增：绘制硬边像素气泡（核心技术：noSmooth, 像素对齐）
+// 🌟 Added: draw hard-edge pixel bubbles (noSmooth + pixel alignment)
 function drawPixelParticles(globalAlpha) {
-    if (globalAlpha < 50) return; // 屏幕太亮时不画气泡
+    if (globalAlpha < 50) return; // Skip bubbles when screen is too bright
 
     push();
     noStroke();
     
-    // 🌟 核心：关闭 p5 的平滑缩放，强制所有绘制都是硬边像素
+    // 🌟 Core: disable p5 smoothing for hard-edge pixel rendering
     noSmooth(); 
 
     for (let p of sceneTransition.pixelParticles) {
         p.y += p.vy;
-        // 气泡随Alpha淡入出
+        // Bubble opacity follows global alpha
         p.opacity = lerp(p.opacity, (globalAlpha / 255) * 150, 0.05);
 
-        // 如果飘出顶部，重新回到最底部
+        // Reset to bottom when bubble exits top
         if (p.y < -20) {
             p.y = height + random(50, 200);
             p.x = random(width);
         }
 
-        // 气泡左右摆动，更有灵动感
+        // Horizontal sway for more natural movement
         let driftX = sin(frameCount * 0.02 + p.sinOffset) * 2;
         
-        // 🌟 核心：颜色必须包含全局Alpha
+        // 🌟 Core: color must include global alpha
         fill(p.color[0], p.color[1], p.color[2], p.opacity);
         
-        // 🌟 核心：绘制像素气泡。必须用 floor 将坐标对齐到整数像素上！
-        // 气泡不是圆的，是像素块组成的方块/十字
+        // 🌟 Core: align bubble coords to integer pixels with floor()
+        // Bubbles are pixel blocks/crosses, not circles
         let px = floor(p.x + driftX);
         let py = floor(p.y);
         
         if (p.size === 4) {
-            rect(px, py, 4, 4); // 4x4 像素块
+            rect(px, py, 4, 4); // 4x4 pixel block
         } else if (p.size === 6) {
-            // 组成一个十字形的 6x6 像素气泡
+            // Build a cross-shaped 6x6 pixel bubble
             rect(px + 2, py, 2, 6);
             rect(px, py + 2, 6, 2);
         } else {
-            // 组成一个更像圆的 8x8 像素气泡
+            // Build a rounder-looking 8x8 pixel bubble
             rect(px + 2, py, 4, 8);
             rect(px, py + 2, 8, 4);
         }
     }
     
-    // 🌟 核心：恢复平滑绘制，以免影响游戏其他部分
+    // 🌟 Core: restore smoothing to avoid affecting other rendering
     smooth(); 
     pop();
 }
 
-// 🌟 新增：绘制硬边像素声纳（正方形描边）
+// 🌟 Added: draw hard-edge pixel sonar (square outline)
 function drawPixelSonar(globalAlpha) {
-    if (globalAlpha < 200) return; // 屏幕黑透了才画
+    if (globalAlpha < 200) return; // Draw only when nearly fully black
     
-    sceneTransition.pixelSonarPulseSize += 2; // 声纳扩大
-    // 声纳Alpha随着变大而淡出
+    sceneTransition.pixelSonarPulseSize += 2; // Expand sonar pulse
+    // Sonar alpha fades as pulse grows
     sceneTransition.pixelSonarPulseAlpha = map(sceneTransition.pixelSonarPulseSize, 0, height * 0.4, 255, 0);
     
     if (sceneTransition.pixelSonarPulseSize > height * 0.4) {
-        sceneTransition.pixelSonarPulseSize = 0; // 循环
+        sceneTransition.pixelSonarPulseSize = 0; // Loop
     }
 
     push();
-    noSmooth(); // 关闭平滑
+    noSmooth(); // Disable smoothing
     noFill();
     
-    // 🌟 核心：硬边描边。描边厚度也是像素单位。
+    // 🌟 Core: hard-edge stroke in pixel units
     strokeWeight(2); 
-    stroke(100, 255, 255, sceneTransition.pixelSonarPulseAlpha); // 亮蓝绿色
+    stroke(100, 255, 255, sceneTransition.pixelSonarPulseAlpha); // Bright cyan
     
-    // 🌟 核心：坐标必须对齐整数像素。
-    // 画一个像素风格的正方形描边作为声纳
+    // 🌟 Core: coordinates must align to integer pixels
+    // Draw a pixel-style square outline as sonar
     let size = floor(sceneTransition.pixelSonarPulseSize);
     rect(floor(width / 2 - size / 2), floor(height / 2 - size / 2), size, size);
     
-    smooth(); // 恢复平滑
+    smooth(); // Restore smoothing
     pop();
 }
 
-// 🌟 修改：触发场景切换，初始化像素数据
+// 🌟 Updated: trigger scene transition and initialize pixel data
 function triggerTransition(nextState) {
     if (sceneTransition.isActive) return; 
     sceneTransition.isActive = true;
-    sceneTransition.fadeType = 'OUT'; // 开始变黑
+    sceneTransition.fadeType = 'OUT'; // Start darkening
     sceneTransition.alpha = 0;
     sceneTransition.targetState = nextState; 
     sceneTransition.holdStartTime = 0;
     
-    // 初始化像素系统
+    // Initialize pixel systems
     initPixelParticles(); 
 }
 
-// 🌟 核心修改：全新的处理函数，包含2秒硬暂停逻辑和所有像素 UI
+// 🌟 Core update: new transition handler with 2s hard hold and full pixel UI
 function drawSceneTransition() {
     if (!sceneTransition.isActive) return;
 
-    // --- 第一层：深海背景遮罩 ---
-    // 缓慢变黑，大洋压迫感
+    // --- Layer 1: deep-sea background mask ---
+    // Slow darkening for ocean pressure feel
     push();
     noStroke();
     let vignetteColor = sceneTransition.baseColor;
     fill(vignetteColor[0], vignetteColor[1], vignetteColor[2], sceneTransition.alpha);
-    rect(0, 0, width, height); // 简单的全屏矩形，配合超慢速， Stakeholder 会满意的
+    rect(0, 0, width, height); // Simple full-screen rectangle with very slow fade
     pop();
 
-    // --- 第二层：像素冒泡系统 ---
+    // --- Layer 2: pixel bubble system ---
     drawPixelParticles(sceneTransition.alpha);
 
-    // --- 第三层：中央像素 UI（声纳与文字） ---
-    // 只有在变黑或在停顿状态下才画
+    // --- Layer 3: central pixel UI (sonar + text) ---
+    // Draw only during dark phase or hold state
     if (sceneTransition.alpha > 200) {
-        // 1. 绘制硬边像素声纳
+        // 1. Draw hard-edge pixel sonar
         drawPixelSonar(sceneTransition.alpha);
 
-        // 2. 绘制像素呼吸浮动文字
+        // 2. Draw breathing floating pixel text
         push();
         textAlign(CENTER, CENTER);
         if (typeof pixelFont !== "undefined" && pixelFont) {
@@ -165,54 +165,54 @@ function drawSceneTransition() {
         }
         textSize(24);
 
-        // 文字颜色脉冲（蓝绿之间）
+        // Pulsing text color (between blue and green)
         let tPulse = sin(frameCount * 0.05);
         let tColor = lerpColor(color(150, 255, 200), color(220, 255, 255), (tPulse + 1) / 2);
         
-        // 🌟 核心：文字上下浮动效果
-        sceneTransition.textOffset = sin(frameCount * 0.03) * 6; // 上下浮动 6 像素
+        // 🌟 Core: vertical floating text effect
+        sceneTransition.textOffset = sin(frameCount * 0.03) * 6; // Float by 6 pixels vertically
 
-        // 🌟 核心：颜色必须包含当前的全局Alpha，且坐标 floor 对齐像素
+        // 🌟 Core: include current global alpha and align text coords to pixels
         fill(red(tColor), green(tColor), blue(tColor), sceneTransition.alpha);
         text("DIVING DEEPER...", floor(width / 2), floor(height / 2 + sceneTransition.textOffset));
         pop();
     }
 
-    // --- 核心逻辑控制：淡出 -> 停顿 2秒 -> 淡入 ---
+    // --- Core state flow: fade out -> hold 2s -> fade in ---
     if (sceneTransition.fadeType === 'OUT') {
         sceneTransition.alpha += sceneTransition.speed;
         if (sceneTransition.alpha >= 255) {
             sceneTransition.alpha = 255;
-            // 🌟 核心修改：淡出结束，进入停顿（HOLD）状态，并记下时间！
+            // 🌟 Core update: after fade-out, enter HOLD state and record timestamp
             sceneTransition.fadeType = 'HOLD'; 
             sceneTransition.holdStartTime = millis(); 
             
-            // 🌟 核心：等屏幕完全黑透了，再切换游戏状态！
+            // 🌟 Core: switch game state only after full black is reached
             if (gameManager) {
                 gameManager.changeState(sceneTransition.targetState);
             }
         }
     } else if (sceneTransition.fadeType === 'HOLD') {
-        // 🌟 新增逻辑：检查是否停顿够了两秒
+        // 🌟 Added logic: check whether 2-second hold is complete
         let timePassed = millis() - sceneTransition.holdStartTime;
         if (timePassed >= sceneTransition.holdDuration) {
-            // 停顿够了，开始淡入亮起来
+            // Hold complete, start fade-in
             sceneTransition.fadeType = 'IN'; 
         }
     } else if (sceneTransition.fadeType === 'IN') {
         sceneTransition.alpha -= sceneTransition.speed;
         if (sceneTransition.alpha <= 0) {
-            sceneTransition.isActive = false; // 动画彻底结束
+            sceneTransition.isActive = false; // Transition fully finished
         }
     }
 }
 let gameManager;
 let bgImageLevel1;
 let bgImageLevel2;
-let bgImageDeepSea; // 【新增】深海背景 - 用于Level >= 3或触发深海模式
-let submarineImg; // 【新增】潜水艇图片 - 深海关卡替换小船
-let sharkImgs = [];  // 【新增】鲨鱼动画帧 - 深海掠食者（4帧）
-let anglerFishImgs = []; // 【新增】鮟鱇鱼动画帧 - 深海发光生物（4帧）
+let bgImageDeepSea; // Added: deep-sea background for Level >= 3 or deep-sea mode
+let submarineImg; // Added: submarine sprite replacing boat in deep-sea levels
+let sharkImgs = [];  // Added: shark animation frames (4 frames)
+let anglerFishImgs = []; // Added: angler fish animation frames (4 frames)
 let potionImg;
 let laserImg;
 let clockImg;
@@ -223,13 +223,13 @@ let koiFishImgs = [];
 let clubcardImg;
 let shopBgImg;
 let titleBgm;
-let shopBgm; // 【修复】补充声明 shopBgm，防止黑屏报错
+let shopBgm; // Fix: declare shopBgm to prevent black-screen errors
 let buySfx;
-let koiInSfx, koiOutSfx;  // 锦鲤音效
-let catchSfx;    // 抓鱼抓中音效
-let ballCatchSfx; // 钩子碰到鱼的音效
-let sharkStolenSfx; // 鲨鱼偷走物品的音效
-let gameplayBgm; // 游戏中背景音乐
+let koiInSfx, koiOutSfx;  // Koi sound effects
+let catchSfx;    // Catch-hit sound effect
+let ballCatchSfx; // Hook-hit sound effect
+let sharkStolenSfx; // Shark-steal item sound effect
+let gameplayBgm; // In-game background music
 let imgSmallFishes = [];
 let imgBigFishes = [];
 let imgSkeleton;
@@ -256,8 +256,8 @@ let Treasure_Chest2;
 let victoryBgm;
 let targetBgm; 
 
-// 【新增】使用 HTML 已加载的 Google Fonts 像素字体，无需 loadFont
-// Press Start 2P加单引号，让浏览器解析
+// Added: use Google Fonts pixel font loaded by HTML (no loadFont needed)
+// Keep single quotes around Press Start 2P so browser parses correctly
 const pixelFont = "'Press Start 2P'";
 
 function preload() {
@@ -265,7 +265,7 @@ function preload() {
     bgImageLevel2 = loadImage("assets/ocean_bg2.jpg"); 
     passcelebrationImg = loadImage('assets/passcelebration.jpg');
     nextLevelBgImg = loadImage('assets/nextlevel.jpg');
-    bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // 如果没有这张图，记得改成 ocean_bg2.jpg
+    bgImageDeepSea = loadImage("assets/ocean_bg_deep.jpg"); // Use ocean_bg2.jpg if this image is unavailable
     backImg = loadImage('assets/back.png');
     potionImg = loadImage("assets/PowerPotion.png");
     laserImg = loadImage("assets/Laser.png");
@@ -287,7 +287,7 @@ function preload() {
     targetBgm = loadSound('assets/target.mp3');
 
     
-    // 🌟 重点在这里：小写的接开箱，大写的接关箱！
+    // 🌟 Important: lowercase maps to opening chest, uppercase maps to closed chest
     treasureChest = loadImage("assets/Treasure_Chest.png");
     Treasure_Chest2 = loadImage("assets/Treasure_Chest2.png");
     
@@ -385,14 +385,14 @@ function setup() {
     wireModeButtons();
 
     // ==========================================
-    // 🌟 把它放在 wireModeButtons() 下面，但在 setup() 结束的大括号上面！
+    // 🌟 Place this below wireModeButtons(), before setup() closing brace
     // ==========================================
     document.addEventListener('fullscreenchange', () => {
-        // 稍微延迟 100 毫秒，等浏览器的缩放动画结束
+        // Slight 100ms delay to wait for browser fullscreen animation
         setTimeout(() => {
             let c = document.querySelector('canvas');
             if (c) {
-                c.focus(); // 强行把键盘控制权抢回给游戏画面！
+                c.focus(); // Force keyboard focus back to the game canvas
             }
         }, 100);
     });
@@ -434,7 +434,7 @@ function wireModeButtons() {
     document.getElementById("btn-single").addEventListener("click", () => {
         userStartAudio();
         gameManager.currentPlayerMode = PlayerMode.SINGLE;
-        gameManager.startGame(); // 【修复】去掉了 Easy 限制，现在任何难度点单人都能玩了！
+        gameManager.startGame(); // Fix: removed Easy-only restriction; single-player works on any difficulty
     });
 
     document.getElementById("btn-two").addEventListener("click", () => {
@@ -473,7 +473,7 @@ function wireModeButtons() {
             document.getElementById("btn-two"),
         ];
 
-        // 【修复】首先清除所有的 row-selected 类，防止重影
+        // Fix: first clear all row-selected classes to prevent ghost highlights
         document
             .querySelectorAll(".btn-row")
             .forEach((r) => r.classList.remove("row-selected"));
@@ -481,7 +481,7 @@ function wireModeButtons() {
             .querySelectorAll(".pixel-btn")
             .forEach((b) => b.classList.remove("menu-selected"));
 
-        // 然后只添加到正确选中的选项
+        // Then add highlight only to the actual selected option
         diffBtns.forEach((b, i) => {
             const selected = s === GameState.DIFFICULTY_SELECT && i === idx;
             if (selected) {
@@ -497,7 +497,7 @@ function wireModeButtons() {
             }
         });
 
-        // 单一美人鱼：鼠标优先，悬停时跟随鼠标，否则跟随键盘选择
+        // Single mermaid cursor: mouse hover has priority; otherwise follow keyboard selection
         const MARGIN = 12;
         const ICON_SIZE = 48;
         let activeBtn = null;
@@ -530,7 +530,7 @@ function wireModeButtons() {
 let lastGameState = null;
 
 function draw() {
-    // 1. 原本更新和画游戏的逻辑不变
+    // 1. Keep original update and render logic unchanged
     if (gameManager) {
         gameManager.update();
     }
@@ -543,7 +543,7 @@ function draw() {
         gameManager._syncSelectionHighlight();
     }
 
-    // 2. 🌟 【新增】在所有东西都画完之后，画过场动画！这样它才能挡住所有东西
+    // 2. 🌟 Added: draw transition overlay after everything else so it covers all content
     drawSceneTransition(); 
 }
 
@@ -555,7 +555,7 @@ function mousePressed() {
             const c = document.querySelector("#game-container canvas");
             if (c) c.focus();
         }
-        // 确保点击坐标正确传递（支持点击输入框聚焦等）
+        // Ensure click coordinates are passed correctly (e.g., input focus click)
         gameManager.scaledMouseX = typeof mouseX !== "undefined" ? mouseX : 0;
         gameManager.scaledMouseY = typeof mouseY !== "undefined" ? mouseY : 0;
     }
@@ -564,7 +564,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
-    // 1. 全局拦截空格键 (防误触 + 强制全屏)
+    // 1. Globally intercept Space (prevent accidental triggers + force fullscreen)
     if (keyCode === 32) {
         if (!fullscreen()) {
             fullscreen(true);
@@ -572,17 +572,17 @@ function keyPressed() {
         return false; 
     }
 
-    // 2. 将按键正常传递给游戏 (刚刚改过的 GameManager 就会在这里接管退格键并删字)
+    // 2. Forward key input to game (GameManager handles Backspace deletion there)
     if (typeof gameManager !== 'undefined' && gameManager) {
         gameManager.handleKeyPress(key, keyCode);
     }
 
-    // 🌟 3. 终极护盾：死死按住退格键，不管任何情况，绝对不让浏览器触发“返回上一页”！
+    // 🌟 3. Ultimate guard: always block browser Back navigation on Backspace
     if (keyCode === 8 || key === 'Backspace') {
         return false; 
     }
     
-    // 4. 拦截方向键，防止疯狂抓鱼时整个网页跟着上下乱抖
+    // 4. Block arrow keys to prevent page scrolling while playing
     if ([UP_ARROW, DOWN_ARROW, LEFT_ARROW, RIGHT_ARROW].includes(keyCode)) {
         return false;
     }
