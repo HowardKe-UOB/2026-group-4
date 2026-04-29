@@ -2,8 +2,8 @@ class Player {
     constructor() {
         this.name = "";
         this.totalScore = 0;
-        this.p1Score = 0; // P1 独立余额（双人模式）
-        this.p2Score = 0; // P2 独立余额（双人模式）
+        this.p1Score = 0; // P1 independent balance (two-player mode)
+        this.p2Score = 0; // P2 independent balance (two-player mode)
         this.inventory = [];
         this.hasSubmarine = false;
         this.hasClover = false;
@@ -16,19 +16,19 @@ class Player {
         this.totalScore += amount;
     }
 
-    // 双人模式：P1 捕获物品时调用
+    // Two-player mode: call when P1 captures an item
     addP1Score(amount) {
         this.p1Score += amount;
         this.totalScore += amount;
     }
 
-    // 双人模式：P2 捕获物品时调用
+    // Two-player mode: call when P2 captures an item
     addP2Score(amount) {
         this.p2Score += amount;
         this.totalScore += amount;
     }
 
-    // 单人购买逻辑（原逻辑）
+    // Single-player purchase logic (original behavior)
     purchaseItem(shopItem) {
         if (this.totalScore >= shopItem.costPrice) {
             this.totalScore -= shopItem.costPrice;
@@ -38,7 +38,8 @@ class Player {
         return false;
     }
 
-    // 双人购买逻辑：改为只扣除共享总金额 (totalScore)，P1和P2的历史记录不减少
+    // Two-player purchase logic: deduct only shared totalScore;
+    // keep P1/P2 historical balances unchanged
     purchaseItemTwoPlayer(shopItem) {
         return this.purchaseItem(shopItem);
     }
