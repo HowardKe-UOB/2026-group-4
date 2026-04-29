@@ -1,4 +1,4 @@
-// 仅在此 URL 下才访问云端，其他环境只用本地 localStorage
+// Only access cloud leaderboard on production URL; use localStorage elsewhere.
 const PROD_URL = "https://uob-comsm0166.github.io/2026-group-4/";
 function isProdOrigin() {
     try {
@@ -20,6 +20,7 @@ class HighScoreManager {
     }
 
     loadScores() {
+        // Bootstrap from local cache first for fast startup and offline fallback.
         let saved = localStorage.getItem("deepSeaHighScores");
         if (saved) {
             let parsed = JSON.parse(saved);
@@ -50,6 +51,7 @@ class HighScoreManager {
             ];
             this._sortScores();
         }
+        // Then refresh with cloud data when available.
         this.fetchFromSupabase();
     }
 
@@ -153,6 +155,7 @@ class HighScoreManager {
             return;
         }
         this.isLoadingMore = true;
+        // Pagination uses current loaded count as the next offset.
         const offset = this.topScores.length;
         try {
             const res = await fetch(
@@ -214,7 +217,8 @@ class HighScoreManager {
         const d = (difficulty || "easy").toString().toLowerCase();
         const p = (playerMode || "single").toString().toLowerCase();
         const ch = catchHistory && typeof catchHistory === "object" ? catchHistory : {};
-        // 需在 Supabase `scores` 表增加 jsonb 列：per_level_earned、per_level_spawn_value
+        // Supabase `scores` table must include jsonb columns:
+        // `per_level_earned` and `per_level_spawn_value`.
         const ple = Array.isArray(perLevelEarned) ? perLevelEarned : [];
         const pls = Array.isArray(perLevelSpawnValue) ? perLevelSpawnValue : [];
         try {
