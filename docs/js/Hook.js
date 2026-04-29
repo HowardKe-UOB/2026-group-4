@@ -11,11 +11,11 @@ class Hook extends GameObject {
 
         this.angle = 0;
         this.angleVel = 0.028;
-        this.swingSpeedMultiplier = 1;  // 初始速度倍率为 1
+        this.swingSpeedMultiplier = 1;  // Initial swing speed multiplier is 1
         this.length = 50;
         this.maxLength = 900;
 
-        // 【新功能】：如果有专属图片就用专属的，没有就默认用原来的
+        // New feature: use custom sprite if provided, otherwise fallback to default
         this.sprite = customSprite || (typeof hookImg !== "undefined" ? hookImg : null);
     }
 
@@ -93,7 +93,7 @@ class Hook extends GameObject {
         let isOldHook2 = (typeof hookImg2 !== "undefined" && this.sprite === hookImg2);
         let isAnyMechHook = isNewHook || isNewHook2;
 
-        // 修改绳子颜色：机械臂用银灰色，老鱼叉用棕色
+        // Rope color: silver-gray for mech hooks, brown for old harpoons
         if (isAnyMechHook) {
             stroke(150, 160, 170); 
         } else {
@@ -101,7 +101,7 @@ class Hook extends GameObject {
         }
         strokeWeight(3);
 
-        // 如果是深海机械臂且正在待机，则隐藏绳子（镶嵌效果）
+        // Hide rope for deep-sea mech hooks while idle (embedded look)
         if (!(isAnyMechHook && this.state === HookState.IDLE_SWINGING)) {
             line(this.origin.x, this.origin.y, this.position.x, this.position.y);
         }
@@ -113,21 +113,21 @@ class Hook extends GameObject {
 
        
         if (isNewHook2) {
-            // 【右边玩家 P2】: 填 -90 完美垂直
+            // Right player (P2): -90 gives perfect vertical alignment
             rotate(lineAngle + radians(-90)); 
             image(this.sprite, 0, 0, 110, 110); 
             
         } else if (isNewHook) {
-            // 【左边玩家 P1】: 把 90 改成 270，让它倒转 180 度！
+            // Left player (P1): use 270 to flip by 180 degrees
             rotate(lineAngle + radians(270));  
             image(this.sprite, 0, 0, 110, 110);
             
         } else if (isOldHook2) {
-            // 左边玩家(P1)的浅海老鱼叉
+            // Left player (P1) shallow-water old harpoon
             rotate(lineAngle + radians(135));
             image(this.sprite, 0, 0, 80, 80);
         } else {
-            // 右边玩家(P2)的浅海老鱼叉
+            // Right player (P2) shallow-water old harpoon
             rotate(lineAngle + radians(135));
             if (this.sprite) {
                 image(this.sprite, 0, 0, 80, 80);
