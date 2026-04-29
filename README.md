@@ -573,9 +573,9 @@ Table 5: Median NASA TLX subscale scores for all participants
 > _Brief analysis: All 10 participants reported slight differences in overall workload in hard mode than in Easy mode (median 38 vs 36). The increase is small and consistent across participants; the Wilcoxon test (Table 2) found no statistically significant difference, suggesting the difficulty step did not substantially raise perceived workload._
 
 <div align="center">
-  <img src="docs/evaluation report figure/overal_workload.png" alt="NASA TLX Overall Workload by Participant" width="80%">
-  <br><br>
   <font color="#888888">Figure 20: Comparison of NASA TLX overall perceived workload scores across 10 participants (Easy vs. Deep Sea mode)</font>
+  <br><br>
+  <img src="docs/evaluation report figure/overal_workload.png" alt="NASA TLX Overall Workload by Participant" width="80%">
 </div>
 <br>
 
@@ -620,9 +620,9 @@ After finishing the NASA-TLX evaluation, all 10 participants filled out the SUS 
 - Mean SUS score (hard) — **75.0**
 
 <div align="center">
-  <img src="docs/evaluation%20report%20figure/sus_evaluation.png" alt="SUS Evaluation Results" width="80%">
-  <br><br>
   <font color="#888888">Figure 21: Comparison of System Usability Scale (SUS) scores across 10 participants (Easy vs. Hard mode)</font>
+  <br><br>
+  <img src="docs/evaluation%20report%20figure/sus_evaluation.png" alt="SUS Evaluation Results" width="80%">
 </div>
 <br>
 
