@@ -92,14 +92,14 @@ To enhance playability and replayability, a shop system is introduced between le
 <br>
 <p align="center">
   <font color="#888888">Figure 5: Store interface</font><br><br>
-  <img src="docs/gif/shop.gif" width="80%" alt="Store interface">
+  <img src="docs/gif/shop.gif" width="90%" alt="Store interface">
 </p>
 The game supports both single-player and two-player modes, as well as two difficulty levels. Additional systems, including a leaderboard and a collection log, further enrich the gameplay experience and promote long-term player engagement.
 <br>
 
 <p align="center">
   <font color="#888888">Figure 6: Two-Player Mode</font><br><br>
-  <img src="docs/gif/two.gif" width="80%" alt="Two-Player Mode">
+  <img src="docs/gif/two.gif" width="90%" alt="Two-Player Mode">
 </p>
 <br>
 </div>
@@ -136,7 +136,7 @@ Table 2: Main Game Objects
 
 **Paper Prototype of Deep Sea Prospector**
 <br><br>
-<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="1400"></video>
+<video src="https://github.com/user-attachments/assets/fca9d025-2279-4b16-b439-3e32f4e623b9" controls width="1500"></video>
 
 </div>
 
@@ -182,7 +182,7 @@ Table 3: Stakeholder Table
 
 Figure 7: Stakeholder Diagram
 
-  <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="45%">
+  <img src="docs/evaluation report figure/onion.jpg" alt="Stakeholder Onion Diagram" width="50%">
 </div>
 
 ### 3.3 Reflection
@@ -419,7 +419,7 @@ This creates strategic depth as players must balance the value of heavy items ag
 <p align="center">
   <font color="#888888">Figure 13: Collision detection debug view showing visual bounds vs. physical hitboxes (catchRadius = width * 0.35)</font>
   <br><br>
-  <img src="docs/gif/converter.gif" width="80%" alt="Hitbox Debug View">
+  <img src="docs/gif/converter.gif" width="90%" alt="Hitbox Debug View">
 </p>
 <br>
 
@@ -459,7 +459,7 @@ Using this framework, we systematically balanced all item scores. For example, S
   <font color="#888888">Figure 14: Deep Sea Mode with Limited Visibility</font>
   <br><br>
   
-  <img src="docs/gif/deep.gif" width="80%" alt="Deep Sea Mode">
+  <img src="docs/gif/deep.gif" width="90%" alt="Deep Sea Mode">
 </div>
 <br>
 ### 5.4 Additional Implementation Point: Shared Leaderboard and Fish Collection Index
@@ -468,12 +468,12 @@ Beyond the two core technical challenges above, we also implemented a shared lea
 <br>
 <div align="center">
   <font color="#888888">Figure 15: Database schema design of the scores table in Supabase</font><br><br>
-  <img src="docs/evaluation report figure/table.png" width="80%" alt="Database Schema">
+  <img src="docs/evaluation report figure/table.png" width="90%" alt="Database Schema">
   
   <br><br><br>
 
   <font color="#888888">Figure 16: Cloud-synced player records with structured JSON data in Supabase</font><br><br>
-  <img src="docs/evaluation report figure/data.png" width="80%" alt="Live Database Records">
+  <img src="docs/evaluation report figure/data.png" width="90%" alt="Live Database Records">
 </div>
 <br>
 **Cloud-Synced Score Records with Structured Catch Data**
@@ -508,7 +508,7 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
   <font color="#888888">Figure 18: Fish Gallery (Fish collected by players)</font>
   <br><br>
   
-  <img src="docs/gif/gallery.gif" width="80%" alt="Fish Gallery">
+  <img src="docs/gif/gallery.gif" width="90%" alt="Fish Gallery">
 </div>
 <br>
 
@@ -537,7 +537,7 @@ This indexing approach gave us the “Pokemon-style” collection feedback loop 
 
 <div align="center">
   <font color="#888888">Figure 19: Heuristic Evaluation Feedback Map</font><br><br>
-  <img src="docs/evaluation%20report%20figure/feedback.png" style="max-width: 100%; height: auto;" alt="Heuristic Evaluation Mind Map">
+  <img src="docs/evaluation%20report%20figure/feedback.png" style="max-width: 120%; height: auto;" alt="Heuristic Evaluation Mind Map">
 </div>
 <br>
 ### 6.2 Quantitative Evaluation
@@ -658,7 +658,7 @@ Overall, the system balances immediate playability goals with longer-term sustai
   <font color="#888888">Figure 22. The Sustainability Awareness Diagram</font>
   <br><br>
   
-  <img src="./docs/evaluation%20report%20figure/social.jpg" width="75%" alt="Sustainability Awareness Diagram">
+  <img src="./docs/evaluation%20report%20figure/social.jpg" width="70%" alt="Sustainability Awareness Diagram">
 </div>
 <br>
 
@@ -717,10 +717,10 @@ Because the tasks became more complex over time, there were not many conflicting
   
   <div align="center" style="display: inline-block; margin: 0 10px; vertical-align: top;">
     <font color="#888888">Figure 23: Every Week Group Meeting</font><br><br>
-    <img src="docs/gif/meeting1.gif" height="220" alt="Every Week Group Meeting">
+    <img src="docs/gif/meeting1.gif" height="250" alt="Every Week Group Meeting">
   </div><div align="center" style="display: inline-block; margin: 0 10px; vertical-align: top;">
     <font color="#888888">Figure 24: Group Members Discussion</font><br><br>
-    <img src="docs/gif/meeting2.gif" height="220" alt="Group Members Discussion">
+    <img src="docs/gif/meeting2.gif" height="250" alt="Group Members Discussion">
   </div>
 
 </div>
@@ -742,7 +742,7 @@ Used to arrange the time and place of our next meetings and coordinate deadlines
   
   <div style="margin-bottom: 40px;">
     <font color="#888888">Figure 25: Example of Daily Team Communication</font><br><br>
-    <img src="docs/evaluation%20report%20figure/wechat.jpg" width=90%" alt="WeChat Communication">
+    <img src="docs/evaluation%20report%20figure/wechat.jpg" width=95%" alt="WeChat Communication">
   </div>
   
   <div>
@@ -777,7 +777,7 @@ Used individual sprint boards to further prioritize the tasks needed for each wo
   <font color="#888888">Figure 28: Project Kanban Board</font>
   <br><br>
   
-  <img src="docs/evaluation%20report%20figure/kanban.png" width="75%" alt="Kanban Board">
+  <img src="docs/evaluation%20report%20figure/kanban.png" width="85%" alt="Kanban Board">
 </div>
 <br>
 
