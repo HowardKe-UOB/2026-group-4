@@ -88,7 +88,7 @@ class BigFish extends BaseFish {
     constructor(x, y) {
         let randomSize = random(110, 150);
         // Score nerfed (was 250–600), high-risk high-reward
-        let calculatedScore = floor(map(randomSize, 110, 150, 190, 240)); // 原本是 240, 340
+        let calculatedScore = floor(map(randomSize, 110, 150, 190, 240)); // Previously 240, 340
         let calculatedWeight = map(randomSize, 110, 150, 3, 4);
 
         super(x, y, "Big Fish", calculatedScore, calculatedWeight, randomSize);
@@ -155,18 +155,18 @@ class Treasure extends SeaItem {
     }
 }
 
-// 珍珠：深海底层稀有高价值物品，极小体积，极难抓取
+// Pearl: rare high-value deep-sea item with very small size and difficult capture.
 class Pearl extends SeaItem {
     constructor(x, y) {
-        // 高分值，极轻，但碰撞体积极小
+        // High value and very light, but with a tiny collision profile.
         let val = 1000;
         super(x, y, "Pearl", val, 1);
         this.width = 22;
         this.height = 22;
-        this.catchRadius = 8; // 极小的抓取半径，非常难命中
-        // 珍珠光泽脉冲动画参数（同时用于深海遮罩层的光源挖洞）
+        this.catchRadius = 8; // Very small catch radius, intentionally hard to hit
+        // Pearl glow pulse parameters (also used for deep-sea mask light cutout)
         this.glowPhase = random(TWO_PI);
-        this.glowRadius = 50; // 深海遮罩中的光晕半径，比鮟鱇鱼小但足够引人注目
+        this.glowRadius = 50; // Halo radius in deep-sea mask; smaller than AnglerFish but still noticeable
         this.sprite = typeof pearlImg !== "undefined" ? pearlImg : null;
     }
 
@@ -174,7 +174,7 @@ class Pearl extends SeaItem {
         push();
         translate(this.position.x, this.position.y);
 
-        // 外层光晕（径向渐变，与鮟鱇鱼同款柔和射灯效果）
+        // Outer halo (radial gradient, same soft spotlight style as AnglerFish)
         let pulse = 0.2 * sin(frameCount * 0.06 + this.glowPhase);
         let r = this.glowRadius * (1 + pulse * 0.5);
         {
@@ -195,7 +195,7 @@ class Pearl extends SeaItem {
         if (this.sprite) {
             image(this.sprite, 0, 0, this.width, this.height);
         } else {
-            // fallback：无图片时用代码绘制
+            // Fallback: draw procedurally when no sprite is available
             fill(240, 245, 255);
             ellipse(0, 0, this.width, this.height);
             fill(255, 255, 255, 200);
@@ -262,16 +262,16 @@ class Stone extends SeaItem {
     }
 }
 
-// 后期可选：锦鲤移出屏幕后删除
+// Optional extension: remove Koi after it leaves the screen.
 class KoiFish extends BaseFish {
     constructor(y) {
-        // 参数
+        // Parameters
         let val = random([700, 800]);
-        // 随机从屏幕左边(-100)或右边(width+100)生成
+        // Randomly spawn from left (-100) or right (width + 100)
         let spawnX = random() > 0.5 ? -100 : width + 100;
-        super(spawnX, y, "KoiFish", val, 2.33, 60); // 体积，重量设定
+        super(spawnX, y, "KoiFish", val, 2.33, 60); // Size and weight settings
 
-        this.playedOutSfx = false; // 退场音效判定
+        this.playedOutSfx = false; // Exit SFX trigger flag
 
         if (
             typeof koiFishImgs !== "undefined" &&
@@ -281,13 +281,13 @@ class KoiFish extends BaseFish {
             let img = koiFishImgs[0];
             let targetWidth = 70;
             let targetHeight = targetWidth * (img.height / img.width);
-            // 重新赋值高宽
+            // Reassign width/height based on sprite aspect ratio
             this.width = targetWidth;
             this.height = targetHeight;
         }
 
-        this.speed = random(3.5, 4.2); // 移速较快
-        this.direction = spawnX < 0 ? 1 : -1; // 在左边就向右游，在右边就向左游
+        this.speed = random(3.5, 4.2); // Faster movement speed
+        this.direction = spawnX < 0 ? 1 : -1; // Spawn left -> swim right, spawn right -> swim left
 
         this.glowPhase = random(TWO_PI);
         this.glowRadius = 60;
@@ -297,10 +297,10 @@ class KoiFish extends BaseFish {
         this.swim();
     }
 
-    // 重写游动逻辑：一直往前游，不碰壁回头
+    // Override swim behavior: keep moving forward, no wall bounce
     swim() {
         this.position.x += this.speed * this.direction;
-        // 退场音效
+        // Exit sound effect
         if (!this.playedOutSfx) {
             if (
                 (this.direction === 1 && this.position.x > width) ||
@@ -314,12 +314,12 @@ class KoiFish extends BaseFish {
         }
     }
 
-    // 重写绘制逻辑：加入动画和翻转
+    // Override draw behavior: add animation and mirroring
     draw() {
         push();
         translate(this.position.x, this.position.y);
 
-        // 金色径向发光光晕（与 AnglerFish 同款效果）
+        // Golden radial glow halo (same style as AnglerFish)
         let pulse = 0.15 * sin(frameCount * 0.05 + this.glowPhase);
         let r = this.glowRadius * (1 + pulse);
         let ctx = drawingContext;
@@ -350,16 +350,16 @@ class KoiFish extends BaseFish {
     }
 }
 
-// 游动的贝壳：继承 BaseFish 复用 swim() 逻辑，高价值可见目标
+// Moving shell: inherits BaseFish to reuse swim() logic; high-value visible target.
 class SwimmingPearlShell extends BaseFish {
     constructor(x, y) {
-        // 在 SwimmingPearlShell 类的 constructor 中
-        super(x, y, "Moving Shell", floor(random(500, 600)), 2, 42); // 原本是 1000
+        // Constructor settings for SwimmingPearlShell
+        super(x, y, "Moving Shell", floor(random(500, 600)), 2, 42); // Previously 1000
         this.speed = random(3, 3.8);
-        // 动画帧序列：1-2-3-4-3-2-1（ping-pong 循环）
+        // Animation sequence: 1-2-3-4-3-2-1 (ping-pong loop)
         this._framePingPong = [0, 1, 2, 3, 2, 1];
-        this._frameInterval = 8; // 每 8 帧切换一次图
-        // 深海模式发光参数（与 Pearl 保持一致风格）
+        this._frameInterval = 8; // Switch frame every 8 ticks
+        // Deep-sea glow settings (kept stylistically consistent with Pearl)
         this.glowPhase = random(TWO_PI);
         this.glowRadius = 55;
     }
@@ -368,7 +368,7 @@ class SwimmingPearlShell extends BaseFish {
         push();
         translate(this.position.x, this.position.y);
 
-        // 深海光晕（径向渐变，与鮟鱇鱼同款柔和射灯效果）
+        // Deep-sea halo (radial gradient, same soft spotlight style as AnglerFish)
         let pulse = 0.2 * sin(frameCount * 0.06 + this.glowPhase);
         let r = this.glowRadius * (1 + pulse * 0.5);
         {
@@ -404,18 +404,18 @@ class SwimmingPearlShell extends BaseFish {
             let img = pearlShellImgs[frameIdx];
             if (img) image(img, 0, 0, this.width, this.height);
         } else {
-            // Fallback：代码绘制打开的贝壳 + 发光珍珠
+            // Fallback: procedurally draw opened shell + glowing pearl
             noStroke();
 
-            // 下半贝壳
+            // Lower shell
             fill(220, 190, 150);
             arc(0, 5, this.width, this.height * 0.7, 0, PI);
 
-            // 上半贝壳（向上打开）
+            // Upper shell (opened upward)
             fill(240, 210, 170);
             arc(0, -8, this.width, this.height * 0.65, PI, TWO_PI);
 
-            // 贝壳纹路
+            // Shell texture lines
             stroke(180, 150, 110, 160);
             strokeWeight(1);
             for (let i = -1; i <= 1; i++) {
@@ -423,11 +423,11 @@ class SwimmingPearlShell extends BaseFish {
             }
             noStroke();
 
-            // 珍珠光晕
+            // Pearl halo
             fill(220, 230, 255, 60);
             ellipse(0, 0, 22 + pulse * 8, 22 + pulse * 8);
 
-            // 珍珠主体
+            // Pearl body
             fill(240, 245, 255);
             ellipse(0, 0, 14, 14);
             fill(255, 255, 255, 200);
