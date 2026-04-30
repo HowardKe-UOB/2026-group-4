@@ -650,20 +650,19 @@ changeState(newState) {
         pop();
     }
 
-    // 海洋风格按钮
+    // Ocean-style button
     drawOceanButton(cx, cy, w, h, label, col1, col2) {
         rectMode(CENTER);
         noStroke();
-        // 阴影
+        // shadow
         fill(0, 0, 0, 80);
         rect(cx + 4, cy + 4, w, h, 14);
-        // 主色
+        // main color
         fill(col1);
         rect(cx, cy, w, h, 14);
-        // 顶部高光条
         fill(255, 255, 255, 50);
         rect(cx, cy - h / 4, w - 20, h / 4, 4);
-        // 描边
+        // outline
         stroke(255, 255, 255, 150);
         strokeWeight(2);
         noFill();
@@ -675,7 +674,7 @@ changeState(newState) {
         text(label, cx, cy);
     }
 
-    // 矩形点击检测（rectMode CENTER）
+    // Rectangle click detection
     isPointInRect(px, py, cx, cy, w, h) {
         return (
             px >= cx - w / 2 &&
@@ -715,14 +714,14 @@ changeState(newState) {
                 this.drawHowToPlay();
                 break;
             case GameState.PLAYING:
-                // 🌟 新增：加上 && !this.isTransitioning 阻止游戏继续运行，冻结画面！
+                // Adding `&& !this.isTransitioning` stops the game from continuing to run and freezes the screen.
                 if (!this.gamePaused && !this.isTransitioning) {
                     let result = this.levelManager.update();
                     if (result === 'PASS') {
                         this._finalizeCurrentLevelEarnings();
                         this._mergeFishCaught();
                         this.shopManager.resetShop(this.levelNum, this.player);
-                        // 🌟 核心修改：不直接切页面，而是开启半秒黑屏过渡
+                        // Half-second black screen transition
                         this.startBlackScreenTransition(GameState.LEVEL_PASS_CELEBRATION);
                     } else if (result === 'FAIL') {
                         this._finalizeCurrentLevelEarnings();
@@ -739,7 +738,6 @@ changeState(newState) {
                             this.perLevelEarned,
                             this.perLevelSpawnValue,
                         );
-                        // 🌟 核心修改：开启半秒黑屏过渡
                         this.startBlackScreenTransition(GameState.LEVEL_RESULT);
                     }
                 }
@@ -763,7 +761,7 @@ changeState(newState) {
                 break;
         }
 
-        // 设置按钮（难度选择、模式选择不显示）
+        // Settings button
         const settingsStates = [
             GameState.NAME_ENTRY,
             GameState.HOW_TO_PLAY,
@@ -776,13 +774,10 @@ changeState(newState) {
         if (settingsStates.includes(this.currentState)) {
             this.drawSettingsButton();
         }
-
-        // 设置面板（覆盖在最上层）
         if (this.settingsOpen) {
             this.drawSettingsPanel();
         }
-
-        // 亮度遮罩（根据 brightnessLevel 调节）
+        // brightnessLevel
         if (this.brightnessLevel < 1) {
             push();
             noStroke();
@@ -795,20 +790,17 @@ changeState(newState) {
         }
         
     }
-    // ==========================================
-    // 🌟 终极修复版：黑屏瞬间强制切断所有声音
-    // ==========================================
+    // Black screen instantly cuts off all sounds forcibly.
     startBlackScreenTransition(targetState) {
         this.isTransitioning = true;
         this.nextStateTarget = targetState;
         this.transitionFrame = 0; 
 
-        // 🎵 1. 停止背景音乐
+        // stop background music
         if (typeof gameplayBgm !== 'undefined' && gameplayBgm && gameplayBgm.isPlaying()) {
             gameplayBgm.stop();
         }
-        
-        // 🔇 2. 核心修复：强制切断所有可能还在尾音播放的音效！
+        // Force the cessation of all sound effects that might still be playing in the final part.
         if (typeof catchSfx !== 'undefined' && catchSfx && catchSfx.isPlaying()) {
             catchSfx.stop();
         }
@@ -828,7 +820,7 @@ changeState(newState) {
     drawTransitionOverlay() {
         this.transitionFrame++;
         const maxFrames = 5;
-        // 计算透明度：从 0 (透明) 渐变到 255 (纯黑)
+        // Transparency setting
         let alpha = map(this.transitionFrame, 0, maxFrames, 0, 255);
         alpha = constrain(alpha, 0, 255);
         
@@ -838,11 +830,9 @@ changeState(newState) {
         rectMode(CORNER);
         rect(0, 0, width, height);
         pop();
-
-        // 当 0.5 秒时间一到，真正切换页面！
         if (this.transitionFrame >= maxFrames) {
-            this.isTransitioning = false; // 关闭过渡状态
-            this.changeState(this.nextStateTarget); // 跳转到结算界面
+            this.isTransitioning = false; 
+            this.changeState(this.nextStateTarget); // Jump to the settlement interface
         }
     }
     drawSettingsButton() {
@@ -890,7 +880,7 @@ changeState(newState) {
         noSmooth();
         rectMode(CORNER);
 
-        // 半透明背景遮罩
+        // Translucent background mask
         fill(0, 0, 0, 150);
         rect(0, 0, width, height);
 
@@ -899,7 +889,7 @@ changeState(newState) {
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2;
 
-        // 像素风面板：外阴影 + 主体 + 粗边框
+        // Pixel style panel: Outer shadow + Subject + Thick border
         fill(0, 0, 0, 180);
         rect(panelX + 6, panelY + 6, panelW, panelH, 8);
         fill(15, 45, 85, 250);
@@ -926,7 +916,7 @@ changeState(newState) {
         const barY2 = barY1 + 65;
         const barY3 = barY2 + 65;
 
-        // 背景音乐
+        // background music
         fill(200, 230, 255);
         textSize(10);
         textAlign(LEFT, CENTER);
@@ -945,7 +935,7 @@ changeState(newState) {
         rect(thumb1X, barY1 - 4, 16, barH + 8, 4);
         this._settingsVolumeBar = { x: barX, y: barY1, w: barW, h: barH };
 
-        // 音效（非 BGM）
+        // sound effect
         fill(200, 230, 255);
         text('SFX', panelX + 40, barY2 - 25);
         fill(30, 60, 90);
@@ -962,7 +952,7 @@ changeState(newState) {
         rect(thumbSfxX, barY2 - 4, 16, barH + 8, 4);
         this._settingsSfxVolumeBar = { x: barX, y: barY2, w: barW, h: barH };
 
-        // 亮度条
+        // brightnessLevel
         fill(200, 230, 255);
         text('BRIGHTNESS', panelX + 40, barY3 - 25);
         fill(30, 60, 90);
@@ -979,7 +969,6 @@ changeState(newState) {
         rect(thumb2X, barY3 - 4, 16, barH + 8, 4);
         this._settingsBrightnessBar = { x: barX, y: barY3, w: barW, h: barH };
 
-        // 关闭按钮
         const closeBtnW = 100;
         const closeBtnH = 36;
         const closeBtnX = panelX + (panelW - closeBtnW) / 2;
@@ -1007,44 +996,38 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
-        // ==========================================
-        // 🌟 直接在左侧石碑上写全屏提示 (原版字体位置 + 神秘符号)
-        // ==========================================
+        // Write the full-screen prompt directly on the left stone tablet.
         push();
         if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
         textAlign(CENTER, CENTER);
         noSmooth();
 
-        const textX = 172;          // 左右位置保持不变
-        const textY = height - 250; // 上下位置保持不变
+        const textX = 172;          
+        const textY = height - 250;
         let fAlpha = (sin(frameCount * 0.04) * 127 + 128); 
 
-        textSize(12); // 字号大小保持 12 不变
-        
-        // 🌟 在你原本的 y1~y4 基础上，只增加了 y0 和 y5
-        const y0 = textY - 55; // 新增：顶部符号位置
+        textSize(12); 
+  
+        const y0 = textY - 55;
         const y1 = textY - 30; 
         const y2 = textY - 10; 
         const y3 = textY + 10; 
         const y4 = textY + 30; 
-        const y5 = textY + 55; // 新增：底部符号位置
+        const y5 = textY + 55;
 
-        // 1. 画深色阴影
         fill(10, 40, 50, 200); 
-        text('~ ✦ ~',      textX + 2, y0 + 2); // 新增符号阴影
+        text('~ ✦ ~',      textX + 2, y0 + 2);
         text('PRESS',      textX + 2, y1 + 2);
         text('[ SPACE ]',      textX + 2, y2 + 2);
         text('FOR',        textX + 2, y3 + 2);
         text('FULLSCREEN', textX + 2, y4 + 2);
-        text('~ ✦ ~',      textX + 2, y5 + 2); // 新增符号阴影
+        text('~ ✦ ~',      textX + 2, y5 + 2);
 
-        // 2. 画发光主字
-        // 🌟 新增：给上下两个神秘符号配了淡薄荷绿发光色
+        // Luminous font
         fill(150, 255, 200, fAlpha); 
         text('~ ✦ ~',      textX, y0);
         text('~ ✦ ~',      textX, y5);
 
-        // 下面是你原本的冰蓝渐变文字，一模一样
         fill(180, 240, 255, fAlpha); 
         text('PRESS',      textX, y1);
         text('[ SPACE ]',      textX, y2);
@@ -1053,8 +1036,6 @@ changeState(newState) {
         text('FULLSCREEN', textX, y4);
         
         pop();
-        // ==========================================
-        // ==========================================
         push();
         fill(255);
         textAlign(CENTER, CENTER);
@@ -1087,7 +1068,7 @@ changeState(newState) {
             text('enter your name', width / 2, boxY);
         }
 
-       // 名字已存在时显示红色提示
+       // When the player name already exists, a red prompt will be displayed.
         if (this.nameExistsCheck === true) {
             fill(255, 80, 80);
             textSize(12);
@@ -1104,20 +1085,16 @@ changeState(newState) {
         fill(200, 230, 255);
         textSize(16);
         text('Press ENTER to cast off', width / 2, boxY + 75);
-
-        // 1. 实时检测：如果当前已经是全屏状态了，就立刻把警告关掉
         if (this.showFullscreenWarning && fullscreen()) {
             this.showFullscreenWarning = false;
         }
-
-        // 2. 显示警告（如果没有全屏的话）
         if (this.showFullscreenWarning) {
             fill(255, 80, 80); // 🌟 这里去掉了 warnAlpha，直接变成纯正的实心红字，不再闪烁
             textSize(12);
             text('MUST PRESS [ SPACE ] TO ENTER FULLSCREEN FIRST!', width / 2, boxY + 105);
         }
 
-        // 右下角小奖杯，点击进入高分榜（设置按钮由 drawSettingsButton 统一绘制）
+        // The high score list button at the bottom right corner
         const trophySize = 28;
         const trophyX = width - 36;
         const trophyY = height - 36;
@@ -1126,7 +1103,6 @@ changeState(newState) {
         this._trophyButtonBounds = { cx: trophyX, cy: trophyY, w: 44, h: 44 };
         pop();
 
-        // Hover 提示：奖杯（仅 NAME_ENTRY 有奖杯）
         const mx = this.scaledMouseX ?? 0, my = this.scaledMouseY ?? 0;
         const trophyHover =
             this._trophyButtonBounds &&
@@ -1164,7 +1140,6 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
-        // 🌟 新增下面这一行
         this._drawMenuBackButton();
     }
 
@@ -1174,12 +1149,11 @@ changeState(newState) {
         } else {
             this.drawOceanMenuBackground();
         }
-        // 🌟 新增下面这一行
         this._drawMenuBackButton();
     }
 
     drawHowToPlay() {
-        // 深海背景
+        // deepsea background
         background(5, 20, 45);
 
         push();
@@ -1187,13 +1161,11 @@ changeState(newState) {
         rectMode(CORNER);
         noSmooth();
 
-        // 居中面板
         const panelW = 520;
         const panelH = 680;
         const panelX = (width - panelW) / 2;
         const panelY = (height - panelH) / 2;
 
-        // 面板背景
         noStroke();
         fill(0, 0, 0, 140);
         rect(panelX + 4, panelY + 4, panelW, panelH, 12);
@@ -1206,11 +1178,11 @@ changeState(newState) {
         noStroke();
 
         const lx = panelX + 24;
-        const maxW = panelW - 48; // 文字可用宽度
+        const maxW = panelW - 48;
         let cy = panelY + 24;
         const lineH = 24;
 
-        // 标题
+        // title
         fill(0, 220, 255);
         textAlign(LEFT, TOP);
         textSize(13);
@@ -1253,7 +1225,6 @@ changeState(newState) {
         text("  while reeling up!", lx, cy);
         cy += lineH + 8;
 
-        // 分割线
         stroke(0, 120, 180, 180);
         strokeWeight(1);
         line(lx, cy, panelX + panelW - 24, cy);
@@ -1280,7 +1251,6 @@ changeState(newState) {
         text("Pause : click the \u23F8 button (top-right)", lx, cy);
         cy += lineH + 8;
 
-        // 分割线
         stroke(0, 120, 180, 180);
         strokeWeight(1);
         line(lx, cy, panelX + panelW - 24, cy);
@@ -1310,16 +1280,13 @@ changeState(newState) {
         text("Fish bone: 0 pts (20-50 w/ Collector)", lx, cy);
         cy += lineH + 16;
 
-        // ==========================================
-        // 🌟 修复：闪烁提示 (固定在面板底部，不再受上面行数影响)
-        // ==========================================
         let blinkAlpha = 150 + 105 * sin(frameCount * 0.08);
         fill(0, 220, 180, blinkAlpha);
-        // 把对齐方式改成 CENTER, CENTER 会更准
+
         textAlign(CENTER, CENTER); 
         textSize(11);
         textStyle(BOLD);
-        // 🌟 核心修改：把 cy 改成了 panelY + panelH - 24，让它永远离底部边框 24 个像素
+
         text("CLICK ANYWHERE TO START", width / 2, panelY + panelH - 16);
 
         pop();
@@ -1481,18 +1448,15 @@ changeState(newState) {
         rectMode(CORNER);
         noSmooth();
 
-        // 1. 画海底背景图
         if (typeof passcelebrationImg !== 'undefined' && passcelebrationImg) {
             imageMode(CORNER);
             image(passcelebrationImg, 0, 0, width, height);
         }
 
-        // 2. 暗色遮罩
         fill(0, 0, 0, 80); 
         rect(0, 0, width, height);
 
-        // ==========================================
-        // 🌟 背景动画层：气泡与星光
+
         for (let i = 0; i < 20; i++) {
             let bx = ((i * 107 + frameCount * 0.5) % (width + 200)) - 100; 
             let by = height - ((i * 57 + frameCount * (1 + i % 2)) % (height + 50));
@@ -1511,11 +1475,10 @@ changeState(newState) {
             }
         }
 
-        // ==========================================
-        // 🦈 核心动画：【大白鲨极速追杀 + 气泡尾流】
+
         if (typeof koiFishImgs !== 'undefined' && koiFishImgs.length > 0) {
             
-            // 逃窜的锦鲤
+            // koifish
             let koiSpeed = 4.5; 
             let kx = ((frameCount * koiSpeed) % (width + 1000)) - 400; 
             let ky = height - 120; 
@@ -1527,17 +1490,14 @@ changeState(newState) {
             image(koiFishImgs[frameIdx], 0, 0, 100, 100); 
             pop();
 
-            // 紧追的大白鲨与气泡
             push();
             let sharkX = kx - 260; 
             translate(sharkX, ky); 
 
-            // 淡淡的黑色水流阴影压迫感
             fill(0, 0, 0, 50);
             noStroke();
             ellipse(-30, 0, 320, 120);
 
-            // 尾翼剧烈搅动产生的湍流气泡
             let tailX = -130; 
             for (let i = 0; i < 20; i++) {
                 let flowOffset = (frameCount * 5 + i * 15) % 300; 
@@ -1556,7 +1516,7 @@ changeState(newState) {
             }
             pop();
 
-            // 画出鲨鱼本体 (带摆动动画)
+            // darw the shark
             push();
             translate(sharkX, ky); 
             imageMode(CENTER);
@@ -1577,19 +1537,14 @@ changeState(newState) {
             pop();
         }
 
-        // ==========================================
-        // 🌟 核心布局：面板 700x500
         const panelW = 700; 
         const panelH = 500; 
         const panelX = (width - panelW) / 2;
         const panelY = 40; 
         const itemCenterY = panelY + panelH / 2; 
 
-        // ==========================================
-        // 💎 财富点缀层
         imageMode(CENTER);
         
-        // 【左边：内部金币刺眼闪光大宝箱】
         if (typeof treasureChest !== 'undefined' && typeof Treasure_Chest2 !== 'undefined') {
             let chestY = itemCenterY + sin(frameCount * 0.04) * 12; 
             
@@ -1636,14 +1591,9 @@ changeState(newState) {
             pop();
         }
 
-        // ==========================================
-        // 💎 财富点缀层
-        imageMode(CENTER);
-        
-        // 【左边：内部金币刺眼闪光大宝箱】
-        // ... (这部分代码保持不变，不需要修改) ...
 
-        // 【右边：开合大珍珠】
+        imageMode(CENTER);
+
         if (typeof pearlShellImgs !== 'undefined' && pearlShellImgs.length > 0) {
             let shellY = itemCenterY + cos(frameCount * 0.04) * 12; 
             let frameIdx = floor((frameCount / 12) % pearlShellImgs.length);
@@ -1652,10 +1602,9 @@ changeState(newState) {
             noStroke();
             let pearlPulse = cos(frameCount * 0.05);
             
-            // 🌟 1. 按比例缩小背后的冰蓝光晕，显得更协调
-            // 这里修改了，基础半径和脉冲幅度都缩小了，以适应变小的贝壳
-            let maxPR = 120 + pearlPulse * 15; // 👈 这里修改了，从 160+p*20 改为 120+p*15
-            for (let r = maxPR; r > 0; r -= 10) { // 👈 减少步长以适应更小的半径，把 -= 15 改为 -= 10，让光晕更细腻
+
+            let maxPR = 120 + pearlPulse * 15; 
+            for (let r = maxPR; r > 0; r -= 10) { 
                 let alpha = map(r, 0, maxPR, 40, 0);
                 let rCol = map(r, 0, maxPR, 180, 0);
                 let gCol = map(r, 0, maxPR, 255, 200);
@@ -1666,28 +1615,23 @@ changeState(newState) {
             
             push();
             scale(-1, 1); 
-            // 🌟 2. 贝壳尺寸从 240 缩小到 180
-            // 这里修改了，让贝壳图像显示得更小
-            image(pearlShellImgs[frameIdx], 0, 0, 180, 180); // 👈 这里修改了，从 240x240 改为 180x180
+            image(pearlShellImgs[frameIdx], 0, 0, 180, 180);
             pop();
             
             if (typeof pearlImg !== 'undefined' && pearlImg && frameIdx > 0) {
-                // 这里修改了，按比例缩小珍珠的垂直偏移和脉冲幅度
-                let pearlOffsetY = -11 + sin(frameCount * 0.15) * 6; // 👈 这里修改了，从 -15+s*8 改为 -11+s*6
+  
+                let pearlOffsetY = -11 + sin(frameCount * 0.15) * 6; 
                 let pearlAlpha = map(frameIdx, 1, pearlShellImgs.length - 1, 100, 255);
                 push();
                 tint(255, pearlAlpha); 
-                // 🌟 3. 里面的珍珠也按比例从 85 缩小到 64
-                // 这里修改了，让珍珠图像显示得更小
-                image(pearlImg, 0, pearlOffsetY, 64, 64); // 👈 这里修改了，从 85x85 改为 64x64
+
+                image(pearlImg, 0, pearlOffsetY, 64, 64); 
                 pop();
             }
             pop();
         }
         imageMode(CORNER);
 
-        // ==========================================
-        // 🌟 面板底框质感绘制
         noStroke();
         fill(0, 0, 0, 150);
         rect(panelX + 10, panelY + 10, panelW, panelH, 12);
@@ -1702,11 +1646,9 @@ changeState(newState) {
         rect(panelX, panelY, panelW, panelH, 12);
         noStroke();
 
-        // ==========================================
-        // 🌟 文字立体像素化（干掉黑框蓝框，全立体阴影）
+        // Textual three-dimensional pixelization
         textAlign(CENTER, CENTER);
 
-        // 1. 第一行标题 (22px 不越界)
         const pulseTitle = 0.03 * sin(frameCount * 0.08);
         const scaleFactorTitle = 1 + pulseTitle;
         push();
@@ -1723,25 +1665,18 @@ changeState(newState) {
         text('CONGRATS! YOU ADVANCED!', 0, 0);
         pop();
         
-        // ==========================================
-        // 🌟 文字排版：完美右下角3D立体像素阴影
-        // ... (保留前面的 1. 标题 部分) ...
-        
         const rankInfo = this._getCelebrationRankInfo();
         let cy = panelY + 150; 
 
-        // ==========================================
-        // 【当前玩家信息模块】
-        // 1. 醒目的当前排位
+        // Current Player Information Module
         textSize(36); 
         fill(20, 60, 20, 200);
         text(`🏆 Rank: #${rankInfo.rank}`, width / 2 + 3, cy + 3);
         fill(255, 215, 0); 
         text(`🏆 Rank: #${rankInfo.rank}`, width / 2, cy);
         
-        cy += 50; // 🌟 大间距：把排位和具体数据区隔开
-
-        // 2. 玩家名字 (和下方的数据紧密组合)
+        cy += 50; 
+        // Player name
         textSize(24); 
         let myNameLine = `⭐ ${this.player.name || 'Anon'}`;
         fill(20, 60, 20, 200);
@@ -1749,9 +1684,8 @@ changeState(newState) {
         fill(200, 255, 200); 
         text(myNameLine, width / 2, cy);
         
-        cy += 40; // 🌟 小间距：让名字和分数紧紧抱团，变成一个整体！
+        cy += 40;
 
-        // 3. 玩家分数与关卡
         textSize(16); 
         let myDataLine = `Score: ${this.player.totalScore}   |   Lv.${this.levelNum}`;
         fill(20, 60, 20, 200);
@@ -1759,29 +1693,24 @@ changeState(newState) {
         fill(170, 230, 170); 
         text(myDataLine, width / 2, cy);
         
-        cy += 40; // 🌟 大间距：数据块结束，准备画分割线
+        cy += 40; 
 
-        // ==========================================
-        // 【目标玩家信息模块】
         if (rankInfo.nextEntry) {
-            // 分割线
             stroke(0, 150, 220, 180);
             strokeWeight(2);
             line(panelX + 70, cy, panelX + panelW - 70, cy);
             noStroke();
             
-            cy += 40; // 分割线到下一区域的距离
+            cy += 40; 
             
-            // 4. "Next up" 提示
             textSize(14); 
             fill(40, 20, 20, 200);
             text('- Next up -', width / 2 + 2, cy + 2);
             fill(255, 180, 50); 
             text('- Next up -', width / 2, cy);
             
-            cy += 50; // 小间距
+            cy += 50;
             
-            // 5. 目标玩家排名与名字 (统一格式，看起来更专业)
             textSize(20); 
             let line1 = `⚔️ Rank: #${rankInfo.nextRank}  -  ${rankInfo.nextEntry.playerName}`;
             fill(40, 20, 20, 200);
@@ -1789,9 +1718,8 @@ changeState(newState) {
             fill(255, 120, 150); 
             text(line1, width / 2, cy);
             
-            cy += 40; // 🌟 小间距：和当前玩家一样，名字和分数紧密抱团！
+            cy += 40;
             
-            // 6. 目标玩家分数与关卡
             textSize(16); 
             let line2 = `Score: ${rankInfo.nextEntry.score}   |   Lv.${rankInfo.nextEntry.levelsCompleted ?? 0}`;
             fill(40, 20, 20, 200);
@@ -1800,7 +1728,6 @@ changeState(newState) {
             text(line2, width / 2, cy);
         }
 
-        // 5. 点击提示
         cy = panelY + panelH - 45; 
         textSize(11); 
         fill(0);
@@ -1812,22 +1739,18 @@ changeState(newState) {
         text('Click anywhere to continue', width / 2, cy);
         pop();
     }
-    // 🌟 绝对居中终极版：向左回滚，整体上移，微缩间距
     drawNextLevelTarget() {
         push();
         if (typeof pixelFont !== 'undefined' && pixelFont) textFont(pixelFont);
         rectMode(CENTER);
         noSmooth();
 
-        // 1. 画背景图
+        // background img
         if (typeof nextLevelBgImg !== 'undefined' && nextLevelBgImg) {
             imageMode(CORNER);
             image(nextLevelBgImg, 0, 0, width, height);
         }
 
-        // ==========================================
-        // 🕹️ 核心微调区 (保留你完美的调参数值)
-        // ==========================================
         let offsetX = 32; 
         let offsetY = -165; 
 
@@ -1835,9 +1758,7 @@ changeState(newState) {
         const cx = width / 2 + offsetX;
         let textCy = height / 2 + offsetY; 
 
-        // ==========================================
-
-        // -- 1. 关卡标题 (取消缩放，固定不动) --
+        // game title
         noStroke(); 
         textSize(26); 
         fill(20, 60, 20, 200); 
@@ -1845,20 +1766,16 @@ changeState(newState) {
         fill(255, 230, 80);    
         text('LEVEL ' + this.levelNum, cx, textCy);         // 主字
         
-        // 🚨 收紧间距
         textCy += 50; 
 
-        // -- 2. 目标分数提示 --
         textSize(14); 
         fill(40, 20, 20, 200);
         text("TARGET SCORE:", cx + 2, textCy + 2);
         fill(255, 120, 0); 
         text("TARGET SCORE:", cx, textCy);
-        
-        // 🚨 收紧间距
+
         textCy += 50; 
 
-        // -- 3. 超大目标分数数据 (✨转移到这里：呼吸缩放闪烁) --
         let n = this.levelNum;
         const goldFishEff = 26.67; 
         let totalTarget = 0;
@@ -1877,32 +1794,27 @@ changeState(newState) {
         const pulseScore = 0.03 * sin(frameCount * 0.08); 
         push();
         translate(cx, textCy);
-        scale(1 + pulseScore); // ✨ 给目标分数加上动态缩放
+        scale(1 + pulseScore);
         fill(40, 10, 30, 200);
         text(`${targetScore}`, 3, 3);
         fill(255, 100, 200);
         text(`${targetScore}`, 0, 0);
         pop();
         
-        // 🚨 收紧间距
         textCy += 60; 
 
-        // -- 4. 当前分数 --
         textSize(14); 
         fill(10, 30, 60, 200);
         text(`Current Score: ${this.player.totalScore}`, cx + 2, textCy + 2);
         fill(150, 220, 255); 
         text(`Current Score: ${this.player.totalScore}`, cx, textCy);
         
-        // 🚨 收紧间距
         textCy += 70; 
 
-        // -- 5. 呼吸闪烁的启动提示 --
         textSize(8); 
         fill(10, 30, 30, 200);
         text('Click anywhere to start level', cx + 2, textCy + 2);
-        
-        // 🌟 核心修改：把 0.1 改成了 0.04！数字越小，闪烁越慢！
+
         let mainAlpha = (sin(frameCount * 0.04) * 127 + 128); 
         fill(180, 255, 180, mainAlpha); 
         text('Click anywhere to start level', cx, textCy);
@@ -1914,7 +1826,6 @@ changeState(newState) {
         rectMode(CORNER);
         noStroke();
 
-        // 使用水下像素艺术背景图
         if (
             typeof leaderboardBgImg !== 'undefined' &&
             leaderboardBgImg &&
@@ -1926,7 +1837,7 @@ changeState(newState) {
             rect(0, 0, width, height);
         }
 
-        // 适配 1280x720：居中卡片，留白和谐
+        // 1280x720
         const panelW = min(580, width * 0.45);
         const panelH = min(500, height * 0.7);
         const panelX = (width - panelW) / 2;
@@ -1971,11 +1882,11 @@ changeState(newState) {
             this.highScoreManager.fetchMoreFromSupabase();
         }
 
-        // 半透明遮罩，提升面板可读性，同时保留背景氛围
+        // Translucent mask
         fill(0, 25, 50, 70);
         rect(0, 0, width, height);
 
-        // 毛玻璃风格面板：与水下主题协调
+        // Glass-matte finish panel
         fill(0, 0, 0, 45);
         rect(panelX + 6, panelY + 6, panelW, panelH, 16);
         fill(15, 45, 85, 200);
