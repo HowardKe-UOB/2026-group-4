@@ -17,7 +17,7 @@ let sceneTransition = {
     holdDuration: 2000, // Pause for 2000 ms (2s) after full black
     holdStartTime: 0,
     
-    baseColor: [30, 90, 140],
+    baseColor: [0, 0, 0],
     
     // 🌟 Added: variables used by complex pixel UI
     pixelParticles: [], // Pixel bubble system
@@ -124,87 +124,16 @@ function drawPixelSonar(globalAlpha) {
 
 // 🌟 Updated: trigger scene transition and initialize pixel data
 function triggerTransition(nextState) {
-    if (sceneTransition.isActive) return; 
-    sceneTransition.isActive = true;
-    sceneTransition.fadeType = 'OUT'; // Start darkening
-    sceneTransition.alpha = 0;
-    sceneTransition.targetState = nextState; 
-    sceneTransition.holdStartTime = 0;
-    
-    // Initialize pixel systems
-    initPixelParticles(); 
+    // Disable transition effects: switch state immediately.
+    if (gameManager) {
+        gameManager.changeState(nextState);
+    }
 }
 
 // 🌟 Core update: new transition handler with 2s hard hold and full pixel UI
 function drawSceneTransition() {
-    if (!sceneTransition.isActive) return;
-
-    // --- Layer 1: deep-sea background mask ---
-    // Slow darkening for ocean pressure feel
-    push();
-    noStroke();
-    let vignetteColor = sceneTransition.baseColor;
-    fill(vignetteColor[0], vignetteColor[1], vignetteColor[2], sceneTransition.alpha);
-    rect(0, 0, width, height); // Simple full-screen rectangle with very slow fade
-    pop();
-
-    // --- Layer 2: pixel bubble system ---
-    drawPixelParticles(sceneTransition.alpha);
-
-    // --- Layer 3: central pixel UI (sonar + text) ---
-    // Draw only during dark phase or hold state
-    if (sceneTransition.alpha > 200) {
-        // 1. Draw hard-edge pixel sonar
-        drawPixelSonar(sceneTransition.alpha);
-
-        // 2. Draw breathing floating pixel text
-        push();
-        textAlign(CENTER, CENTER);
-        if (typeof pixelFont !== "undefined" && pixelFont) {
-            textFont(pixelFont);
-        }
-        textSize(24);
-
-        // Pulsing text color (between blue and green)
-        let tPulse = sin(frameCount * 0.05);
-        let tColor = lerpColor(color(150, 255, 200), color(220, 255, 255), (tPulse + 1) / 2);
-        
-        // 🌟 Core: vertical floating text effect
-        sceneTransition.textOffset = sin(frameCount * 0.03) * 6; // Float by 6 pixels vertically
-
-        // 🌟 Core: include current global alpha and align text coords to pixels
-        fill(red(tColor), green(tColor), blue(tColor), sceneTransition.alpha);
-        text("DIVING DEEPER...", floor(width / 2), floor(height / 2 + sceneTransition.textOffset));
-        pop();
-    }
-
-    // --- Core state flow: fade out -> hold 2s -> fade in ---
-    if (sceneTransition.fadeType === 'OUT') {
-        sceneTransition.alpha += sceneTransition.speed;
-        if (sceneTransition.alpha >= 255) {
-            sceneTransition.alpha = 255;
-            // 🌟 Core update: after fade-out, enter HOLD state and record timestamp
-            sceneTransition.fadeType = 'HOLD'; 
-            sceneTransition.holdStartTime = millis(); 
-            
-            // 🌟 Core: switch game state only after full black is reached
-            if (gameManager) {
-                gameManager.changeState(sceneTransition.targetState);
-            }
-        }
-    } else if (sceneTransition.fadeType === 'HOLD') {
-        // 🌟 Added logic: check whether 2-second hold is complete
-        let timePassed = millis() - sceneTransition.holdStartTime;
-        if (timePassed >= sceneTransition.holdDuration) {
-            // Hold complete, start fade-in
-            sceneTransition.fadeType = 'IN'; 
-        }
-    } else if (sceneTransition.fadeType === 'IN') {
-        sceneTransition.alpha -= sceneTransition.speed;
-        if (sceneTransition.alpha <= 0) {
-            sceneTransition.isActive = false; // Transition fully finished
-        }
-    }
+    // Transition effects disabled intentionally.
+    return;
 }
 let gameManager;
 let bgImageLevel1;
